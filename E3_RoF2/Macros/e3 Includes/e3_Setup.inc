@@ -21,6 +21,7 @@
 #include e3 Includes\e3_Tanking.inc
 #include e3 Includes\e3_Utilities.inc
 #include e3 Includes\e3_Wait4Rez.inc
+#include e3 Includes\e3_Thf.inc
 
 #include e3 Includes\e3_Classes_Bard.inc
 #include e3 Includes\e3_Classes_Beastlord.inc
@@ -171,8 +172,9 @@ SUB EVENT_make_MacroSettingsIni
 	/call WriteToIni "${advSettings_Ini},Included Setups,Include#15" smoothMoves 1
 	/call WriteToIni "${advSettings_Ini},Included Setups,Include#16" Wait4Rez 1
 	/call WriteToIni "${advSettings_Ini},Included Setups,Include#17" buy 1
-  /call WriteToIni "${advSettings_Ini},Included Setups,Include#18" alerts 1
-  /call WriteToIni "${advSettings_Ini},Included Setups,Include#19" tanking 1
+	/call WriteToIni "${advSettings_Ini},Included Setups,Include#18" alerts 1
+	/call WriteToIni "${advSettings_Ini},Included Setups,Include#19" tanking 1
+	/call WriteToIni "${advSettings_Ini},Included Setups,Include#20" Thf 1
 	/delay 15
 	/echo Creating turbo settings...
 	/call WriteToIni "${advSettings_Ini},Turbo,BRD" 30 0
