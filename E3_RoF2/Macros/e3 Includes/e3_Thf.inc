@@ -81,7 +81,7 @@ Sub check_GatherMana
 | -- Call of the Hero: Single Target, Group, All (Netbots)          Written by Muergan                  -|
 |========================================================================================================|
 | -- Single Target - Tell bot:   cohme		(Pulls sender of tell to bot recieving command)				-|
-| -- Group - Tell bot:   cohgroup			(Pulls Group to bot that recieved command)					-|
+| -- **Coming Soon**Group - Tell bot:   cohgroup			(Pulls Group to bot that recieved command)  -|
 | -- CoH all Netbots - Tell bot:   cohall	(Pulls all Netbots to bot that recieved command				-|
 | -------------------------------------------------------------------------------------------------------|
 
