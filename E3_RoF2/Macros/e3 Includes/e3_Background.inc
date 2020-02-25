@@ -1,6 +1,6 @@
 |------------------------------------------------------------------------|
-|- Contains background functions that update e3 status and variables,	  -|
-|- along with many minimally invasive macro functions.					        -|
+|- Contains background functions that update e3 status and variables,	-|
+|- along with many minimally invasive macro functions.					-|
 |------------------------------------------------------------------------| 
 
 SUB check_Zone
@@ -24,6 +24,11 @@ SUB check_Zone
   /if (${Defined[autoMelody]}) {
     /if (!${songSet.Length}) /call EVENT_startMelody "<${Me}> melody ${autoMelody}" "${Me}" "${autoMelody}"
   }
+  
+ | Reset Variables
+	/varset RallosZek False
+
+
 /if (${Debug} || ${Debug_Background}) /echo <== check_Zone -|
 /RETURN
 

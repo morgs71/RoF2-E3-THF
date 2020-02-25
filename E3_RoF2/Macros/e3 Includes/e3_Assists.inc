@@ -380,7 +380,11 @@ SUB check_AutoAssist
 |--------------------------------------------------------|
 SUB check_Nukes
 /if (${Debug} || ${Debug_Assists}) /echo |- check_Nukes ==>
-	/if (${Defined[Nukes2D]} && ${Assisting} && ${use_Nukes}) {
+	/if	(${RallosZek} && !${BlueRodTimer} && ${Assisting})  {
+		/call e3_Cast ${AssistTarget} "Blue Rod of Zek"
+		/call createTimer BlueRodTimer 5s
+		/popup Rallos Zek Bane Damage is Engaged!
+	} else /if (${Defined[Nukes2D]} && ${Assisting} && ${use_Nukes}) {
 	  /declare castIndex int local
 	  /declare s int local
     /declare m int local
@@ -1225,6 +1229,7 @@ Sub assist_Setup
 	/declare PauseTarget string outer
 |	/declare AutoAggro bool outer TRUE
 	/declare use_Nukes bool outer TRUE
+	/declare RallosZek bool outer FALSE
 	/declare use_TargetAE bool outer FALSE
 	/declare use_PBAE bool outer FALSE
 	/declare use_AssistDots bool outer TRUE
