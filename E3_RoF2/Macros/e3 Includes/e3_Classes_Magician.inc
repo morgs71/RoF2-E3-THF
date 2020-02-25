@@ -179,56 +179,7 @@ SUB check_SummonItems
 /if (${Debug} || ${Debug_MAG}) /echo <== check_SummonItems -|
 /RETURN
 |----------------------------------------------------------------------------|
-#event auto_coh "#1# tells you, 'autocoh #2#'"
-SUB event_auto_coh(line, ChatSender, toggleCoH)
-  /declare i int local
-  /if (${toggleCoH.Equal[on]}) {
-    /if (${Bool[${Group.Member[${ChatSender}]}]}) {
-      /if (${Defined[cohTargets]}) {
-        /for i 1 to ${cohTargets.Size}
-          /if (${cohTargets[${i}].Equal[${ChatSender}]}) {
-            /docommand ${ChatToggle} ${ChatSender} is already in the AutoCoH array
-            /return
-          }
-        /next i
-      }
-      /call BuildArray cohTargets "${ChatSender}"
-      /docommand ${ChatToggle} Auto CoH Enabled on ${ChatSender}
-    } else {
-      /docommand ${ChatToggle} Auto CoH will not be enabled until you are in a group with this mage
-    }
-  } else {
-    /if (${Defined[cohTargets]}) /call RemoveArrayElement cohTargets "${ChatSender}"
-    /docommand ${ChatToggle} Auto CoH Disabled on ${ChatSender}
-  }
-/RETURN
-|----------------------------------------------------------------------------|
-SUB check_CoH
-/if (${Debug} || ${Debug_MAG}) /echo |- MAG_checkCoH ==>
-  /if (${Defined[cohTargets]}) {
-    /declare t int local
-    /declare s int local
-    /for t 1 to ${cohTargets.Size}
-      /if (${Bool[${Group.Member[${cohTargets[${t}]}]}]}) {
-        /for s 1 to ${cohSpells2D.Size[1]}
-          /call check_Ready "cohSpells2D" ${s}
-            /if (${c_Ready}) {
-              /if (${Spawn[pc =${cohTargets[${t}]}].Distance} >= ${coh_dist}) {
-                /if (${check_Mana["cohSpells2D",${s}]}) {
-                  /docommand ${ChatToggle} << Auto CoH casting on ${cohTargets[${t}]} >>
-                  /g << Auto CoH casting on ${cohTargets[${t}]} >>
-                  /call e3_cast ${Spawn[pc =${cohTargets[${t}]}].ID} "cohSpells2D" ${s}
-                } else /if (${Debug} || ${Debug_MAG}) /docommand ${ChatToggle} << AutoCoH CoH is not ready for ${cohTargets[${t}]}  >>
-              }
-            } else /if (${Debug} || ${Debug_MAG}) /docommand ${ChatToggle} << AutoCoH CoH is not ready for ${cohTargets[${t}]}  >>
-        /if (!${ActionTaken})  /next s
-      } else /if (${Debug} || ${Debug_MAG}) /docommand ${ChatToggle} << AutoCoH ${cohTargets[${t}]} is not in my group >>
-    /if (!${ActionTaken})  /next t
-  }
-  /if (${Debug} || ${Debug_MAG}) /echo <== MAG_checkCoH -|
-/RETURN
-|----------------------------------------------------------------------------|
-SUB MAG_Setup
+
 /declare Debug_MAG bool outer FALSE
 /if (${Debug} || ${Debug_MAG}) /echo |- MAG_Setup ==>
   /declare coh_dist int outer 150
@@ -251,14 +202,14 @@ SUB MAG_Setup
 |----------------------------------------------------------------------------|
 SUB MAG_MacroSettings
 /if (${Debug}) /echo |- MAG_MacroSettings ==>
-  /call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#1" "check_CoH" 1
-	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#2" "check_Buffs" 1
-  /call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#3" "check_Burns" 1
-	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#4" "check_Pets" 1
-	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#5" "check_Debuffs" 1
-	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#6" "check_Ae" 1
-	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#7" "check_Nukes" 1
-	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#8" "check_SummonItems" 1
+	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#1" "check_Buffs" 1
+	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#2" "check_Burns" 1
+	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#3" "check_Pets" 1
+	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#4" "check_Debuffs" 1
+	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#5" "check_Ae" 1
+	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#6" "check_Nukes" 1
+	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#7" "check_SummonItems" 1
+	/call WriteToIni "${advSettings_Ini},MAG Functions,MAG Function#8" "check_GatherMana" 1
 /if (${Debug}) /echo <== MAG_MacroSettings -|
 /RETURN
 |----------------------------------------------------------------------------|
@@ -287,6 +238,5 @@ SUB MAG_Background_Events
 		}
 	}
 **|
-  /doevents auto_coh
   /doevents petWeapons
 /RETURN
