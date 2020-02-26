@@ -93,193 +93,85 @@ Sub check_rune
 }
 /if (${Debug}) /echo <== check_rune -|
 /return
-|----------------------------------------------------------------------------|
-#event charmOn "<#1#> Charm on #2#"
-#event charmOn "#1# tells you, 'Charm on #2#'"
-sub event_charmOn(line, ChatSender, targetID)
-  /if (${Me.Class.ShortName.Equal[ENC]} || ${Me.Class.ShortName.Equal[BRD]}) {
-    /if (${Debug} || ${Debug_Ench}) /echo |-  charmOn ==>
-    |&& (!${Spawn[id ${targetID}].Named} || ${Spawn[id ${targetID}].CleanName.Equal[Coerced Lieutenant]})
-      /if ((${Spawn[id ${targetID}].Distance} < 240 && ${Spawn[id ${targetID}].Level} <= ${Me.Level} && ${SpawnCount[npc id ${targetID}]}>0) || ${targetID}==${Me.Pet.ID}) {
-        /varset charmTarget ${targetID}
-        /varset doCharm TRUE
-        /docommand ${ChatToggle} << Charm enabled ${Spawn[id ${charmTarget}].CleanName} >>
-      } else {
-        /docommand ${ChatToggle} << ${Spawn[id ${targetID}].CleanName} is not eligible for charm >>
-      }
-    /if (${Debug}) /echo <== charmOn -|
-  }
+
+
+
+|---------------Mez Target-----------------Written by Killians----Edited by Muergan ------------------|
+
+
+#event MezTarget "<#1#> Mez on #2#"
+#event MezTarget "#1# tell your party, 'Mez on #2#'"
+#event MezTarget "#1# tells the group, 'Mez on #2#'"
+#event MezTarget "#1# tells you, 'Mez on #2#'"
+
+
+SUB event_MezTarget(line, ChatSender, int MobID)
+
+/target ${MobID}
+/call MezmerizeTarget
+
 /return
-|----------------------------------------------------------------------------|
-#event charmOff "<#1#> Charm Off"
-#event charmOff "#1# tells you, 'Charm Off'"
-sub event_charmOff(line, ChatSender)
-/if (${Debug} || ${Debug_Ench}) /echo |- charmOff ==>
-  /if (${Me.Class.ShortName.Equal[ENC]} || ${Me.Class.ShortName.Equal[BRD]}) {
-      /if (${doCharm}) {
-        /docommand ${ChatToggle} << Charm Disabled ${Spawn[id ${charmTarget}].CleanName} >>
-        /varset doCharm FALSE
-        /varset charmTarget 0
-      }
-    /if (${Debug}) /echo <== charmOff -|
-  }
-/return
-|----------------------------------------------------------------------------|
-#event toggleMez "<#1#> Mez #2#"
-#event toggleMez "#1# tells you, 'Mez #2#'"
-sub event_toggleMez(line, ChatSender, mezToggle)
-  /if (${Me.Class.ShortName.Equal[ENC]} || ${Me.Class.ShortName.Equal[BRD]}) {
-    /if (${Debug} || ${Debug_Ench}) /echo |- remove_RuneTarget ==>
-      /if (${mezToggle.Equal[on]}) {
-        /varset autoMez TRUE
-        /docommand ${ChatToggle} << Mezzing Enabled >>
-      } else {
-        /varset autoMez FALSE
-        /docommand ${ChatToggle} << Mezzing Disabled >>
-    }
-    /if (${Debug}) /echo <== remove_RuneTarget -|
-  }
-/return
-|----------------------------------------------------------------------------|
-Sub check_charm
-/if (${Debug} || ${Debug_Ench}) /echo |- check_Charm ==>
-/if (${Defined[charmArray2D]}) {
-  /declare s int local
-  /declare charmDuration int local
-  /if (${doCharm} && ${Bool[${charmTarget}]}) {
-    /if (${SpawnCount[npc id ${charmTarget}]}==0 && ${charmTarget}!=${Me.Pet.ID}) {
-      /docommand ${ChatToggle} Disabling Charm: ${charmTarget} is no longer a valid npc
-      /varset doCharm FALSE
-      /varset charmTarget 0
-      /return
-    }
-    /if (${Me.Pet.Race.Name.Equal[Invisible Man]}) {
-      /pet get lost
-      /delay 1s !${Me.Pet.ID}
-    }
-    /if (!${Bool[${Me.Pet.ID}]}) {
-      /bc [+r+] << ${Spawn[id ${charmTarget}].CleanName} is not Charmed! >> [+r+]
-      /for s 1 to ${charmArray2D.Size[1]}
-      /call check_Ready "charmArray2D" ${s}
-      /if (${c_Ready}) {
-        /if (${check_Mana["charmArray2D",${s}]}) {
-          /if (${check_Distance[${charmTarget},${charmArray2D[${s},${iMyRange}]}]}) {
-            /docommand ${ChatToggle} << Charming ${charmTarget} ${Spawn[id ${charmTarget}].CleanName} with ${charmArray2D[${s},${iCastName}]} >>
-            /call e3_Cast ${charmTarget} "charmArray2D" "${s}"
-            /if (${Bool[${Me.Pet.ID}]}) {
-              /bc [+g+] >> Charmed ${Spawn[id ${charmTarget}].CleanName} <<
-              /timed 5 /pet back off
-              /timed 10 /pet follow
-            } else {
-              /if (${castReturn.Equal[CAST_IMMUNE]}) {
-                /varset doCharm FALSE
-                /varset charmTarget 0
-                /docommand ${ChatToggle} << ${Spawn[id ${charmTarget}].CleanName} is immune, turning off charm >>
-              }
-            }
-          }
-        }
-      }
-      /if (!${Bool[${Me.Pet.ID}]}) /next s
-    } else {
-    |accounce time left on charm
-      /for s 1 to ${charmArray2D.Size[1]}
-        /if (${Bool[${Me.PetBuff[${charmArray2D[${s},${iSpellName}]}]}]}) {
-          /varset charmDuration ${Pet.BuffDuration[${charmArray2D[${s},${iSpellName}]}].TotalSeconds}
-          |/echo charmduration ${charmDuration} timer ${charmBuffTimer}
-          /if (${charmDuration} > 60) {
-            /if (!${Bool[${charmBuffTimer}]}) {
-              /bc [+g+] My charm fades in ${charmDuration} sec
-              /varset charmBuffTimer 18s
-            }
-          } else /if (${charmDuration} <= 60 && ${charmDuration} > 9) {
-            /if (!${Bool[${charmBuffTimer}]}) {
-              /bc [+y+] My charm fades in ${charmDuration} sec
-              /varset charmBuffTimer 6s
-            }
-          } else /if (${charmDuration} <= 9) {
-            /if (!${Bool[${charmBuffTimer}]}) {
-              /bc [+r+] My charm fades in ${charmDuration} sec
-              /varset charmBuffTimer 1s
-              }
-          }
-        }
-      /next s
-    }
-  }
+
+
+sub MezmerizeTarget
+
+/declare GiveUpValue int local 2
+/if (${${Target.ID}${Spell[${Mez_Spell}].ID}} == 0) {
+	/if (!${Defined[${Target.ID}${Spell[${Mez_Spell}].ID}]}) /declare ${Target.ID}${Spell[${Mez_Spell}].ID} timer outer 0
+	:recast
+	/call e3_Cast ${Target.ID} "${Mez_Spell}" 
+	/if (${Select[${castReturn},CAST_RESISTED]}) {
+		/if (!${Defined[ResistRetry]}) /declare ResistRetry int local 0
+		/docommand ${ChatToggle} **Warning** ${Target.CleanName} resisted ${Mez_Spell}.
+		/if (${Defined[ResistRetry]}) /varcalc ResistRetry ${ResistRetry}+1
+		/if (${ResistRetry} < ${GiveUpValue}) /goto :recast
+	} else /if (${Select[${castReturn},CAST_IMMUNE]}) {
+		/varset ${Target.ID}${Spell[${Mez_Spell}].ID} 20000000
+		/docommand ${ChatToggle} **Warning** ${Target.CleanName} is IMMUNE to ${Mez_Spell}.
+	} else /if (${Select[${castReturn},CAST_CANNOTSEE]} && ${spamTimer}==0) {
+		/if (!${Defined[Retry]}) /declare LOSRetry int local 0
+		/docommand ${ChatToggle} **Warning** I cannot see ${Target.CleanName}!!.
+		/if (${Defined[spamTimer]}) /varset spamTimer 15s
+		/if (${Defined[LOSRetry]}) /varcalc LOSRetry ${LOSRetry}+1
+		/if (${LOSRetry} < ${GiveUpValue}) /goto :recast
+	} else /if (${Select[${castReturn},CAST_OUTOFMANA]} && ${spamTimer}==0) {
+		/docommand ${ChatToggle} **Warning** I do not have enough mana to cast ${MyDebuffs[${i}]}!!.
+		/if (${Defined[spamTimer]}) /varset spamTimer 15s
+	} else /if (${Select[${castReturn},CAST_OUTOFRANGE]} && ${spamTimer}==0) {
+		/docommand ${ChatToggle} **Warning** ${MyDebuffs[${i}]} is out of range for ${MyDebuffs[${i}]}!!.
+		/if (${Defined[spamTimer]}) /varset spamTimer 15s
+	} else /if (${Select[${castReturn},CAST_SUCCESS]})	{
+		/docommand ${ChatToggle} Landed ${Mez_Spell} on ${Target.CleanName}!!.
+		/if (${Defined[${Target.ID}${Spell[${Mez_Spell}].ID}]}) /varset ${Target.ID}${Spell[${Mez_Spell}].ID} ${Math.Calc[${Spell[${Mez_Spell}].Duration} * 6-6]}s
+	}
 }
-/if (${Debug} || ${Debug_Ench}) /echo <== check_Charm -|
+/delay 5s !${Me.Casting.ID}
 /return
+
+
 |----------------------------------------------------------------------------|
-| Mez mobs in ae radius that are not assist target
-sub check_mez
-/if (${Debug} || ${Debug_Ench}) /echo |- check_Mez ==>
-  /if (${autoMez}) {
-    /declare i int local
-    /declare s int local
-    /declare mezTarg int local
-    /if (!${SpawnCount[playerstate 4 npc targetable radius ${AE_Radius}]}) /return
-    /for i 1 to ${SpawnCount[playerstate 4 npc targetable radius ${AE_Radius}]}
-      /varset mezTarg ${NearestSpawn[${i},playerstate 4 npc targetable radius ${AE_Radius}].ID}
-      /call TrueTarget ${mezTarg}
-      /delay 1s ${Target.BuffsPopulated}
-      /if (${Select[${AssistTarget},${mezTarg}]}==0 && (!${Bool[${Target.Mezzed}]} || ${Target.Mezzed.Duration.TotalSeconds} < 8)) {
-        /for s 1 to ${mezArray2D.Size[1]}
-          /call check_Ready "mezArray2D" ${s}
-          /if (${c_Ready}) {
-            /if (${check_Mana["mezArray2D",${s}]}) {
-              /if (${check_Distance[${mezTarg},${mezArray2D[${s},${iMyRange}]}]}) {
-                /docommand ${ChatToggle} << Mezzing ${mezTarg} with ${mezArray2D[${s},${iCastName}]} >>
-                /call e3_Cast ${mezTarg} "mezArray2D" "${s}"
-              }
-            }
-          }
-        /if (!${ActionTaken}) /next s
-      }
-    /if (!${ActionTaken}) /next i
-  }
-/if (${Debug}) /echo <== check_Mez -|
-/return
-|----------------------------------------------------------------------------|
+
 Sub ENC_Setup
   /declare Debug_Ench bool outer FALSE
   /declare autoRune bool outer FALSE
-  /declare autoMez bool outer FALSE
 
 	/if (${Ini[${Character_Ini},Enchanter,AutoRune].Length}) /call iniToVarV "${Character_Ini},Enchanter,AutoRune (On/Off)" autoRune bool outer
-	/if (${Ini[${Character_Ini},Enchanter,AutoMez (On/Off)].Length}) /call iniToVarV "${Character_Ini},Enchanter,AutoMez (On/Off)" autoMez bool outer
 	/if (${Ini[${Character_Ini},Enchanter,GatherMana Pct].Length}) /call iniToVarV "${Character_Ini},Enchanter,GatherMana Pct" gatherManaPCT int outer
 
   /call IniToArrayV "${Character_Ini},Enchanter,RuneTarget#"  runeTargets
   /call IniToArrayV "${Character_Ini},Enchanter,RuneSpell#"   runeArray
-  /call IniToArrayV "${Character_Ini},Enchanter,Mez#"         mezArray
-  /call IniToArrayV "${Character_Ini},Enchanter,Charm#"       charmArray
-  /if (${Bool[${mezArray.Size}]}) {
-    /call BuildSpellArray "mezArray"	"mezArray2D"
-  } else {
-    /if (${Defined[autoMez]}) /varset autoMez FALSE
-  }
+  /call INItoVar "${Character_Ini},Enchanter,Mez Spell" Mez_Spell string outer
+  
   /if (${Bool[${runeArray.Size}]}) {
     /call BuildSpellArray "runeArray"	"runeArray2D"
   } else {
     /if (${Defined[autoRune]}) /varset autoRune FALSE
   }
-  /declare charmTarget int outer
-  /if (${Bool[${charmArray.Size}]}) {
-    /call BuildSpellArray "charmArray"	"charmArray2D"
-    /declare doCharm bool outer TRUE
-    /declare charmBuffTimer timer outer
-    |/declare charmTimer timer outer
-  } else {
-    /declare doCharm bool outer FALSE
-  }
+  
 /return
 |----------------------------------------------------------------------------|
 Sub ENC_Background_Events
-	/doevents charmTarget
-	/doevents toggleMez
-	/doevents charmOn
-	/doevents charmOff
+
 	/doevents toggleRune
 	/doevents add_RuneTarget
 	/doevents remove_RuneTarget
@@ -287,26 +179,24 @@ Sub ENC_Background_Events
 /return
 |----------------------------------------------------------------------------|
 SUB ENC_MacroSettings
-	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#1" "check_Charm" 1
-	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#2" "check_Mez" 1
-	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#3" "check_Rune" 1
-	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#4" "check_Burns" 1
-	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#5" "check_Debuffs" 1
-  /call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#6" "check_Buffs" 1
-	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#7" "check_DoTs" 1
-	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#8" "check_AE" 1
-	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#9" "check_Nukes" 1
-	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#10" "check_Pets" 1
+
+	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#1" "check_Rune" 1
+	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#2" "check_Burns" 1
+	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#3" "check_Debuffs" 1
+	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#4" "check_Buffs" 1
+	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#5" "check_DoTs" 1
+	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#6" "check_AE" 1
+	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#7" "check_Nukes" 1
+	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#8" "check_Pets" 1
+	/call WriteToIni "${advSettings_Ini},ENC Functions,ENC Function#9" "check_GatherMana" 1
 /RETURN
 |----------------------------------------------------------------------------|
 SUB ENC_CharacterSettings
 	/call WriteToIni "${Character_Ini},Enchanter,AutoRune (On/Off)" Off
-	/call WriteToIni "${Character_Ini},Enchanter,AutoMez (On/Off)" Off
 	/call WriteToIni "${Character_Ini},Enchanter,RuneTarget"
 	/call WriteToIni "${Character_Ini},Enchanter,RuneSpell"
-  /call WriteToIni "${Character_Ini},Enchanter,Mez"
-	/call WriteToIni "${Character_Ini},Enchanter,Charm"
-  /call WriteToIni "${Character_Ini},Enchanter,GatherMana Pct" 10
+	/call WriteToIni "${Character_Ini},Enchanter,GatherMana Pct" 10
+	/call WriteToIni "${Character_Ini},Enchanter,Mez Spell"
 /RETURN
 |----------------------------------------------------------------------------|
 Sub ENC_Aliases
@@ -314,8 +204,5 @@ Sub ENC_Aliases
 	/squelch /alias /runeoff /bc AutoRune off
   /squelch /alias /addrune /bc Rune On
   /squelch /alias /remrune /bc Rune Off
-  /noparse /squelch /alias /charmon /bc Charm on ${Target.ID}
-  /noparse /squelch /alias /charmoff /bc Charm off
-  /squelch /alias /mezon /bc Mez on
-  /squelch /alias /mezoff /bc Mez off
+
 /return
