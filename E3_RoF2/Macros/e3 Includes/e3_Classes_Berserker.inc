@@ -2,14 +2,30 @@
 | Berserker Functions
 |----------------------------------------------------------------------------|
 SUB BER_Setup
+  /call IniToVar "${Character_Ini},Beserker,Cry Havoc (On/Off)" CryHavoc bool outer
+  /call IniToVar "${Character_Ini},Beserker,Band of the Gargoyle-Cold Rage IV (On/Off)" ZerkGargoyle bool outer
   /call IniToArrayV "${Character_Ini},${Me.Class},Axe Ability#" axeAbility
   /if (${Defined[axeAbility]} && ${axeAbility.Size}) /call BuildSpellArray "axeAbility"	"axeAbility2D"
+
 /RETURN
 |----------------------------------------------------------------------------|
 SUB BER_Background_Events
   /if (${Defined[axeAbility2D]}) {
     /if (!${Cursor.ID} && ${Me.CombatState.NotEqual[COMBAT]} && !${combatTimer} && !${ActionTaken} && !${activeTimer} && ${axeAbility2D.Size[1]}) /call CheckAxes
   }
+  
+  /if (${CryHavoc} && ${Me.Combat} && ${Me.CombatAbilityReady[Cry Havoc]} && !${Me.Song[Cry Havoc].ID})  {
+
+	/disc Cry Havoc
+	}
+
+ /if (${ZerkGargoyle} && !${ZerkGargoyleTimer} && ${Me.Combat} && !${Me.Song[Cold Rage IV].ID} && ${FindItemCount[=Band of the Gargoyle]})  {
+	/call e3_Cast ${Me.ID} "Band of the Gargoyle"
+	/call CreateTimer ZerkGargoyleTimer 121
+	}
+
+
+
 /RETURN
 |----------------------------------------------------------------------------|
 SUB CheckAxes
@@ -40,6 +56,8 @@ SUB BER_MacroSettings
 |----------------------------------------------------------------------------|
 SUB BER_CharacterSettings
 	/call WriteToIni "${Character_Ini},${Me.Class},Axe Ability" "Axe of the Destroyer/Reagent|Balanced Axe Components/CheckFor|20"
+	/call WriteToIni "${Character_Ini},${Me.Class},Cry Havoc (On/Off)" On
+	/call WriteToIni "${Character_Ini},${Me.Class},Band of the Gargoyle-Cold Rage IV (On/Off)" Off
 /RETURN
 |----------------------------------------------------------------------------|
 Sub BER_Aliases
