@@ -2,6 +2,7 @@
 | Beastlord Functions
 |----------------------------------------------------------------------------|
 Sub BST_Setup
+	/call IniToVar "${Character_Ini},Beastlord,Band of the Gargoyle-Wild Cat IV (On/Off)" BeastGargoyle bool outer
 /return
 |----------------------------------------------------------------------------|
 SUB BST_MacroSettings
@@ -37,9 +38,17 @@ sub Event_AE_POS(string line)
 |----------------------------------------------------------------------------|
 Sub BST_Background_Events
   /doevents AE_POS
+  /if (${BeastGargoyle} && !${BeastGargoyleTimer} && ${Me.Combat} && ${FindItemCount[=Band of the Gargoyle]})  {
+
+	/call e3_Cast ${Me.ID} "Band of the Gargoyle"
+	/call CreateTimer BeastGargoyleTimer 21
+	}
+
+
 /return
 |----------------------------------------------------------------------------|
 SUB BST_CharacterSettings
+	/call WriteToIni "${Character_Ini},${Me.Class},Band of the Gargoyle-Wild Cat IV (On/Off)" Off
 /RETURN
 |----------------------------------------------------------------------------|
 Sub BST_Aliases
