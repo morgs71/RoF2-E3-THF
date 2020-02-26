@@ -49,7 +49,7 @@ Sub ROG_Setup
 /if (${Debug}) /echo |- ROG_Setup ==>
 	/call iniToVarV "${Character_Ini},Rogue,Auto-Hide (On/Off)" AutoHide bool outer
 	/call iniToVarV "${Character_Ini},Rogue,Auto-Evade (On/Off)" AutoEvade bool outer
-	/call IniToVar "${Character_Ini},Rogue,Thief's Eyes (On/Off)" ThiefEyes bool outer
+	/call IniToVar "${Character_Ini},Rogue,Thiefs Eyes (On/Off)" ThiefEyes bool outer
   /call iniToVarV "${Character_Ini},Rogue,Evade PctAggro" evadePctAggro int outer
   /call iniToVarV "${Character_Ini},Rogue,PoisonPR" poisonPR string outer
   /call iniToVarV "${Character_Ini},Rogue,PoisonFR" poisonFR string outer
@@ -80,10 +80,10 @@ SUB ROG_MacroSettings
 |----------------------------------------------------------------------------|
 SUB ROG_CharacterSettings
 	/if (${Debug}) /echo |- ROG_CharacterSettings ==>
-	/call WriteToIni "${Character_Ini},${Me.Class},Auto-Hide (On/Off)" Off
+	/call WriteToIni "${Character_Ini},${Me.Class},Auto-Hide (On/Off)" On
 	/call WriteToIni "${Character_Ini},${Me.Class},Auto-Evade (On/Off)" On
 	/call WriteToIni "${Character_Ini},${Me.Class},Evade PctAggro" 75
-	/call WriteToIni "${Character_Ini},${Me.Class},Thief's Eyes (On/Off)" On
+	/call WriteToIni "${Character_Ini},${Me.Class},Thiefs Eyes (On/Off)" On
 	/call WriteToIni "${Character_Ini},${Me.Class},Sneak Attack Discipline"
 	/call WriteToIni "${Character_Ini},${Me.Class},PoisonPR" "Bite of the Shissar XII"
 	/call WriteToIni "${Character_Ini},${Me.Class},PoisonFR" "Solusek's Burn XII"
