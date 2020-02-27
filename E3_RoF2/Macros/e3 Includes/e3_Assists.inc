@@ -4,6 +4,9 @@
 |- Use, 'Assist on ${Target.ID}' in /tell, /group, or /bc.					-|
 |--------------------------------------------------------------------|
 #event Assist "<#1#> Assist on #2#"
+#event Assist "<#*#> Assist #1# on #2#"
+#event Assist "#1# tell your party, 'Assist on #2#'"
+#event Assist "#1# tells the group, 'Assist on #2#'"
 SUB event_Assist(line, ChatSender, int MobID)
 /if (${Debug} || ${Debug_Assists}) /echo |- event_Assist ==>
   /if (!${checkEventArgs[${ChatSender},${line},UZR,${MobID}]}) /return
@@ -44,6 +47,7 @@ SUB event_Assist(line, ChatSender, int MobID)
       /varset AllowControl FALSE
       /varset isEnraged FALSE
       | If I am the assist caller, or I am feigning, don't allow macro control.
+	  /call IsTank
       /if (${ChatSender.NotEqual[${Me.CleanName}]}) {
         /varset AllowControl TRUE
         |/docommand ${ChatToggle} Attacking - ${AssistTarget} - ${Spawn[${AssistTarget}].CleanName}
@@ -1220,7 +1224,7 @@ sub event_CombatMode(line, ChatSender, combatMode)
 Sub assist_Setup
 /call iniToVarV "${advSettings_Ini},Debug,Debug Assists (On/Off)" Debug_Assists bool outer
 /if (${Debug} || ${Debug_Assists}) /echo |- assist_Setup ==>
-
+	/if (${Ini[${genSettings_Ini},Assists,Main-Assist].Length}) /call IniToVar "${genSettings_Ini},Assists,Main-Assist" MainAssist string outer
 	/declare TogglePvP bool outer FALSE
 	/declare Assisting bool outer FALSE
 	/declare AllowControl bool outer FALSE
@@ -1370,6 +1374,7 @@ SUB assist_SpellArrays
 SUB assist_MacroSettings
 /if (${Debug}) /echo |- assist_MacroSettings ==>
 	/call WriteToIni "${advSettings_Ini},Debug,Debug Assists (On/Off)" Off
+	/call WriteToIni "${genSettings_Ini},Assists,Main-Assist"
 	/call WriteToIni "${genSettings_Ini},Assists,Auto-Assist (On/Off)" Off
 	/call WriteToIni "${genSettings_Ini},Assists,Max Engage Distance" 250
 	/call WriteToIni "${genSettings_Ini},Assists,AE Threat Range" 100
