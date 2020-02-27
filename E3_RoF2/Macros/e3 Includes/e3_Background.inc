@@ -27,7 +27,7 @@ SUB check_Zone
   
  | Reset Variables
 	/varset RallosZek False
-
+	/if (${Select[${Me.Class.ShortName},BRD]}) /varset selooutdoors TRUE
 
 /if (${Debug} || ${Debug_Background}) /echo <== check_Zone -|
 /RETURN
