@@ -207,7 +207,7 @@ SUB EVENT_bark(line, ChatSender, msgTarget, barkMsg)
     /varset barkMsg ${c_eventArgData.Arg[1,-]}
     /varset barkMsg ${c_eventArgData.Left[${Math.Calc[${c_eventArgData.Length} - 1].Int}]}
   }
-
+  
   /say ${barkMsg}
   | -Wait up to 2 seconds for something to happen.
   /delay 2s ${Zone.ID} != ${currentZone} || ${Me.Loc.Replace[ ,].NotEqual[${startingLoc}]} || ${Window[ConfirmationDialogBox].Open} || ${Window[LargeDialogWindow].Open}
