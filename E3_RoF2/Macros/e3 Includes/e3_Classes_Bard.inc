@@ -104,7 +104,7 @@ SUB pauseTwist
 /if (${Debug} || ${Debug_Casting}) /echo |- pauseTwist ==>
 	/varset	returnTwist TRUE
 	/squelch /twist stop
-	/delay 20 !${Me.Casting.ID}
+	/delay 2 !${Me.Casting.ID}
 /if (${Debug} || ${Debug_Casting}) /echo <== pauseTwist -|
 /return
 |--------------------------------------------------------------|
@@ -114,6 +114,7 @@ SUB unpauseTwist
 	/squelch 	/twist ${songSet}
 	/delay 2 ${Me.Casting.ID}
 /return
+
 |--------------------------------------------------------------|
 Sub check_bard_charm
 /if (${Debug} || ${Debug_Ench}) /echo |- check_Charm ==>
@@ -220,7 +221,12 @@ sub check_bard_mez
 |--------------------------------------------------------------|
 Sub BRD_Setup
 /if (${Debug}) /echo |- BRD_Setup ==>
-	/call iniToVarV "${Character_Ini},Bard,Auto-Melody" autoMelody string outer
+  /declare selooutdoors bool outer TRUE
+  /if (!${Defined[queueSelo]}) /declare queueSelo bool global
+  
+  /call iniToVarV "${Character_Ini},Bard,Auto-Melody" autoMelody string outer
+  /call InitoVar "${Character_Ini},Bard,Auto-Selo (On/Off)" autoSelo bool outer
+  /call InitoVar "${Character_Ini},${Me.Class},Selo Song/Item" selosong string outer
   /call iniToVarV "${Character_Ini},Bard,AutoMez (On/Off)" autoMez bool outer
   /call IniToArrayV "${Character_Ini},Bard,Mez#"	  mezArray
   /call IniToArrayV "${Character_Ini},Bard,Charm#"	charmArray
@@ -248,8 +254,33 @@ Sub BRD_Setup
 |--------------------------------------------------------------|
 Sub BRD_Background_Events
   /if (${returnTwist} && !${Bool[${Me.Casting}]} && !${Twist.Twisting} && !${resumeTwistDelay}) /call unpauseTwist
+  
+  /if (${autoSelo} && ${selooutdoors} && !${Me.Buff[${selosong}].ID}) {
+		/varset queueSelo TRUE
+		/if (${Twist.Twisting}) {
+			/call pauseTwist
+		}
+		/call e3_Cast ${Me.ID} "${selosong}"
+		/if (${Select[${castReturn},OUTDOORS]}) { 
+			/varset selooutdoors FALSE
+			/varset queueSelo FALSE
+			}
+		/delay 30
+		/stopcast
+	}
+	
+	/if (${queueSelo} && ${Me.Buff[${selosong}].ID}) {
+		/varset queueSelo FALSE
+		/if (!${playingMelody} && !${Twist.Twisting}) {
+			/doevents startMelody
+		}
+	}
 	/doevents saveMelody
 	/doevents startMelody
+	
+	| Check melody
+	/if (${playingMelody} && !${Twist.Twisting} && !${Bool[${Me.Casting}]} && !${queueSelo}) /call unpauseTwist
+	
   /doevents charmTarget
   /doevents toggleMez
   /doevents charmOn
@@ -263,7 +294,9 @@ SUB BRD_MacroSettings
 /RETURN
 |--------------------------------------------------------------|
 SUB BRD_CharacterSettings
-	/call WriteToIni "${Character_Ini},Bard,Auto-Melody"
+  /call WriteToIni "${Character_Ini},Bard,Auto-Melody"
+  /call WriteToIni "${Character_Ini},${Me.Class},Auto-Selo (On/Off)" On
+  /call WriteToIni "${Character_Ini},${Me.Class},Selo Song/Item" 
   /call WriteToIni "${Character_Ini},Bard,AutoMez (On/Off)" Off
   /call WriteToIni "${Character_Ini},Bard,Mez"
   /call WriteToIni "${Character_Ini},Bard,Charm"
