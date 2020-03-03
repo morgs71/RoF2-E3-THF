@@ -1224,7 +1224,7 @@ sub event_CombatMode(line, ChatSender, combatMode)
 Sub assist_Setup
 /call iniToVarV "${advSettings_Ini},Debug,Debug Assists (On/Off)" Debug_Assists bool outer
 /if (${Debug} || ${Debug_Assists}) /echo |- assist_Setup ==>
-	/if (${Ini[${genSettings_Ini},Assists,Main-Assist].Length}) /call IniToVar "${genSettings_Ini},Assists,Main-Assist" MainAssist string outer
+	/if (${Ini[${genSettings_Ini},Assists,Main-Assist].Length}) /call IniToVarV "${genSettings_Ini},Assists,Main-Assist" MainAssist string outer
 	/declare TogglePvP bool outer FALSE
 	/declare Assisting bool outer FALSE
 	/declare AllowControl bool outer FALSE
