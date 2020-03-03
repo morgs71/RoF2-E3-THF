@@ -1316,7 +1316,7 @@ Sub Thf_Setup
 /declare ValikWait int outer 0	
 /declare TankName string outer NULL
 
-/if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length}) /call IniToVar "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
+/if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length}) /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
 	
 /if (${Debug}) /echo <== Thf_Setup -|
 /return
