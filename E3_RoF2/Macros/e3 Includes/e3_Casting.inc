@@ -465,24 +465,24 @@ Sub casting_Setup
 	/call iniToVarV "${genSettings_Ini},Casting,Default Spell Gem" DefaultGem int outer
   /call iniToVarV "${genSettings_Ini},Casting,Default Spell Set" Default_SpellSet string outer
 
-  /declare vetArray[9] string outer
-  /declare iLesson    int outer 1
-  /declare iThrone    int outer 2
-  /declare iArmor     int outer 3
-  /declare iIntensity int outer 4
-  /declare iImfusion  int outer 5
-  /declare iSteadfast int outer 6
-  /declare iStaunch   int outer 7
-  /declare iExpedient int outer 8
-  /declare iJester    int outer 9
-  /varset vetArray[${iLesson}]    "Lesson of the Devoted"
-  /varset vetArray[${iThrone}]    "Throne of Heroes"
-  /varset vetArray[${iArmor}]     "Armor of Experience"
-  /varset vetArray[${iIntensity}] "Intensity of the Resolute"
-  /varset vetArray[${iImfusion}]  "Infusion of the Faithful"
-  /varset vetArray[${iSteadfast}] "Steadfast Servant"
+  /declare vetArray[2] string outer
+  |/declare iLesson    int outer 1
+  |/declare iThrone    int outer 2
+  |/declare iArmor     int outer 3
+  |/declare iIntensity int outer 4
+  |/declare iImfusion  int outer 5
+  |/declare iSteadfast int outer 6
+  /declare iStaunch   int outer 1
+  |/declare iExpedient int outer 8
+  /declare iJester    int outer 2
+  |/varset vetArray[${iLesson}]    "Lesson of the Devoted"
+  |/varset vetArray[${iThrone}]    "Throne of Heroes"
+  |/varset vetArray[${iArmor}]     "Armor of Experience"
+  |/varset vetArray[${iIntensity}] "Intensity of the Resolute"
+  |/varset vetArray[${iImfusion}]  "Infusion of the Faithful"
+  |/varset vetArray[${iSteadfast}] "Steadfast Servant"
   /varset vetArray[${iStaunch}]   "Staunch Recovery"
-  /varset vetArray[${iExpedient}] "Expedient Recovery"
+  |/varset vetArray[${iExpedient}] "Expedient Recovery"
   /varset vetArray[${iJester}]    "Chaotic Jester"
   /call BuildSpellArray "vetArray" "vetArray2D"
 
