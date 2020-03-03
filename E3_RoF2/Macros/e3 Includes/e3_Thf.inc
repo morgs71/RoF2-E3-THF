@@ -1346,7 +1346,7 @@ Sub thf_Aliases
 
 SUB Thf_MacroSettings
 
-/call WriteToIni "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" F8
+/call WriteToIni "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" /
 
 /return
 
