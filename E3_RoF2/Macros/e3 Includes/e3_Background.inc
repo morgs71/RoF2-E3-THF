@@ -210,7 +210,7 @@ SUB completePendingExchange
 /if (${Debug} || ${Debug_Background}) /echo |- completePendingExchanges ==>
 	| Check for the item needing to be swapped back.
   |/echo ${itemToSwapBack} ${itemToSwapBack.Length}  ${swapItemSlot} ${swapItemSlot.Length}
-  |${${IniMode}[${MacroData_Ini},${Me.CleanName}-PEQTGC,Pending Exchange]}
+  |${${IniMode}[${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Pending Exchange]}
   /declare itemToSwapBack string local ${Ini[${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Pending Exchange].Arg[1,/]}
   /declare swapItemSlot string local ${Ini[${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Pending Exchange].Arg[2,/]}
 
