@@ -94,7 +94,7 @@ SUB e3_Setup(modeSelect)
     /delay 1s
   }
   | Generate Character_Ini.
-  /if (!${${IniMode}[${MacroData_Ini},${Me.CleanName}-PEQTGC,Bot_Ini version].Equal[${macroVersion}]} || !${Bool[${${IniMode}[${Character_Ini}]}]}) {
+  /if (!${${IniMode}[${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Bot_Ini version].Equal[${macroVersion}]} || !${Bool[${${IniMode}[${Character_Ini}]}]}) {
     /delay 1s
     /call EVENT_make_CharacterSettingsIni
   }
@@ -140,7 +140,7 @@ SUB e3_Setup(modeSelect)
 SUB make_macroDataIni
 /if (${Debug}) /echo |- make_macroDataIni ==>
 	/noparse /ini "e3 Macro Inis\e3 Data.ini" "e3 Build" "Version"
-	/noparse /ini "e3 Macro Inis\e3 Data.ini" "File Paths" "Bot Settings" "e3 Bot Inis\${Me.CleanName}_PEQTGC.ini"
+	/noparse /ini "e3 Macro Inis\e3 Data.ini" "File Paths" "Bot Settings" "e3 Bot Inis\${Me.CleanName}_${MacroQuest.Server}.ini"
 	/noparse /ini "e3 Macro Inis\e3 Data.ini" "File Paths" "General Settings" "e3 Macro Inis\General Settings.ini"
 	/noparse /ini "e3 Macro Inis\e3 Data.ini" "File Paths" "Advanced Settings" "e3 Macro Inis\Advanced Settings.ini"
 /if (${Debug}) /echo <== make_macroDataIni -|
@@ -238,7 +238,7 @@ SUB EVENT_make_CharacterSettingsIni
 		/if (${Bool[${macroSetups[${i}]}]}) /call ${macroSetups[${i}]}_CharacterSettings
 		/delay 2
 	/next i
-	/call WriteToIni "${MacroData_Ini},${Me.CleanName}-PEQTGC,Bot_Ini version" "${macroVersion}" 1
+	/call WriteToIni "${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Bot_Ini version" "${macroVersion}" 1
 /if (${Debug}) /echo <== make_CharacterSettingsIni -|
 /RETURN	
 
