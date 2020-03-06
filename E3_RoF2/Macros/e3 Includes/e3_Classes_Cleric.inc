@@ -28,6 +28,7 @@ sub check_DivineArb
 				  /if (${Me.Casting.ID}) /call interrupt
 				  /bc [+g+] Casting ${dArbArray2D[${s},${iCastName}]} for ${Group.Member[${i}]}-NB:${NetBots[${Group.Member[${i}]}].PctHPs},SP:${Spawn[pc ${Group.Member[${i}]}].PctHPs}
 				  /call e3_Cast ${Me.ID} "dArbArray2D" ${s}
+				  /doevents wordHeal 
 							}
 			  /if (!${ActionTaken}) /next s
 					}
@@ -269,7 +270,15 @@ Sub BuildCorpseList
 Sub defineRezSpell
   /declare rezSpell string local
   /declare i int local
-  /if (${FindItem[Water Sprinkler of Nem Ankh].ID}) {
+  
+  
+  /if (${FindItem[Aphrodite's Gauntlets of Desire].ID}) {
+    /varset rezSpell Aphrodite's Gauntlets of Desire
+  } else/if (${FindItem[Staff of the Earthcrafter].ID}) {
+    /varset rezSpell Staff of the Earthcrafter
+  } else/if (${FindItem[Hammer of Kerafyrm].ID}) {
+    /varset rezSpell Hammer of Kerafyrm
+  } else/if (${FindItem[Water Sprinkler of Nem Ankh].ID}) {
     /varset rezSpell Water Sprinkler of Nem Ankh
   } else /if (${Me.AltAbility[Blessing of Resurrection].ID}) {
     /varset rezSpell Blessing of Resurrection
