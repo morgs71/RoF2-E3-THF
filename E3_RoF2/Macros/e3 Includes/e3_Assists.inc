@@ -133,10 +133,11 @@ SUB AssistOff
   /if (${Stick.Status.Equal[ON]})   /squelch /stick off
   |/if (${Defined[Debuff_Targets]})  /deletevar Debuff_Targets
   |/if (${Defined[DoT_Targets]})     /deletevar DoT_Targets
+  /if (${use_FULLBurns} || ${use_LONGBurns} || ${use_QUICKBurns})  /varset BurnsOn FALSE
   /if (${use_FULLBurns})           /varset use_FULLBurns FALSE
   /if (${use_LONGBurns})           /varset use_LONGBurns FALSE
   /if (${use_QUICKBurns})          /varset use_QUICKBurns FALSE
-	/if (${use_EPICBurns})           /varset use_EPICBurns FALSE
+  /if (${use_EPICBurns})           /varset use_EPICBurns FALSE
 
   /if (${Defined[${resistCount}]}) /deletevar ${resistCount}
 	/if (${Following}) /call AcquireFollow
@@ -251,7 +252,7 @@ SUB check_AssistStatus
       }
     }
   }
-  /if (!${Me.Casting.ID} && ${Me.Combat} && ${Defined[Abilities2D]}) /call CombatAbilities
+
 /if (${Debug} || ${Debug_Assists}) /echo <== check_AssistStatus -|
 /RETURN
 
@@ -984,6 +985,7 @@ SUB event_Burns(line, ChatSender, burnType)
     /return
   } else {
     /if (${c_eventArgChatSender.Equal[${Me}]}) /bc [+g+] ${burnType} burns enabled
+	/varset BurnsOn True
     /varset use_${burnType}Burns TRUE
   }
 /return
@@ -1243,7 +1245,7 @@ Sub assist_Setup
   /declare use_LONGBurns bool outer FALSE
   /declare use_QUICKBurns bool outer FALSE
   /declare use_EPICBurns bool outer FALSE
-
+	/declare BurnsOn bool outer False
   /declare resistCount string outer
 	/declare isEnraged bool outer FALSE
 	/declare revertRngToMelee bool outer FALSE
@@ -1538,4 +1540,5 @@ Sub assist_Background_Events
   /doevents SpellSet
   /doevents SetTank
   /doevents CombatMode
+   /if (!${Me.Casting.ID} && ${Me.Combat} && ${Defined[Abilities2D]}) /call CombatAbilities
 /return
