@@ -2,8 +2,8 @@
 | Berserker Functions
 |----------------------------------------------------------------------------|
 SUB BER_Setup
-  /call IniToVar "${Character_Ini},Beserker,Cry Havoc (On/Off)" CryHavoc bool outer
-  /call IniToVar "${Character_Ini},Beserker,Band of the Gargoyle-Cold Rage IV (On/Off)" ZerkGargoyle bool outer
+  /call IniToVarV "${Character_Ini},Beserker,Cry Havoc (On/Off)" CryHavoc bool outer
+  /call IniToVarV "${Character_Ini},Beserker,Band of the Gargoyle-Cold Rage IV (On/Off)" ZerkGargoyle bool outer
   /call IniToArrayV "${Character_Ini},${Me.Class},Axe Ability#" axeAbility
   /if (${Defined[axeAbility]} && ${axeAbility.Size}) /call BuildSpellArray "axeAbility"	"axeAbility2D"
 
@@ -19,9 +19,8 @@ SUB BER_Background_Events
 	/disc Cry Havoc
 	}
 
- /if (${ZerkGargoyle} && !${ZerkGargoyleTimer} && ${Me.Combat} && !${Me.Song[Cold Rage IV].ID} && ${FindItemCount[=Band of the Gargoyle]})  {
-	/call e3_Cast ${Me.ID} "Band of the Gargoyle"
-	/call CreateTimer ZerkGargoyleTimer 121
+ /if (${ZerkGargoyle} && ${Me.Combat} && !${Me.Song[Cold Rage IV].ID} && ${FindItemCount[=Band of the Gargoyle]})  {
+	/useitem "Band of the Gargoyle"
 	}
 
 
