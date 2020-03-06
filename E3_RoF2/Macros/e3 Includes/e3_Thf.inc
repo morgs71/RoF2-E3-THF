@@ -7,44 +7,111 @@
 
 |---------------THF Forest Gate-----------------|
 
-#event thfgate "<#1#> thfgate"
+#EVENT thfgate "<#1#> thfgate"
 #event thfgate "you tell your party, 'thfgate'"
 #event thfgate "#1# tells the group, 'thfgate'"
 #event thfgate "#1# tells you, 'thfgate'"
-sub Event_thfgate
-	 /doevents stop
-		/if (${FindItem[=Charm of Queen Adrianne].ID})  {
-			/call e3_Cast ${Me.ID} "Charm of Queen Adrianne"
-		} else /if (${FindItem[=Advanced Charm of Queen Adrianne].ID})  {
-			/call e3_Cast ${Me.ID} "Advanced Charm of Queen Adrianne" 
-		} else /if (${FindItem[=Magical Charm of Queen Adrianne].ID})  {
-			/call e3_Cast ${Me.ID} "Magical Charm of Queen Adrianne" 
-		} else /if (${FindItem[=Advanced Magical Charm of Queen Adrianne].ID})  {
-			/call e3_Cast ${Me.ID} "Advanced Magical Charm of Queen Adrianne" 
-		} else /if (${FindItem[=Superior Magical Charm of Queen Adrianne].ID})  {
-			/call e3_Cast ${Me.ID} "Superior Magical Charm of Queen Adrianne" 
-		} else /if (${FindItem[=Exceptional Charm of Queen Adrianne].ID})  {
-			/call e3_Cast ${Me.ID} "Exceptional Charm of Queen Adrianne" 
-		} else /if (${FindItem[=Exquisite Charm of Queen Adrianne].ID})  {
-			/call e3_Cast ${Me.ID} "Exquisite Charm of Queen Adrianne" 
-		}
+SUB EVENT_thfgate 
 	
+    /call definethfgate
+    :checkReady
+    /call check_Ready "thfgateArray2D" 1
+      /if ((!${c_Ready} || !${check_Mana["thfgateArray2D",1]}) && ${Me.CombatState.NotEqual[COMBAT]}) {
+        /if (!${Me.Sitting}) /sit on
+        /delay 1s
+        /goto :checkReady
+      }
+     /call e3_cast ${Me.ID} "thfgateArray2D" 1
+   
 /return
+
+
+
+
+
+Sub definethfgate
+  /declare thfgateitem string local
+  /declare i int local
+  /if (${FindItem[Elite Charm of Queen Adrianne].ID}) {
+    /varset thfgateitem Elite Charm of Queen Adrianne
+  } else /if (${FindItem[=Exquisite Charm of Queen Adrianne].ID}) {
+    /varset thfgateitem Exquisite Charm of Queen Adrianne
+  } else /if (${FindItem[=Exceptional Charm of Queen Adrianne].ID}) {
+    /varset thfgateitem Exceptional Charm of Queen Adrianne
+  } else /if (${FindItem[=Superior Magical Charm of Queen Adrianne].ID}) {
+    /varset thfgateitem Superior Magical Charm of Queen Adrianne
+  } else /if (${FindItem[=Advanced Magical Charm of Queen Adrianne].ID}) {
+    /varset thfgateitem Advanced Magical Charm of Queen Adrianne
+  } else /if (${FindItem[=Magical Charm of Queen Adrianne].ID}) {
+    /varset thfgateitem Magical Charm of Queen Adrianne
+  } else /if (${FindItem[=Advanced Charm of Queen Adrianne].ID}) {
+    /varset thfgateitem Advanced Charm of Queen Adrianne
+  } else /if (${FindItem[=Charm of Queen Adrianne].ID}) {
+    /varset thfgateitem Charm of Queen Adrianne
+  } else /if (${Me.Book[Circle of the Forest]}) {
+    /varset thfgateitem Circle of the Forest
+  } else /if (${Me.Book[Forest Portal]}) {
+    /varset thfgateitem Forest Portal
+  } 
+  /if (${Bool[${thfgateitem}]}) {
+    /if (${Defined[thfgateArray]}) /deletevar thfgateArray
+    /declare thfgateArray[1] string outer ${thfgateitem}
+    /if (${thfgateArray.Size}) {
+      /call BuildSpellArray "thfgateArray" "thfgateArray2D"
+      /for i 1 to ${thfgateArray2D.Size[1]}
+        /varset thfgateArray2D[${i},${iCastInvis}] 1
+      /next i
+      }
+  } else {
+    /bc I do not have a Hidden Forest Gate Charm available
+  }
+/RETURN
 
 |---------------Hidden Vale Gate-----------------|
 
-#event valegate "<#1#> valegate"
+#EVENT valegate "<#1#> valegate"
 #event valegate "you tell your party, 'valegate'"
 #event valegate "#1# tells the group, 'valegate'"
 #event valegate "#1# tells you, 'valegate'"
-sub Event_valegate
-	 
-/doevents stop		
-/if (${FindItem[=Token of the Vale].ID})  {
-	/call e3_Cast ${Me.ID} "Token of the Vale"
-}
-	
+SUB EVENT_valegate
+/echo testmain
+	/call defineValegate
+    :checkReady
+    /call check_Ready "ValegateArray2D" 1
+      /if ((!${c_Ready} || !${check_Mana["ValegateArray2D",1]}) && ${Me.CombatState.NotEqual[COMBAT]}) {
+        /if (!${Me.Sitting}) /sit on
+        /delay 1s
+        /goto :checkReady
+      }
+     /call e3_cast ${Me.ID} "ValegateArray2D" 1
+   
 /return
+
+
+Sub defineValegate
+/echo test
+  /declare Valegateitem string local
+  /declare i int local
+  /if (${FindItem[=Token of the Vale].ID}) {
+    /varset Valegateitem Token of the Vale
+  } else /if (${Me.Book[Circle of the Vale]}) {
+    /varset Valegateitem Circle of the Vale
+  } else /if (${Me.Book[Vale Portal]}) {
+    /varset Valegateitem Vale Portal
+  } 
+  /if (${Bool[${Valegateitem}]}) {
+    /if (${Defined[ValegateArray]}) /deletevar ValegateArray
+    /declare ValegateArray[1] string outer ${Valegateitem}
+    /if (${ValegateArray.Size}) {
+      /call BuildSpellArray "ValegateArray" "ValegateArray2D"
+      /for i 1 to ${ValegateArray2D.Size[1]}
+        /varset ValegateArray2D[${i},${iCastInvis}] 1
+      /next i
+      }
+  } else {
+    /bc I do not have a Hidden Vale Gate Charm available
+  }
+/RETURN
 
 
 
@@ -1325,6 +1392,9 @@ Sub Thf_Setup
 
 Sub Thf_Background_Events
 
+/doevents thfgate
+/doevents valegate
+/doevents attendance
 
 /return
 
