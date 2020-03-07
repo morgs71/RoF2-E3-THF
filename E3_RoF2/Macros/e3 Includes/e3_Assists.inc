@@ -386,8 +386,8 @@ SUB check_AutoAssist
 SUB check_Nukes
 /if (${Debug} || ${Debug_Assists}) /echo |- check_Nukes ==>
 	/if	(${RallosZek} && !${BlueRodTimer} && ${Assisting})  {
-		/call e3_Cast ${AssistTarget} "Blue Rod of Zek"
-		/call createTimer BlueRodTimer 5s
+		/casting "Blue Rod of Zek" -targetid|${AssistTarget}
+		/call createTimer "BlueRodTimer" "5s"
 		/popup Rallos Zek Bane Damage is Engaged!
 	} else /if (${Defined[Nukes2D]} && ${Assisting} && ${use_Nukes}) {
 	  /declare castIndex int local
