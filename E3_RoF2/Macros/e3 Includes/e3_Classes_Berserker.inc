@@ -1,29 +1,47 @@
 |----------------------------------------------------------------------------|
 | Berserker Functions
 |----------------------------------------------------------------------------|
+
+
+
+
+
+
+
+
 SUB BER_Setup
-  /call IniToVarV "${Character_Ini},Beserker,Cry Havoc (On/Off)" CryHavoc bool outer
-  /call IniToVarV "${Character_Ini},Beserker,Band of the Gargoyle-Cold Rage IV (On/Off)" ZerkGargoyle bool outer
+
+  /call IniToVarV "${Character_Ini},Berserker,Cry Havoc (On/Off)" CryHavoc bool outer
+  /call IniToVarV "${Character_Ini},Berserker,Band of the Gargoyle-Cold Rage IV (On/Off)" ZerkGargoyle bool outer
   /call IniToArrayV "${Character_Ini},${Me.Class},Axe Ability#" axeAbility
   /if (${Defined[axeAbility]} && ${axeAbility.Size}) /call BuildSpellArray "axeAbility"	"axeAbility2D"
 
 /RETURN
 |----------------------------------------------------------------------------|
 SUB BER_Background_Events
-  /if (${Defined[axeAbility2D]}) {
-    /if (!${Cursor.ID} && ${Me.CombatState.NotEqual[COMBAT]} && !${combatTimer} && !${ActionTaken} && !${activeTimer} && ${axeAbility2D.Size[1]}) /call CheckAxes
-  }
   
-  /if (${CryHavoc} && ${Me.Combat} && ${Me.CombatAbilityReady[Cry Havoc]} && !${Me.Song[Cry Havoc].ID})  {
+  |---Cry Havoc---|
+/if (${CryHavoc} && ${Me.Combat} && !${Me.Song[Cry Havoc].ID})  {
 
-	/disc Cry Havoc
+	/if (${FindItem[=Dark Shadow Rage Spaulders].ID}) {
+		/useitem Dark Shadow Rage Spaulders
+	} else /if (${Me.CombatAbilityReady[Cry Havoc]}) {
+		/disc Cry Havoc
 	}
+}
 
+	
+|---Band of the Gargoyle---|
  /if (${ZerkGargoyle} && ${Me.Combat} && !${Me.Song[Cold Rage IV].ID} && ${FindItemCount[=Band of the Gargoyle]})  {
 	/useitem "Band of the Gargoyle"
 	}
 
-
+	
+	
+|--Summon Axes---|
+/if (${Defined[axeAbility2D]}) {
+    /if (!${Cursor.ID} && ${Me.CombatState.NotEqual[COMBAT]} && !${combatTimer} && !${ActionTaken} && !${activeTimer} && ${axeAbility2D.Size[1]}) /call CheckAxes
+  }
 
 /RETURN
 |----------------------------------------------------------------------------|
