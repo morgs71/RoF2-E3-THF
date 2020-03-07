@@ -158,51 +158,56 @@ Sub check_GatherMana
 		
 
 		
+Sub definecohspell
+  /declare cohspell string local
+  /declare i int local
+  /if (${Me.Book[Call of the Hero]}) {
+    /varset cohspell Call of the Hero
+  } else /if (${FindItem[=Ino's Lost Trinket].ID}) {
+    /varset cohspell Ino's Lost Trinket
+  } else /if (${FindItem[=Arion, Skull of the Ancient].ID}) {
+    /varset cohspell Arion, Skull of the Ancient
+  } else /if (${FindItem[=Orb of the Crimson Bull].ID}) {
+    /varset cohspell Orb of the Crimson Bull
+  } 
+  /if (${Bool[${cohspell}]}) {
+    /if (${Defined[cohspellArray]}) /deletevar cohspellArray
+    /declare cohspellArray[1] string outer ${cohspell}
+    /if (${cohspellArray.Size}) {
+      /call BuildSpellArray "cohspellArray" "cohspellArray2D"
+      /for i 1 to ${cohspellArray2D.Size[1]}
+        /varset cohspellArray2D[${i},${iCastInvis}] 1
+      /next i
+      }
+  } else {
+    /bc I do not have a CoH Spell/Item available
+  }
+/RETURN		
+		
+		
+		
+		
+		
 |-- CoH Me Event --|		
 		
 		
-sub Event_cohme(string line, string ChatSender)
-	
-|-Verify the event
-		/call verifyEvent "${ChatSender}" "${line}"
-		/if (${Defined[ChatSender]}) /varset ChatSender ${Macro.Return.Arg[1,_]}
-		|    |-----------Valid User----------|
-		/if (!${Bool[${Macro.Return.Arg[2,_]}]}) {
-
-			/call IniToVar "${genSettings_Ini},Buff Requests,Allow Buff Requests (On/Off)" allow_BuffRequests bool local
-			
-			| If the user is not valid, check allow_BuffRequests
-			/if (${Macro.Return}) {
-		
-				| If allow_BuffRequests=TRUE, check restricked PCs
-				/if (!${Select[${ChatSender},${Ini[${Macro_Ini},Buff Requests,Restricted PCs]}]}) /goto :allowAccess
-			}
-		} else  { 
-		
-			:allowAccess
+sub Event_cohme(line, ChatSender)
+	/if (!${checkEventArgs[${ChatSender},${line},ZR]}) /return
+	/call definecohspell
 	
 			 /if (${Me.Combat})  { 
 				/tell ${ChatSender} I'm in Combat please try again in a few !
 				/return
 			} else /if (!${Me.Combat})  { 
-			
 				/if (!${SpawnCount[pc ${ChatSender}]})  {
 					/tell ${ChatSender} Your not in my Zone.
 					/Return
-				} else /if (${Me.Class.ShortName.Equal[MAG]})  {
+				} else  {
 					/tell ${ChatSender} Call of Hero is Incoming...Please Standby.
-					/call e3_Cast ${Spawn[${ChatSender}].ID} "Call of the Hero"		
-				} else /if (!${Me.Class.ShortName.Equal[MAG]} && ${FindItemCount[Arion, Skull of the Ancient]} && ${FindItem[Arion, Skull of the Ancient].Timer}==0)  {
-					/tell ${ChatSender} Call of Hero is Incoming...Please Standby.
-					/call e3_Cast ${Spawn[${ChatSender}].ID} "Arion, Skull of the Ancient"
-				} else /if (!${Me.Class.ShortName.Equal[MAG]} && ${FindItemCount[Orb of the Crimson Bull]} && ${FindItem[Orb of the Crimson Bull].Timer}==0)  {
-					/tell ${ChatSender} Call of Hero is Incoming...Please Standby.
-					/call e3_Cast ${Spawn[${ChatSender}].ID} "Orb of the Crimson Bull"
-				} else /if (!${Me.Class.ShortName.Equal[MAG]} && !${FindItemCount[Arion, Skull of the Ancient]} && !${FindItemCount[Orb of the Crimson Bull]})  {
-					/tell ${ChatSender} Sorry I am not capable of casting Call of the Hero.
+					/call e3_cast ${Spawn[${ChatSender}'s].ID} "cohspellArray2D" 1		
 				}
 			}	
-		}
+		
 /return
 		
 
@@ -211,35 +216,12 @@ sub Event_cohme(string line, string ChatSender)
 |-- CoH All Event -- |		
 		
 
+sub Event_cohall(line, ChatSender)
+	/if (!${checkEventArgs[${ChatSender},${line},ZR]}) /return
+	/call definecohspell
 
-
-sub Event_cohall(string line, string ChatSender)
-
-
-| -Verify the event
-		/call verifyEvent "${ChatSender}" "${line}"
-		/if (${Defined[ChatSender]}) /varset ChatSender ${Macro.Return.Arg[1,_]}
-		|    |-----------Valid User----------|
-		/if (!${Bool[${Macro.Return.Arg[2,_]}]}) {
-
-			/call IniToVar "${genSettings_Ini},Buff Requests,Allow Buff Requests (On/Off)" allow_BuffRequests bool local
-			
-			| If the user is not valid, check allow_BuffRequests
-			/if (${Macro.Return}) {
-		
-				| If allow_BuffRequests=TRUE, check restricked PCs
-				/if (!${Select[${ChatSender},${Ini[${Macro_Ini},Buff Requests,Restricted PCs]}]}) /goto :allowAccess
-			}
-		} else {
-		
-			:allowAccess
-			
 			/if (${Me.Combat}) {
 				/tell ${ChatSender} I'm in Combat please try again in a few !	
-				/return
-				
-			} else /if (!${Me.Class.ShortName.Equal[MAG]} && !${FindItemCount[Arion, Skull of the Ancient]} && !${FindItemCount[Orb of the Crimson Bull]}) {
-				/tell ${ChatSender} Sorry I am not capable of casting Call of the Hero!	
 				/return
 			
 			} else /if (!${Me.Combat}) { 
@@ -257,26 +239,11 @@ sub Event_cohall(string line, string ChatSender)
 				
 					} else /if (${NetBots[${NetBots.Client[${i}]}].Zone} && ${Spawn[pc ${NetBots.Client[${i}]}].Distance} > 20)  {
 						
-						
-						/if (${Me.Class.ShortName.Equal[MAG]}) { 		 
 							/docommand ${ChatToggle} Call of Hero is Incoming on (${NetBots.Client[${i}]})!
-							/call e3_Cast ${NetBots[${NetBots.Client[${i}]}].ID} "Call of the Hero/giveuptimer|45s"	
+							
+							/call e3_cast ${NetBots[${NetBots.Client[${i}]}].ID} "cohspellArray2D" 1							
 							/delay 5s
-					
-						} else /if ( !${Me.Class.ShortName.Equal[MAG]} && ${FindItemCount[Ino's Lost Trinket]} && ${FindItem[Ino's Lost Trinket].Timer}==0)  {			
-							/docommand ${ChatToggle} Call of Hero is Incoming on (${NetBots.Client[${i}]})!
-							/call e3_Cast ${NetBots[${NetBots.Client[${i}]}].ID} "Ino's Lost Trinket"	
-							/delay 7s
-					
-						} else /if ( !${Me.Class.ShortName.Equal[MAG]} && ${FindItemCount[Arion, Skull of the Ancient]} && ${FindItem[Arion, Skull of the Ancient].Timer}==0)  {
-							/docommand ${ChatToggle} Call of Hero is Incoming on (${NetBots.Client[${i}]})!
-							/call e3_Cast ${NetBots[${NetBots.Client[${i}]}].ID} "Arion, Skull of the Ancient"	
-							/delay 7s
-					
-						} else /if ( !${Me.Class.ShortName.Equal[MAG]} && ${FindItemCount[Orb of the Crimson Bull]} && ${FindItem[Orb of the Crimson Bull].Timer}==0)  {
-							/docommand ${ChatToggle} Call of Hero is Incoming on (${NetBots.Client[${i}]})!
-							/call e3_Cast ${NetBots[${NetBots.Client[${i}]}].ID} "Orb of the Crimson Bull"
-							/delay 13s		
+						
 						}	
 
 					}
@@ -1395,6 +1362,8 @@ Sub Thf_Background_Events
 /doevents thfgate
 /doevents valegate
 /doevents attendance
+/doevents cohme
+/doevents cohall
 
 /return
 
