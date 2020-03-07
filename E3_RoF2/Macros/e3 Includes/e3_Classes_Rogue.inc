@@ -49,7 +49,7 @@ Sub ROG_Setup
 /if (${Debug}) /echo |- ROG_Setup ==>
 	/call iniToVarV "${Character_Ini},Rogue,Auto-Hide (On/Off)" AutoHide bool outer
 	/call iniToVarV "${Character_Ini},Rogue,Auto-Evade (On/Off)" AutoEvade bool outer
-	/call IniToVar "${Character_Ini},Rogue,Thiefs Eyes (On/Off)" ThiefEyes bool outer
+	/call IniToVarV "${Character_Ini},Rogue,Thiefs Eyes (On/Off)" ThiefEyes bool outer
   /call iniToVarV "${Character_Ini},Rogue,Evade PctAggro" evadePctAggro int outer
   /call iniToVarV "${Character_Ini},Rogue,PoisonPR" poisonPR string outer
   /call iniToVarV "${Character_Ini},Rogue,PoisonFR" poisonFR string outer
