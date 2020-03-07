@@ -1056,7 +1056,7 @@ Sub Feedhim
 /declare i int local 1
 /for i 1 to 5
 /if (${FindItem[=Special Hamburger].ID})  {
-	/call e3_Cast ${SpawnCount[npc "Moarburgerz"]}.ID} "Special Hamburger"
+	/useitem Special Hamburger
 	/delay 5
 }
 /next i
@@ -1364,6 +1364,43 @@ Sub Thf_Background_Events
 /doevents attendance
 /doevents cohme
 /doevents cohall
+/doevents RallosZekOn
+/doevents RallosZekOff	
+/doevents ReaperOfMortalityDuck
+/doevents ReaperOfMortalityUnduck
+/doevents ReaperOfMortalityMoveClose
+/doevents ReaperOfMortalityUnmoveClose
+/doevents ReaperOfMortalityMoveFar
+/doevents ReaperOfMortalityUnmoveFar
+/doevents DraekonMoveToNpc
+/doevents DraekonGoToGrass
+/doevents DraekonGoToMelee
+/doevents DraekonSafeFromGrass
+/doevents DraekonVoiceEnd
+/doevents SeravinceAoeStun
+/doevents SeravinceAoeStunComplete
+/doevents SeravinceCreatesAdds
+/doevents SeravinceCallsAddsToAttack
+/doevents VistrindaEggs
+/doevents VistrindaAddADead
+/doevents VistrindaAddA
+/doevents VistrindaAddAKill
+/doevents VistrindaAddBKill
+/doevents VistrindaAddBDead
+/doevents VistrindaAddB
+/doevents ValikBegin
+/doevents ValikEnd
+/doevents MoarburgerzHungry
+/doevents MoarburgerzFull
+/doevents Wurliz
+/doevents HoHGurzan
+/doevents HoHIkliz
+/doevents HoHCsarth
+/doevents HoHEnji
+/doevents HoHCruthz
+
+
+
 
 /return
 
