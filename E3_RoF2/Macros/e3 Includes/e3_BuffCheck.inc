@@ -6,7 +6,7 @@ SUB check_Buffs
 	/if (${BuffCheck} && !${ActionTaken} && !${activeTimer} && !${rebuffTimer}) {
 		/if (!${medBreak} && !${idle} && ${BuffCombatCheck} && !${Me.Moving})	/call buffBots "CombatBuffs2D"
     /if (!${medBreak} && ${procBuff} && !${idle} && ${BuffCombatCheck} && !${Me.Moving}) /call buffProcs
-    /if (${Defined[auraSpells2D]} && (${auraCombat} || ${Me.CombatState.NotEqual[COMBAT]}) && !${Me.Moving}) /call checkAuras
+    |/if (${Defined[auraSpells2D]} && (${auraCombat} || ${Me.CombatState.NotEqual[COMBAT]}) && !${Me.Moving}) /call checkAuras
 		/if (${Defined[InstantBuffs2D]})		/call buffBots "InstantBuffs2D"
 		/if (!${combatTimer} && ${Me.CombatState.NotEqual[COMBAT]} && !${Assisting} && !${Me.Moving} && ${BuffCheck}) {
 			/if (${Defined[SelfBuffs2D]}) /call buffBots "SelfBuffs2D"
@@ -384,30 +384,30 @@ Sub buffCheck_Setup
   /call iniToVarV "${Character_Ini},Buffs,Proc Buff Class"  procBuffClass string outer
   /call iniToVarV "${Character_Ini},Buffs,Proc Buff (On/Off)"	procBuff bool outer
 
-  /call iniToVarV "${Character_Ini},Buffs,Cast Aura Combat (On/Off)"	auraCombat bool outer
-	/declare auraSpell string outer
+  |/call iniToVarV "${Character_Ini},Buffs,Cast Aura Combat (On/Off)"	auraCombat bool outer
+	|/declare auraSpell string outer
 
 |--  doability
-	/if (${Me.CombatAbility[Myrmidon's Aura]}) /varset auraSpell Myrmidon's Aura
-	/if (${Me.CombatAbility[Champion's Aura]}) /varset auraSpell Champion's Aura
-	/if (${Me.CombatAbility[Disciple's Aura]}) /varset auraSpell Disciple's Aura
-	/if (${Me.CombatAbility[Master's Aura]}) /varset auraSpell Master's Aura
-	/if (${Me.CombatAbility[Aura of Rage]}) /varset auraSpell Aura of Rage
-	/if (${Me.CombatAbility[Bloodlust Aura]}) /varset auraSpell Bloodlust Aura
+	|/if (${Me.CombatAbility[Myrmidon's Aura]}) /varset auraSpell Myrmidon's Aura
+	|/if (${Me.CombatAbility[Champion's Aura]}) /varset auraSpell Champion's Aura
+	|/if (${Me.CombatAbility[Disciple's Aura]}) /varset auraSpell Disciple's Aura
+	|/if (${Me.CombatAbility[Master's Aura]}) /varset auraSpell Master's Aura
+	|/if (${Me.CombatAbility[Aura of Rage]}) /varset auraSpell Aura of Rage
+	|/if (${Me.CombatAbility[Bloodlust Aura]}) /varset auraSpell Bloodlust Aura
 |-- casting
-	/if (${Me.Book[Aura of Insight]}) /varset auraSpell Aura of Insight
-	/if (${Me.Book[Aura of the Muse]}) /varset auraSpell Aura of the Muse
-  /if (${Me.Book[Aura of the Zealot]}) /varset auraSpell Aura of the Zealot
-  /if (${Me.Book[Aura of the Pious]}) /varset auraSpell Aura of the Pious
-  /if (${Me.Book[Aura of the Grove]}) /varset auraSpell Aura of the Grove
-  /if (${Me.Book[Aura of Life]}) /varset auraSpell Aura of Life
-  /if (${Me.Book[Beguiler's Aura]}) /varset auraSpell Beguiler's Aura
-  /if (${Me.Book[Illusionist's Aura]}) /varset auraSpell Illusionist's Aura
-  /if (${Me.Book[Holy Aura]}) /varset auraSpell Holy Aura
-  /if (${Me.Book[Blessed Aura]}) /varset auraSpell Blessed Aura
+	|/if (${Me.Book[Aura of Insight]}) /varset auraSpell Aura of Insight
+	|/if (${Me.Book[Aura of the Muse]}) /varset auraSpell Aura of the Muse
+  |/if (${Me.Book[Aura of the Zealot]}) /varset auraSpell Aura of the Zealot
+  |/if (${Me.Book[Aura of the Pious]}) /varset auraSpell Aura of the Pious
+  |/if (${Me.Book[Aura of the Grove]}) /varset auraSpell Aura of the Grove
+  |/if (${Me.Book[Aura of Life]}) /varset auraSpell Aura of Life
+  |/if (${Me.Book[Beguiler's Aura]}) /varset auraSpell Beguiler's Aura
+  |/if (${Me.Book[Illusionist's Aura]}) /varset auraSpell Illusionist's Aura
+  |/if (${Me.Book[Holy Aura]}) /varset auraSpell Holy Aura
+  |/if (${Me.Book[Blessed Aura]}) /varset auraSpell Blessed Aura
 
-  /if (${auraSpell.Length}) /call BuildArray auraSpells "${auraSpell}"
-  /call buff_SpellArrays
+  |/if (${auraSpell.Length}) /call BuildArray auraSpells "${auraSpell}"
+  |/call buff_SpellArrays
 
 /if (${Debug} || ${Debug_BuffCheck}) /echo <== buffCheck_Setup -|
 /return
@@ -429,7 +429,7 @@ SUB buff_SpellArrays
   /if (${Defined[CombatBuffs]})  /call BuildSpellArray "CombatBuffs"	"CombatBuffs2D"
   /if (${Defined[GroupBuffs]})   /call BuildSpellArray "GroupBuffs"	  "GroupBuffs2D"
   /if (${Defined[ProcBuffs]})    /call BuildSpellArray "ProcBuffs"	  "ProcBuffs2D"
-  /if (${Defined[auraSpells]})   /call BuildSpellArray "auraSpells"	  "auraSpells2D"
+  |/if (${Defined[auraSpells]})   /call BuildSpellArray "auraSpells"	  "auraSpells2D"
 
   /if (${Defined[GroupBuffsL1]})   /call BuildSpellArray "GroupBuffsL1"	  "GroupBuffsL12D"
   /if (${Defined[GroupBuffsL47]})   /call BuildSpellArray "GroupBuffsL47"	  "GroupBuffsL472D"
@@ -475,8 +475,8 @@ SUB buffCheck_CharacterSettings
   /call WriteToIni "${Character_Ini},Buffs,Group Buff L1"
   /call WriteToIni "${Character_Ini},Buffs,Group Buff L47"
 
-  /if (${Select[${Me.Class.ShortName},WAR,CLR,PAL]}) /call WriteToIni "${Character_Ini},Buffs,Cast Aura Combat (On/Off)" Off
-	/if (${Select[${Me.Class.ShortName},DRU,MNK,BER,BRD,ENC]}) /call WriteToIni "${Character_Ini},Buffs,Cast Aura Combat (On/Off)" On
+  |/if (${Select[${Me.Class.ShortName},WAR,CLR,PAL]}) /call WriteToIni "${Character_Ini},Buffs,Cast Aura Combat (On/Off)" Off
+	|/if (${Select[${Me.Class.ShortName},DRU,MNK,BER,BRD,ENC]}) /call WriteToIni "${Character_Ini},Buffs,Cast Aura Combat (On/Off)" On
 
   /if (${Select[${Me.Class.ShortName},ENC,SHM]}) {
     /call WriteToIni "${Character_Ini},Buffs,Proc Buff (On/Off)" Off
