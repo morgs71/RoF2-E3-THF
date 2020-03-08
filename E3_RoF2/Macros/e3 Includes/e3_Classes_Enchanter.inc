@@ -160,7 +160,7 @@ Sub ENC_Setup
 
   /call IniToArrayV "${Character_Ini},Enchanter,RuneTarget#"  runeTargets
   /call IniToArrayV "${Character_Ini},Enchanter,RuneSpell#"   runeArray
-  /call INItoVar "${Character_Ini},Enchanter,Mez Spell" Mez_Spell string outer
+  /call INItoVarV "${Character_Ini},Enchanter,Mez Spell" Mez_Spell string outer
   
   /if (${Bool[${runeArray.Size}]}) {
     /call BuildSpellArray "runeArray"	"runeArray2D"
