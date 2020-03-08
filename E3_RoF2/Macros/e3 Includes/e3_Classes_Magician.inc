@@ -179,7 +179,7 @@ SUB check_SummonItems
 /if (${Debug} || ${Debug_MAG}) /echo <== check_SummonItems -|
 /RETURN
 |----------------------------------------------------------------------------|
-
+SUB MAG_Setup
 /declare Debug_MAG bool outer FALSE
 /if (${Debug} || ${Debug_MAG}) /echo |- MAG_Setup ==>
   /declare coh_dist int outer 150
@@ -188,10 +188,7 @@ SUB check_SummonItems
 	/declare mageRangedSwap bool outer FALSE
 	/if (${Defined[petItems]}) /call BuildSpellArray "petItems"	"petItems2D"
 
-  /if (${Bool[${Me.Book[Call of the Hero]}]}) {
-    /declare cohSpells[1] string outer Call of the Hero
-    /call BuildSpellArray "cohSpells" "cohSpells2D"
-  }
+  
 
   /if (${Bool[${Me.Book[Summon: Molten Orb]}]}) {
     /declare moltenOrb[1] string outer Summon: Molten Orb
