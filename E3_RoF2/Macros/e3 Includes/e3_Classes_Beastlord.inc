@@ -2,7 +2,7 @@
 | Beastlord Functions
 |----------------------------------------------------------------------------|
 Sub BST_Setup
-	/call IniToVar "${Character_Ini},Beastlord,Band of the Gargoyle-Wild Cat IV (On/Off)" BeastGargoyle bool outer
+	/call IniToVarV "${Character_Ini},Beastlord,Band of the Gargoyle-Wild Cat IV (On/Off)" BeastGargoyle bool outer
 /return
 |----------------------------------------------------------------------------|
 SUB BST_MacroSettings
