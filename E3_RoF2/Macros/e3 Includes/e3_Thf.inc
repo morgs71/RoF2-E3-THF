@@ -89,7 +89,7 @@ SUB EVENT_valegate
 
 
 Sub defineValegate
-/echo test
+
   /declare Valegateitem string local
   /declare i int local
   /if (${FindItem[=Token of the Vale].ID}) {
@@ -117,28 +117,89 @@ Sub defineValegate
 
 |-------------- Gather Mana Items -----------------|
 
+
+Sub defineSmallGather
+
+  /declare SmallGatheritem string local
+  /declare i int local
+  /if (${FindItem[=Orb of Spirits].ID}) {
+    /varset SmallGatheritem Orb of Spirits
+  } else /if (${FindItem[=Tears of Frozen Mana].ID}) {
+    /varset SmallGatheritem Tears of Frozen Mana
+  } else /if (${FindItem[=Tears of Frozen Spirits].ID}) {
+    /varset SmallGatheritem Tears of Frozen Spirits
+  } 
+  /if (${Bool[${SmallGatheritem}]}) {
+    /if (${Defined[SmallGatherArray]}) /deletevar SmallGatherArray
+    /declare SmallGatherArray[1] string outer ${SmallGatheritem}
+    /if (${SmallGatherArray.Size}) {
+      /call BuildSpellArray "SmallGatherArray" "SmallGatherArray2D"
+      /for i 1 to ${Array2D.Size[1]}
+        /varset SmallGatherArray2D[${i},${iCastInvis}] 1
+      /next i
+      }
+  } else {
+    /bc I do not have a small gather mana item available
+  }
+/RETURN
+
+
+
+
+Sub defineLargeGather
+
+  /declare LargeGatheritem string local
+  /declare i int local
+  /if (${FindItem[=Fire Crystal Wristguard].ID}) {
+    /varset LargeGatheritem Fire Crystal Wristguard
+  } else /if (${FindItem[=Entropic Orb of Lithluran].ID}) {
+    /varset LargeGatheritem Entropic Orb of Lithluran
+  } else /if (${FindItem[=Immaculate Glowing Black Stone].ID}) {
+    /varset LargeGatheritem Immaculate Glowing Black Stone
+  } else /if (${FindItem[=Powerful Silk Slippers].ID}) {
+    /varset LargeGatheritem Powerful Silk Slippers
+  } else /if (${FindItem[=Strange Silk Slippers].ID}) {
+    /varset LargeGatheritem Strange Silk Slippers
+  } else /if (${FindItem[=Glowing Chains].ID}) {
+    /varset LargeGatheritem Glowing Chains
+  }else /if (${FindItem[=Silver Chains of the Burgerz].ID}) {
+    /varset LargeGatheritem Silver Chains of the Burgerz
+  } else /if (${FindItem[=Silver Chains].ID}) {
+    /varset LargeGatheritem Silver Chains
+  } 
+  /if (${Bool[${LargeGatheritem}]}) {
+    /if (${Defined[LargeGatherArray]}) /deletevar LargeGatherArray
+    /declare LargeGatherArray[1] string outer ${LargeGatheritem}
+    /if (${LargeGatherArray.Size}) {
+      /call BuildSpellArray "LargeGatherArray" "LargeGatherArray2D"
+      /for i 1 to ${Array2D.Size[1]}
+        /varset LargeGatherArray2D[${i},${iCastInvis}] 1
+      /next i
+      }
+  } else {
+    /bc I do not have a Large gather mana item available
+  }
+/RETURN
+
+
 Sub check_GatherMana
 
-/if (${Me.PctMana} < 60 && ${Me.PctHPs} > 35)  {
 	/if (${Me.Combat} && ${Select[${Me.Class.ShortName},BST,PAL,RNG,SHD]})  {
 		/return	
-	} else /if (${Me.PctMana} < 20 && ${FindItemCount[Fire Crystal Wristguard]} && ${FindItem[Fire Crystal Wristguard].Timer}==0)  {
-		/call e3_Cast 0 "Fire Crystal Wristguard" 
-	} else /if (${Me.PctMana} < 30 && ${FindItemCount[Powerful Silk Slippers]} && ${FindItem[Powerful Silk Slippers].Timer}==0)  {
-		/call e3_Cast 0 "Powerful Silk Slippers"
-	} else /if (${Me.PctMana} < 30 && ${FindItemCount[Silver Chains of the Burgerz]} && ${FindItem[Silver Chains of the Burgerz].Timer}==0 &&  !${FindItemCount[Powerful Silk Slippers]})  {
-		/call e3_Cast 0 "Silver Chains of the Burgerz" 
-	} else /if (${Me.PctMana} < 30 && ${FindItemCount[Silver Chains]} && ${FindItem[Silver Chains].Timer}==0 &&  !${FindItemCount[Powerful Silk Slippers]})  {
-		/call e3_Cast 0 "Silver Chains" 
-	} else /if (${Me.PctMana} < 40 && ${FindItemCount[Orb of Spirits]} && ${FindItem[Orb of Spirits].Timer}==0)  {
-		/call e3_Cast 0 "Orb of Spirits" 
-	} else /if (${Me.PctMana} < 50 && ${FindItemCount[Tears of Frozen Mana]} && ${FindItem[Tears of Frozen Mana].Timer}==0 &&  !${FindItemCount[Powerful Silk Slippers]})  {
-		/call e3_Cast 0 "Tears of Frozen Mana" 
-	} else /if (${Me.PctMana} < 50 && ${FindItemCount[Tears of Frozen Spirits]} && ${FindItem[Tears of Frozen Spirits].Timer}==0 &&  !${FindItemCount[Powerful Silk Slippers]})  {
-		/call e3_Cast 0 "Tears of Frozen Spirits" 
+	} else /if (${Me.Combat} && ${Me.PctMana} < 30)  {
+		/call defineSmallGather
+		/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
+	} else /if (${Me.Combat} && ${Me.PctMana} < 10)  {
+		/call defineLargeGather
+		/call e3_cast ${Me.ID} "LargeGatherArray2D" 1
+	} else /if (!${Me.Combat} && !${Me.Moving} && ${Me.PctMana} < 30)  {
+		/call defineSmallGather
+		/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
+	} else /if (!${Me.Combat} && !${Me.Moving} && ${Me.PctMana} < 10)  {
+		/call defineLargeGather
+		/call e3_cast ${Me.ID} "LargeGatherArray2D" 1
 	}
-}	
-		
+			
 /Return		
 		
 
@@ -1350,7 +1411,8 @@ Sub Thf_Setup
 /declare ValikWait int outer 0	
 /declare TankName string outer NULL
 
-/if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length}) /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
+/if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
+/if (${Ini[${Character_Ini},Misc,Gather Mana (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Gather Mana (On/Off)" GatherManaCheck bool outer
 	
 /if (${Debug}) /echo <== Thf_Setup -|
 /return
@@ -1399,7 +1461,8 @@ Sub Thf_Background_Events
 /doevents HoHEnji
 /doevents HoHCruthz
 
-
+/if (${GatherManaCheck} && ${Me.PctMana} < 30)  /call check_GatherMana
+	
 
 
 /return
@@ -1429,6 +1492,8 @@ SUB Thf_MacroSettings
 SUB Thf_CharacterSettings
 /if (${Debug}) /echo |- THF_CharacterSettings ==>
 
+
+/if (${Select[${Me.Class.ShortName},CLR,PAL,RNG,SHD,ENC,MAG,NEC,BST,WIZ,DRU,SHM]})  /call WriteToIni "${Character_Ini},Misc,Gather Mana (On/Off)" On
 	
 
 
