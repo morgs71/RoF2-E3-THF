@@ -25,6 +25,100 @@ SUB DRU_CharacterSettings
 Sub DRU_Aliases
 /return
 |----------------------------------------------------------------------------|
+
+|---Druid Rez---|
+#event Rez "<#1#> Rez"
+#event Rez "<#*#> Rez On #1#"
+#event Rez "#1# tells you, 'Rez'"
+#event Rez "#*# tells you, 'Rez On #1#'"
+#event Rez "#1# tells the group, 'Rez'"
+sub Event_DruRez(line, ChatSender)
+	/if (${ChatSender.Left[1].Compare[ ]}<0) /varset ChatSender ${ChatSender.Right[-2].Left[-1]}
+	/if (${Me.Class.ShortName.Equal[DRU]} && ${Spawn[${ChatSender}'s].ID}) {
+	  /varset canRez 0
+    /call defineDruRezSpell
+    /call TrueTarget ${Spawn[${ChatSender}'s].ID}
+    |/echo ${Target.ID}
+    /call check_CorpseRezzable
+    /if (${canRez}==1) {
+      :checkReady
+      /call check_Ready "DrurezArray2D" 1
+      /if ((!${c_Ready} || !${check_Mana["DrurezArray2D",1]}) && ${Me.CombatState.NotEqual[COMBAT]}) {
+        /if (!${Me.Sitting}) /sit on
+        /delay 1s
+        /goto :checkReady
+      }
+      /tell ${ChatSender} Wait4Rez
+      /call e3_cast ${Spawn[${ChatSender}'s].ID} "DrurezArray2D" 1
+    } else {
+      /tell ${ChatSender} Your corpse ${Target.Name} is not eligible for rez
+    }
+	} else /if (!${Spawn[${ChatSender}'s].ID}) {
+		/tell ${ChatSender} I don't see any of your corpses in ${Zone}.
+	}
+/return
+
+|----------------------------------------------------------------------------|
+#bind otherRezzing /RezzingCorpseID
+SUB Bind_otherRezzing(whoIsRezzing,corpse_id)
+  /if (${Me.Class.ShortName.Equal[DRU]}) {
+    /echo ${whoIsRezzing} rezzing ${corpse_id}, added to otherRezList
+    /varset otherRezList ${otherRezList}${corpse_id},
+  }
+/return
+|----------------------------------------------------------------------------|
+#event CorpseExpired "This corpse #1# be resurrected."
+Sub Event_CorpseExpired(line, corpseExpired)
+/if (${Debug}) /echo |- EVENT_CorpseExpired
+  /if (${corpseExpired.Equal[cannot]}) {
+    /varset canRez 2
+  } else  {
+    /varset canRez 1
+  }
+/return
+|----------------------------------------------------------------------------|
+Sub check_CorpseRezzable
+  /declare conTimer timer local 5s
+  /doevents CorpseExpired flush
+  /varset canRez 0
+  :waitForExpired
+  /consider
+  /delay 2
+  /doevents CorpseExpired
+  /if (${canRez}==0 && ${conTimer}) {
+    /goto :waitForExpired
+  }
+/RETURN
+
+|----------------------------------------------------------------------------|
+Sub defineDruRezSpell
+  /declare DrurezSpell string local
+  /declare i int local
+  
+  
+  /if (${FindItem[Aphrodite's Gauntlets of Desire].ID}) {
+    /varset DrurezSpell Aphrodite's Gauntlets of Desire
+  } else/if (${FindItem[Staff of the Earthcrafter].ID}) {
+    /varset DrurezSpell Staff of the Earthcrafter
+  } else/if (${FindItem[Hammer of Kerafyrm].ID}) {
+    /varset DrurezSpell Hammer of Kerafyrm
+  } 
+  /if (${Bool[${DrurezSpell}]}) {
+    /if (${Defined[DrurezArray]}) /deletevar DrurezArray
+    /declare DrurezArray[1] string outer ${DrurezSpell}
+    /if (${DrurezArray.Size}) {
+      /call BuildSpellArray "DrurezArray" "DrurezArray2D"
+      /for i 1 to ${DrurezArray2D.Size[1]}
+        /varset DrurezArray2D[${i},${iCastInvis}] 1
+      /next i
+      }
+  } else {
+    /bc I do not have a resurrection spell available
+  }
+/RETURN
+|----------------------------------------------------------------------------|
+
+
 #event AE_SOW "#*# tells you, 'AESOW'"
 sub Event_AE_SOW(string line)
 	/if (${Me.Class.ShortName.Equal[DRU]}) {
@@ -64,4 +158,5 @@ sub Event_AE_FOE(string line)
 Sub DRU_Background_Events
 	/doevents AE_SOW
 	/doevents AE_FOE
+	/doevents DruRez
 /return
