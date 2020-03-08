@@ -4,14 +4,15 @@
 SUB check_Buffs
 	/if (${Debug} || ${Debug_BuffCheck}) /echo |- buffCheck ==>
 	/if (${BuffCheck} && !${ActionTaken} && !${activeTimer} && !${rebuffTimer}) {
+	
 		/if (!${medBreak} && !${idle} && ${BuffCombatCheck} && !${Me.Moving})	/call buffBots "CombatBuffs2D"
-    /if (!${medBreak} && ${procBuff} && !${idle} && ${BuffCombatCheck} && !${Me.Moving}) /call buffProcs
-    |/if (${Defined[auraSpells2D]} && (${auraCombat} || ${Me.CombatState.NotEqual[COMBAT]}) && !${Me.Moving}) /call checkAuras
+		/if (!${medBreak} && ${procBuff} && !${idle} && ${BuffCombatCheck} && !${Me.Moving}) /call buffProcs
+		|/if (${Defined[auraSpells2D]} && (${auraCombat} || ${Me.CombatState.NotEqual[COMBAT]}) && !${Me.Moving}) /call checkAuras
 		/if (${Defined[InstantBuffs2D]})		/call buffBots "InstantBuffs2D"
 		/if (!${combatTimer} && ${Me.CombatState.NotEqual[COMBAT]} && !${Assisting} && !${Me.Moving} && ${BuffCheck}) {
 			/if (${Defined[SelfBuffs2D]}) /call buffBots "SelfBuffs2D"
 			/if (${Defined[BotBuffs2D]})	/call buffBots "BotBuffs2D"
-      /if (${Defined[auraSpells2D]}) /call checkAuras
+      |/if (${Defined[auraSpells2D]}) /call checkAuras
 		}
 	}
 	/if (${Debug} || ${Debug_BuffCheck}) /echo <== buffCheck -|
@@ -57,6 +58,7 @@ SUB buffBots(ArrayName)
   }
   |------- Self ------|
   /if (${Select[${ArrayName},SelfBuffs2D,InstantBuffs2D]}) {
+
     /if (!${Bool[${Me.Buff[${buffSpellName}]}]} || (${Bool[${Me.Buff[${buffSpellName}]}]} && ${Me.Buff[${buffSpellName}].Duration.TotalSeconds} <= ${buffRecastTime})) {
       /if (!${Bool[${Me.Song[${buffSpellName}]}]} && !${Bool[${Me.Song[${buffCheckForName}]}]}) {
         /if (${Spell[${buffSpellID}].NewStacks} && !${Bool[${Me.Buff[${buffCheckForName}]}]}) {
@@ -407,7 +409,7 @@ Sub buffCheck_Setup
   |/if (${Me.Book[Blessed Aura]}) /varset auraSpell Blessed Aura
 
   |/if (${auraSpell.Length}) /call BuildArray auraSpells "${auraSpell}"
-  |/call buff_SpellArrays
+  /call buff_SpellArrays
 
 /if (${Debug} || ${Debug_BuffCheck}) /echo <== buffCheck_Setup -|
 /return
