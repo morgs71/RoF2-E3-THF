@@ -120,10 +120,13 @@ SUB Event_BackOff(line, ChatSender)
 SUB AssistOff
 /if (${Debug} || ${Debug_Assists}) /echo |- AssistOff -| ==>
   /if (${Me.Casting.ID} && !${Spell[${Me.Casting}].SpellType.Find[beneficial]} && ${Me.Class.ShortName.NotEqual[BRD]}) /call interrupt
-  /if (${Me.Combat})    /attack off
-  /if (${Me.AutoFire})  /autofire off
-  /if (${Me.Pet.ID}) /squelch /pet back off
-  /delay 5 !${Me.Combat} && !${Me.AutoFire}
+	| Only stop attacking if forced by /backoff. If target died attack will have been stopped anyway. Stops player controlled char from stopping attacking even when target is switched.
+	/if (${AllowControl}) {
+		/if (${Me.Combat}) /attack off
+	}
+	/if (${Me.AutoFire})  /autofire off
+	/if (${Me.Pet.ID}) /squelch /pet back off
+	/delay 5 !${Me.Combat} && !${Me.AutoFire}
 
 	/varset Assisting FALSE
 	/varset AssistTarget 0
@@ -262,6 +265,7 @@ SUB check_AssistStatus
 |------------------------------------------------|
 SUB CombatAbilities
   /if (${Debug} || ${Debug_Assists}) /echo |- CombatAbilities ==>
+  /if (${Me.Stunned}) /return
   /declare i int local
   | Prereq/priorities
   /if (${Defined[doTaunt]}) {
@@ -371,7 +375,7 @@ SUB check_AutoAssist
 		/if ((${Target.ID} && ${Me.Combat}) || (${Target.ID} && ${Spell[${Me.Casting.ID}].SpellType.Equal[Detrimental]})) {
 			/if (${Target.PctHPs} < ${EngagePct} && ${Select[${Spawn[id ${Target.ID}].Type},${AcceptableTargetTypes}]}) {
 			  /if ((!${Bool[${PauseTarget}]} || ${Target.ID} != ${PauseTarget}) && (!${Bool[${Me.Pet.ID}]} || ${Target.ID} != ${Me.Pet.ID})) {
-          /if (${Debug} || ${Debug_Assists}) /echo I am attacking, calling Assist
+			/if (${Debug} || ${Debug_Assists}) /echo I am attacking, calling Assist
           /assistme
         }
 			}
