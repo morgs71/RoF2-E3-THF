@@ -5,7 +5,7 @@ SUB check_Canni
 /if (${Debug}) /echo |- autoCanni ==>
 	/if (${AutoCanni}) {
 	  |only canni if im not in ooc regen
-		/if (${Me.CombatState.NotEqual[RESTING]}) {
+		/if (${Me.CombatState.NotEqual[RESTING]} && ${Me.PctMana} < ${StartCanni}) {
 			/declare s int local
 			/for s 1 to ${canniSpells2D.Size[1]}
 			  /if (${canniSpells2D[${s},${iCastName}].NotEqual[Spiritual Channeling]} || (${canniSpells2D[${s},${iCastName}].Equal[Spiritual Channeling]} && ${Me.CombatState.Equal[COMBAT]})) {
@@ -123,6 +123,7 @@ Sub SHM_Setup
 /if (${Debug}) /echo |- SHM_Setup ==>
 	/call iniToVarV "${Character_Ini},Shaman,Auto-Canni (On/Off)" AutoCanni bool outer
 	/call IniToArrayV "${Character_Ini},Shaman,Canni#" canniSpells
+	/call IniToArrayV "${Character_Ini},Shaman,Canni Start (Pct)" StartCanni int outer
   /if (${canniSpells.Size}) /call BuildSpellArray "canniSpells"	"canniSpells2D"
 /if (${Debug}) /echo <== SHM_Setup -|
 /return
@@ -146,6 +147,7 @@ SUB SHM_CharacterSettings
 /if (${Debug}) /echo |- SHM_CharacterSettings ==>
 	/call WriteToIni "${Character_Ini},Shaman,Auto-Canni (On/Off)"
 	/call WriteToIni "${Character_Ini},Shaman,Canni"
+	/call WriteToIni "${Character_Ini},Shaman,Canni Start (Pct)" 80
 /if (${Debug}) /echo <== SHM_CharacterSettings -|
 /RETURN
 |----------------------------------------------------------------------------|
