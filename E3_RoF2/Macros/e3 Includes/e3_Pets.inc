@@ -187,11 +187,11 @@ Sub pet_Setup
 	/if (${Ini[${Character_Ini},Pets].Length}) {
 		/if (!${Defined[suspend_Pets]})        /declare suspend_Pets bool global FALSE
 		/if (!${Defined[currently_Suspended]}) /declare currently_Suspended bool global FALSE
-    /if (${Ini[${Character_Ini},Pets,Pet Mend (Pct)].Length}) /call iniToVarV "${Character_Ini},Pets,Pet Mend (Pct)" petMendPct int outer
-    /if (${Ini[${Character_Ini},Pets,Pet Taunt (On/Off)].Length}) /call iniToVarV "${Character_Ini},Pets,Pet Taunt (On/Off)" petTaunt bool outer
+		/if (${Ini[${Character_Ini},Pets,Pet Mend (Pct)].Length}) /call iniToVarV "${Character_Ini},Pets,Pet Mend (Pct)" petMendPct int outer
+		/if (${Ini[${Character_Ini},Pets,Pet Taunt (On/Off)].Length}) /call iniToVarV "${Character_Ini},Pets,Pet Taunt (On/Off)" petTaunt bool outer
 		/if (${Ini[${Character_Ini},Pets,Pet Auto-Shrink (On/Off)].Length}) /call iniToVarV "${Character_Ini},Pets,Pet Auto-Shrink (On/Off)" petAutoShrink bool outer
-    /if (${Ini[${Character_Ini},Pets,Pet Summon Combat (On/Off)].Length}) /call iniToVarV "${Character_Ini},Pets,Summon Combat (On/Off)" petSummonCombat bool outer
-    /if (${Ini[${Character_Ini},Pets,Pet Buff Combat (On/Off)].Length}) /call iniToVarV "${Character_Ini},Pets,Pet Buff Combat (On/Off)" petBuffCombat bool outer
+		/if (${Ini[${Character_Ini},Pets,Pet Summon Combat (On/Off)].Length}) /call iniToVarV "${Character_Ini},Pets,Summon Combat (On/Off)" petSummonCombat bool outer
+		/if (${Ini[${Character_Ini},Pets,Pet Buff Combat (On/Off)].Length}) /call iniToVarV "${Character_Ini},Pets,Pet Buff Combat (On/Off)" petBuffCombat bool outer
 	}
 
 	/call pet_spellArrays
@@ -213,10 +213,14 @@ SUB pet_spellArrays
   }
   /if (${Defined[petHeal]})   /call BuildSpellArray "petHeal"	"petHeal2D"
 
-  /if (${FindItemCount[=Gemstone of Dark Flame]}) {
-    /call BuildArray petShrink "Gemstone of Dark Flame"
-  } else /if (${FindItemCount[=Symbol of Ancient Summoning]}) {
-    /call BuildArray petShrink "Symbol of Ancient Summoning"
+  /if (${FindItemCount[=Green Mask]}) {
+    /call BuildArray petShrink "Green Mask"
+  } else /if (${FindItemCount[=Chaotic Brigandine Ring]}) {
+    /call BuildArray petShrink "Chaotic Brigandine Ring"
+  } else /if (${FindItemCount[=Chaotic Shimmering White Shroud]}) {
+    /call BuildArray petShrink "Chaotic Shimmering White Shroud"
+  } else /if (${FindItemCount[=Vial of Shrieker Essence]}) {
+    /call BuildArray petShrink "Vial of Shrieker Essence"
   } else /if (${Me.Book[Tiny Companion]}) {
     /call BuildArray petShrink "Tiny Companion"
   }
@@ -232,16 +236,16 @@ SUB pet_MacroSettings
 |------------------------------------------------------------------------|
 SUB pet_CharacterSettings
 /if (${Debug}) /echo |- pet_CharacterSettings ==>
-	/if (${Select[${Me.Class.ShortName},BST,ENC,MAG,NEC,SHD,SHM]}) {	
-		/call WriteToIni "${Character_Ini},Pets,Pet Spell"
+	 	
+	/call WriteToIni "${Character_Ini},Pets,Pet Spell"
     /call WriteToIni "${Character_Ini},Pets,Pet Heal"
-		/call WriteToIni "${Character_Ini},Pets,Pet Buff"
+	/call WriteToIni "${Character_Ini},Pets,Pet Buff"
     /if (${Select[${Me.Class.ShortName},BST,MAG,NEC]}) /call WriteToIni "${Character_Ini},Pets,Pet Mend (Pct)"
     /call WriteToIni "${Character_Ini},Pets,Pet Taunt (On/Off)" Off
     /call WriteToIni "${Character_Ini},Pets,Pet Auto-Shrink (On/Off)" Off
     /call WriteToIni "${Character_Ini},Pets,Pet Summon Combat (On/Off)" Off
     /call WriteToIni "${Character_Ini},Pets,Pet Buff Combat (On/Off)" Off
-	}
+	
 /if (${Debug}) /echo <== pet_CharacterSettings -|
 /RETURN
 
