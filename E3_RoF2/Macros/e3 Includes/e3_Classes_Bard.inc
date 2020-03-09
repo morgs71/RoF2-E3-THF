@@ -225,8 +225,8 @@ Sub BRD_Setup
   /if (!${Defined[queueSelo]}) /declare queueSelo bool global
   
   /call iniToVarV "${Character_Ini},Bard,Auto-Melody" autoMelody string outer
-  /call InitoVar "${Character_Ini},Bard,Auto-Selo (On/Off)" autoSelo bool outer
-  /call InitoVar "${Character_Ini},${Me.Class},Selo Song/Item" selosong string outer
+  /call InitoVarV "${Character_Ini},Bard,Auto-Selo (On/Off)" autoSelo bool outer
+  /call InitoVarV "${Character_Ini},${Me.Class},Selo Song/Item" selosong string outer
   /call iniToVarV "${Character_Ini},Bard,AutoMez (On/Off)" autoMez bool outer
   /call IniToArrayV "${Character_Ini},Bard,Mez#"	  mezArray
   /call IniToArrayV "${Character_Ini},Bard,Charm#"	charmArray
