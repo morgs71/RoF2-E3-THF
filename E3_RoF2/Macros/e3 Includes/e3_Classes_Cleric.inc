@@ -15,6 +15,7 @@ SUB check_Yaulp
 |----------------------------------------------------------------------------|
 sub check_DivineArb
 /if (${Debug}) /echo |- check_DivineArb ==>
+	/call definedArbSpell
 	/if (${Defined[dArbArray2D]}) {
 		/if (${DivineArb_Pct} && ${Group}>1 && ${dArbArray2D.Size[1]}>0) {
 			/declare i int local
@@ -65,6 +66,7 @@ sub check_celestialRegen
 sub Event_wordHeal(line, ChatSender)
   /if (!${Me.Class.ShortName.Equal[CLR]}) /return
   /if (!${checkEventArgs[${ChatSender},${line},UZR,""]}) /return
+  /call definedwordHealSpell
   /delay 5s !${Me.Casting.ID}
   /call check_Ready "wordHeal2D" 1
   /if (${c_Ready}) {
@@ -315,6 +317,71 @@ Sub defineRezSpell
   }
 /RETURN
 |----------------------------------------------------------------------------|
+
+Sub definedArbSpell
+  /declare dArbSpell string local
+  /declare i int local
+  
+  
+  /if (${FindItem[Ancient Frozen Aegis of Divinity].ID}) {
+    /varset dArbSpell Ancient Frozen Aegis of Divinity
+  } else  /if (${FindItem[Ancient Shield of the Divine].ID}) {
+    /varset dArbSpell Ancient Shield of the Divine
+  } else /if (${Bool[${Me.AltAbility[Divine Arbitration]}]}) {
+    /varset dArbSpell Divine Arbitration
+  }
+  /if (${Bool[${dArbSpell}]}) {
+    /if (${Defined[dArbArray]}) /deletevar dArbArray
+    /declare dArbArray[1] string outer ${dArbSpell}
+    /if (${dArbArray.Size}) {
+      /call BuildSpellArray "dArbArray" "dArbArray2D"
+      /for i 1 to ${dArbArray2D.Size[1]}
+        /varset dArbArray2D[${i},${iCastInvis}] 1
+      /next i
+      }
+  } else {
+    /bc I do not have a Divine Arbitration available
+  }
+/RETURN
+|----------------------------------------------------------------------------|
+
+Sub definedwordHealSpell
+  /declare wordHealSpell string local
+  /declare i int local
+  
+  
+  /if (${Me.Book[Word of Strategy]}) {
+    /varset rezSpell Word of Strategy
+  } else  /if (${Me.Book[Word of Vivification]}) {
+    /varset rezSpell Word of Vivification
+  } else /if (${Me.Book[Word of Replenishment]}) {
+    /varset rezSpell Word of Replenishment
+  } else /if (${Me.Book[Word of Redemption]}) {
+    /varset rezSpell Word of Redemption
+  } else /if (${Me.Book[Word of Restoration]}) {
+    /varset rezSpell Word of Restoration
+  } else /if (${Me.Book[Word of Vigor]}) {
+    /varset rezSpell Word of Vigor
+  } else /if (${Me.Book[Word of Healing]}) {
+    /varset rezSpell Word of Healing
+  } else /if (${Me.Book[Word of Health]}) {
+    /varset rezSpell Word of Health
+  }
+  /if (${Bool[${wordHealSpell}]}) {
+    /if (${Defined[wordHealArray]}) /deletevar wordHealArray
+    /declare wordHealArray[1] string outer ${wordHealSpell}
+    /if (${wordHealArray.Size}) {
+      /call BuildSpellArray "wordHealArray" "wordHealArray2D"
+      /for i 1 to ${wordHealArray2D.Size[1]}
+        /varset wordHealArray2D[${i},${iCastInvis}] 1
+      /next i
+      }
+  } else {
+    /bc I do not have a Divine Arbitration available
+  }
+/RETURN
+|----------------------------------------------------------------------------|
+
 Sub CLR_Setup
 /if (${Debug}) /echo |- CLR_Setup ==>
   /declare canRez int outer 0
@@ -331,14 +398,11 @@ Sub CLR_Setup
 			/varset AutoYaulp FALSE
 		}
 	}
-  /if (${Bool[${Me.Book[Word Of Vivification]}]}) {
-    /call BuildArray wordHeal "Word Of Vivification"
-    /call BuildSpellArray "wordHeal" "wordHeal2D"
-  }
-  /if (${Bool[${FindItem[Aegis of Superior Divinity].InvSlot}]}) /call BuildArray dArbArray "Aegis of Superior Divinity"
-  /if (${Bool[${FindItem[Harmony of the Soul].InvSlot}]}) /call BuildArray dArbArray "Harmony of the Soul"
-  /if (${Bool[${Me.AltAbility[Divine Arbitration]}]}) /call BuildArray dArbArray "Divine Arbitration"
-  /if (${Defined[dArbArray]}) /call BuildSpellArray "dArbArray" "dArbArray2D"
+ 
+  
+  
+  
+  
 /if (${Debug}) /echo <== CLR_Setup -|
 /return
 |----------------------------------------------------------------------------|
