@@ -14,7 +14,7 @@ SUB EVENT_saveMelody(line, ChatSender, melodyName, songsToSave)
 		/if (${Ini[${Character_Ini},${melodyName} Melody].Length}) {	
 			/if (${Debug}) /echo |- EVENT_saveMelody -| Overwriting [${melodyName}] melody...
 			/for i 1 to 8 + ${Me.SPA[326]}
-				/if (${Ini[${Character_Ini},${melodyName} Melody,Song].Length}) /call WriteToIni "${Character_Ini},${melodyName} Melody,Song#${i}" *PLACEHOLDER 1
+				/if (${Ini[${Character_Ini},${melodyName} Melody,Song].Length}) /call WriteToIni "${Character_Ini},${melodyName} Melody,Song" *PLACEHOLDER 1
 			/next i
 		}
 		/echo Saving [${melodyName}] melody...
