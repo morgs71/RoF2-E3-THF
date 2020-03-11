@@ -46,7 +46,7 @@ SUB EVENT_startMelody(line, ChatSender, melodyName)
     /declare memGem int local
     /varset melodyName ${c_eventArgData}
     | If I don't have the melodyName listed in my ini.
-    /call IniToArrayV "${Character_Ini},${melodyName} Melody,Song#" melodyArray
+    /call IniToArrayV "${Character_Ini},${melodyName} Melody,Song" melodyArray
     /if (!${Defined[melodyArray]}) {
       | If Stop, end, or pause were used, stop the melody.
       /if (${Select[${melodyName},Stop,End,Pause]}) {
