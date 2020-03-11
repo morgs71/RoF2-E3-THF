@@ -12,7 +12,7 @@
 #event thfgate "#1# tells the group, 'thfgate'"
 #event thfgate "#1# tells you, 'thfgate'"
 SUB EVENT_thfgate 
-	/call pauseTwist
+	/if (${Select[${Me.Class.ShortName},BRD]} && ${Twist.Twisting}) /twist stop
     /call definethfgate
     :checkReady
     /call check_Ready "thfgateArray2D" 1
@@ -74,7 +74,7 @@ Sub definethfgate
 #event valegate "#1# tells the group, 'valegate'"
 #event valegate "#1# tells you, 'valegate'"
 SUB EVENT_valegate
-/echo testmain
+    /if (${Select[${Me.Class.ShortName},BRD]} && ${Twist.Twisting}) /twist stop
 	/call defineValegate
     :checkReady
     /call check_Ready "ValegateArray2D" 1
@@ -254,6 +254,7 @@ Sub definecohspell
 		
 sub Event_cohme(line, ChatSender)
 	/if (!${checkEventArgs[${ChatSender},${line},ZR]}) /return
+	/if (${Select[${Me.Class.ShortName},BRD]} && ${Twist.Twisting}) /twist stop
 	/call definecohspell
 	
 			 /if (${Me.Combat})  { 
@@ -279,6 +280,7 @@ sub Event_cohme(line, ChatSender)
 
 sub Event_cohall(line, ChatSender)
 	/if (!${checkEventArgs[${ChatSender},${line},ZR]}) /return
+	/if (${Select[${Me.Class.ShortName},BRD]} && ${Twist.Twisting}) /twist stop
 	/call definecohspell
 
 			/if (${Me.Combat}) {
