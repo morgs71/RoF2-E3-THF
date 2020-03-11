@@ -12,7 +12,7 @@
 #event thfgate "#1# tells the group, 'thfgate'"
 #event thfgate "#1# tells you, 'thfgate'"
 SUB EVENT_thfgate 
-	
+	/call pauseTwist
     /call definethfgate
     :checkReady
     /call check_Ready "thfgateArray2D" 1
