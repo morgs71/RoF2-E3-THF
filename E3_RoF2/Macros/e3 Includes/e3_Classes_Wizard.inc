@@ -3,18 +3,18 @@
 |----------------------------------------------------------------------------|
 SUB check_Harvest
 	/if (${autoHarvest} && ${Defined[harvestSpells2D]}) {
-    |only harvest if im not in ooc regen
-    /if (${Me.CombatState.Equal[COMBAT]}) {
-      /declare s int local
-      /for s 1 to ${harvestSpells2D.Size[1]}
-        /call check_Ready "harvestSpells2D" ${s}
-        /if (${c_Ready} && ${harvestSpells2D[${s},${iIfs}]}) {
-          /if (${check_Mana["harvestSpells2D",${s}]}) {
-            /call e3_Cast ${Me.ID} "harvestSpells2D" ${s}
-          }
-        }
-      /if (!${ActionTaken}) /next s
-    }
+		|only harvest if im not in ooc regen
+		/if (!${Me.Moving} && ${Me.PctMana} < 80) {
+			/declare s int local
+			/for s 1 to ${harvestSpells2D.Size[1]}
+			/call check_Ready "harvestSpells2D" ${s}
+			/if (${c_Ready} && ${harvestSpells2D[${s},${iIfs}]}) {
+				/if (${check_Mana["harvestSpells2D",${s}]}) {
+					/call e3_Cast ${Me.ID} "harvestSpells2D" ${s}
+				}
+			}
+			/if (!${ActionTaken}) /next s
+		}
 	}
 /RETURN
 |----------------------------------------------------------------------------|
@@ -50,5 +50,16 @@ Sub WIZ_Aliases
 /return
 |----------------------------------------------------------------------------|
 Sub WIZ_Background_Events
-	/if (${Me.Pet.ID} && ${Me.Pet.Race.Name.NotEqual[Gnomework]} && ${MacroQuest.Server.Equal[PEQTGC]}) /pet get lost
+/if (${Bool[${Me.AltAbility[Mind Crash]}]} && ${Me.AltAbilityReady[Mind Crash]}) {
+     /if (${Assisting} && ${Me.CombatState.Equal[Combat]} && ${Target.Named} && ${Target.Level} >= ${Math.Calc[${Me.Level}+3]} && ${Me.TargetOfTarget.CleanName.Equal[${Me.CleanName}]})  {
+     /if (${Me.Casting.ID}) /call interrupt
+      /delay 1s !${Me.Casting.ID}
+      /echo \say I have aggro on a dangerous target, casting Mind Crash!
+      /alt act 451
+    }
+  }
+  
+ /if (${Bool[${Me.AltAbility[Pyromancy]}]} && ${Me.AltAbilityReady[Pyromancy]} && !${Me.Buff[Pyromancy].ID})  /alt act 514
+
+/if (${Me.Pet.ID} && ${Me.Pet.CleanName.Find[${Me.CleanName}`s Familiar]}) /pet get lost	
 /return

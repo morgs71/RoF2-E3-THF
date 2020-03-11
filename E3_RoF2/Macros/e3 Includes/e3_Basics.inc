@@ -59,7 +59,17 @@ SUB AcquireFollow
 			/if (${FollowTarget.NotEqual[${Me.CleanName}]}) {
 				/if (${Stick.Active}) /squelch /stick off
 				/if (${NetAdvPath.Following}) /squelch /netfollow off
-
+				/if (${Select[${Me.Class.ShortName},WIZ]}) {
+					/if (${Me.Buff[Insidious Harvest Rk. I].ID}) {
+						/removebuff "Insidious Harvest Rk. I"
+					} else /if (${Me.Buff[Insidious Harvest Rk. II].ID}) {
+						/removebuff "Insidious Harvest Rk. II"
+					} else /if (${Me.Buff[Insidious Harvest Rk. III].ID}) {
+						/removebuff "Insidious Harvest Rk. III"
+					} 
+				}
+				
+				
 				/declare followTargetID int local
 				/if (${SpawnCount[pc =${FollowTarget}]}) {
 					/varset followTargetID ${Spawn[pc =${FollowTarget}].ID}
