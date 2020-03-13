@@ -1009,6 +1009,7 @@ SUB useBurns(ArrayName)
       /if (${check_Distance[${AssistTarget},${${ArrayName}[${i},${iMyRange}]}]}) {
         /if (${Me.ActiveDisc.ID} && ${${ArrayName}[${i},${iCastName}].Equal[Savage Spirit]}) /goto :skipCurrent
         /if (${Me.ActiveDisc.ID} && ${${ArrayName}[${i},${iCastType}].Equal[Disc]} && ${Bool[${${ArrayName}[${i},${iDuration}]}]}) /goto :skipCurrent
+		/if (${Select[${Me.Class.ShortName},BRD]} && ${Twist.Twisting}) /twist stop
         /call e3_Cast ${AssistTarget} "${ArrayName}" "${i}"
         /delay 2
         |/varset ActionTaken TRUE
