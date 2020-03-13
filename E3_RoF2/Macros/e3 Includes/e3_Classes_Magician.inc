@@ -66,114 +66,115 @@ SUB give_PetsWeapons(autoWeap)
   /declare allWeapSuccess bool local
   /declare retryWeapTimer timer local 10s
 
-  /for p 1 to ${petIDArray.Size}
-    |/echo ${p}-${petIDArray[${p}]}-${Spawn[id ${petIDArray[${p}]}].Name}-${Spawn[id ${petIDArray[${p}]}].Master}
-    /if (${SpawnCount[id ${petIDArray[${p}]}]}) {
-      /varset allWeapSuccess TRUE
-      /if (${Spawn[id ${petIDArray[${p}]}].Master.CleanName.NotEqual[${Me}]}) /tell ${Spawn[id ${petIDArray[${p}]}].Master} Incoming pet weapons, hold still!
-      /call TrueTarget ${petIDArray[${p}]}
-      /if (${Target.ID} && ${Target.Distance}>19) /call MoveToLoc ${Target.Y} ${Target.X} 50 15
-        /for w 1 to ${petItems2D.Size[1]}
-          :SummonWeap_Loop
-          /if (${petItems2D[${w},${iCastName}].Equal["Blazing Stone of Demise"]} && ${FindItemCount[=Summoned: Burning Shank]}) {
-            /call SwapItem "Summoned: Burning Shank" "Cursor"
-          |fix me later
-          |} else /if (${FindItemCount[${petItems2D[${w},${iCastName}].Replace[Summon ,]}]}) {
-          |  /call SwapItem "${petItems2D[${w},${iCastName}].Replace[Summon ,]}" "Cursor"
-          } else {
-            /call check_Ready "petItems2D" ${w}
-            /if (${c_Ready}) {
-              /if (${check_Mana["petItems2D",${w}]}) {
+/for p 1 to ${petIDArray.Size}
+/echo ${p}-${petIDArray[${p}]}-${Spawn[id ${petIDArray[${p}]}].Name}-${Spawn[id ${petIDArray[${p}]}].Master}
+/if (${SpawnCount[id ${petIDArray[${p}]}]}) {
+	/varset allWeapSuccess TRUE
+    /if (${Spawn[id ${petIDArray[${p}]}].Master.CleanName.NotEqual[${Me}]}) /tell ${Spawn[id ${petIDArray[${p}]}].Master} Incoming pet weapons, hold still!
+    /call TrueTarget ${petIDArray[${p}]}
+    /if (${Target.ID} && ${Target.Distance}>19) /call MoveToLoc ${Target.Y} ${Target.X} 50 15
+    /for w 1 to ${petItems2D.Size[1]}
+    :SummonWeap_Loop
+    /if (${petItems2D[${w},${iCastName}].Equal["Blazing Stone of Demise"]} && ${FindItemCount[=Summoned: Burning Shank]}) {
+		/call SwapItem "Summoned: Burning Shank" "Cursor"
+        |fix me later
+    |} else /if (${FindItemCount[${petItems2D[${w},${iCastName}].Replace[Summon ,]}]}) {
+        |  /call SwapItem "${petItems2D[${w},${iCastName}].Replace[Summon ,]}" "Cursor"
+    } else {
+        /call check_Ready "petItems2D" ${w}
+		/if (${c_Ready}) {
+			/if (${check_Mana["petItems2D",${w}]}) {
                 /call e3_Cast ${Me.ID} "petItems2D" ${w}
                 /delay 5s ${Cursor.ID}
-              }
             }
-          }
-          /if (!${Cursor.ID}) {
-            /if (${retryWeapTimer}) {
-              /goto :SummonWeap_Loop
-            } else {
-              /varset allWeapSuccess FALSE
-            }
-          } else /if (${Cursor.ID}) {
-            /call TrueTarget ${petIDArray[${p}]}
-            :OpenTrade_Loop
-            /click left target
-            /delay 1s ${Window[GiveWnd].Open}
-            /if (!${Window[GiveWnd].Open}) {
-              /if (${retryWeapTimer} && ${Cursor.ID}) {
-                /goto :OpenTrade_Loop
-              } else {
-                /echo Failed to open trade with ${Target.CleanName}.
-              }
-            } else {
-              :WaitAccept_Loop
-              /notify GiveWnd GVW_Give_Button LeftMouseUp
-              /delay 1s !${Window[GiveWnd].Open}
-              /if (${Window[GiveWnd].Open}) {
-                /if (${retryWeapTimer}) {
-                  /goto :WaitAccept_Loop
-                } else {
-                  /echo Failed to open trade with ${Target.CleanName}.
-                }
-              }
-            }
-          }
-        /next w
-      /if (${autoWeap} && ${allWeapSuccess}) {
-        /call WriteToIni "${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Auto-Pet Weapons-${Spawn[id ${petIDArray[${p}]}].Master}" "${Spawn[id ${petIDArray[${p}]}].CleanName}" 1
-      }
+        }
     }
-  /next p
+    /if (!${Cursor.ID}) {
+        /if (${retryWeapTimer}) {
+            /goto :SummonWeap_Loop
+        } else {
+            /varset allWeapSuccess FALSE
+        }
+    } else /if (${Cursor.ID}) {
+		:OpenTrade_Loop
+        /call TrueTarget ${petIDArray[${p}]}
+        /click left target
+        /delay 2s ${Window[GiveWnd].Open}
+        /if (!${Window[GiveWnd].Open}) {
+            /if (${retryWeapTimer} && ${Cursor.ID}) {
+				/goto :OpenTrade_Loop
+            } else {
+                /echo Failed to open trade with ${Target.CleanName}.
+            }
+        } else {
+            :WaitAccept_Loop
+			/delay 1s
+            /notify GiveWnd GVW_Give_Button LeftMouseUp
+            /delay 1s !${Window[GiveWnd].Open}
+            /if (${Window[GiveWnd].Open}) {
+                /if (${retryWeapTimer}) {
+					/goto :WaitAccept_Loop
+                } else {
+                    /echo Failed to open trade with ${Target.CleanName}.
+                }
+            }
+        }
+    }
+    /next w
+    /if (${autoWeap} && ${allWeapSuccess}) {
+        /call WriteToIni "${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Auto-Pet Weapons-${Spawn[id ${petIDArray[${p}]}].Master}" "${Spawn[id ${petIDArray[${p}]}].CleanName}" 1
+    }
+}
+/next p
 /return
 |----------------------------------------------------------------------------|
 SUB check_SummonItems
 /if (${Debug} || ${Debug_MAG}) /echo |- check_SummonItems ==>
 /if (!${Me.CombatState.Equal[COMBAT]}) {
-  /if (${summonMoltenOrb}) {
-    /if (!${Me.Moving} && !${combatTimer} && !${activeTimer} && !${rebuffTimer}) {
-        /if (!${FindItemCount[=Molten Orb]}) {
-          /call check_Ready "moltenOrb2D" 1
-          /if (${c_Ready}) {
-            /if (${check_Mana["moltenOrb2D",1]}) {
-              /call e3_Cast ${Me.ID} "moltenOrb2D" 1
-              /delay 2s ${Cursor.ID}
-              /if (${Cursor.ID}) /call ClearCursor
-            }
-          }
-        }
+	/if (${summonMoltenOrb}) {
+		/if (!${Me.Moving} && !${combatTimer} && !${activeTimer} && !${rebuffTimer}) {
+			/if (!${FindItemCount[=Molten Orb]}) {
+				/call check_Ready "moltenOrb2D" 1
+				/if (${c_Ready}) {
+					/if (${check_Mana["moltenOrb2D",1]}) {
+						/call e3_Cast ${Me.ID} "moltenOrb2D" 1
+						/delay 2s ${Cursor.ID}
+						/if (${Cursor.ID}) /call ClearCursor
+					}
+				}
+			}
+		}
     }
-  }
 
 	/if (${autoWeapons} && ${Macro.RunTime} > 10) {
 		/if (!${Me.Moving} && !${combatTimer} && !${activeTimer} && !${rebuffTimer}) {
 			/declare i int local
-      /declare p int local
-      /declare masterName string local
-      /declare petName string local
-      /declare petRace string local
-      /declare petID int local
-      /if (${Defined[petIDArray]}) /deletevar petIDArray
-      /for p 1 to ${SpawnCount[pcpet radius 100]}
-        /varset masterName ${NearestSpawn[${p},pcpet].Master}
-        /varset petName ${NearestSpawn[${p},pcpet].CleanName}
-        /varset petID ${NearestSpawn[${p},pcpet].ID}
-        /varset petRace ${NearestSpawn[${p},pcpet].Race}
-        /if (!${Bool[${petName}]} || !${Bool[${masterName}]} || ${petName.Find[familiar]} || ${petRace.Equal[Gnomework]}) /return
-        /if (${NetBots[${masterName}].ID}) {
-          /if (${Spawn[id ${petID}].LineOfSight}) {
-            /if (${petName.Equal[${Ini[${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Auto-Pet Weapons-${masterName}]}]}) {
-						  /if (${Debug} || ${Debug_MAG}) /echo check_SummonItems: I have already given weapons to ${petName}
-					  } else {
-              /call BuildArray petIDArray ${NearestSpawn[${p},pcpet].ID}
-					  }
-				  }
-		    }
-		  /next p
-		  /if (${Defined[petIDArray]}) {
-        /call give_PetsWeapons TRUE
-      }
-	  }
+			/declare p int local
+			/declare masterName string local
+			/declare petName string local
+			/declare petRace string local
+			/declare petID int local
+			/if (${Defined[petIDArray]}) /deletevar petIDArray
+			/for p 1 to ${SpawnCount[pcpet radius 100]}
+			/varset masterName ${NearestSpawn[${p},pcpet].Master}
+			/varset petName ${NearestSpawn[${p},pcpet].CleanName}
+			/varset petID ${NearestSpawn[${p},pcpet].ID}
+			/varset petRace ${NearestSpawn[${p},pcpet].Race}
+			/if (!${Bool[${petName}]} || !${Bool[${masterName}]} || ${petName.Find[familiar]} || ${petRace.Equal[Gnomework]}) /return
+			/if (${NetBots[${masterName}].ID}) {
+				/if (${Spawn[id ${petID}].LineOfSight}) {
+					/if (${petName.Equal[${Ini[${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Auto-Pet Weapons-${masterName}]}]}) {
+						/if (${Debug} || ${Debug_MAG}) /echo check_SummonItems: I have already given weapons to ${petName}
+					} else {
+						/call BuildArray petIDArray ${NearestSpawn[${p},pcpet].ID}
+					}
+				}
+			}
+			/next p
+			/if (${Defined[petIDArray]}) {
+				/call give_PetsWeapons TRUE
+			}
+		}
 	}
 }
 /if (${Debug} || ${Debug_MAG}) /echo <== check_SummonItems -|
