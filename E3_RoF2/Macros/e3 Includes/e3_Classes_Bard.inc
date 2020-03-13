@@ -41,7 +41,7 @@ SUB EVENT_saveMelody(line, ChatSender, melodyName, songsToSave)
 #EVENT startMelody "#1# tells you, 'Melody #2#'"
 SUB EVENT_startMelody(line, ChatSender, melodyName)
 /if (${Debug}) /echo |- EVENT_startMelody ==>
-  /if (${Me.Class.ShortName.Equal[BRD]}) {
+  /if (${Me.Class.ShortName.Equal[BRD]} && !${Me.Casting.ID}) {
     /if (!${checkEventArgs[${ChatSender},${line},UZR,${melodyName}]}) /return
     /declare memGem int local
     /varset melodyName ${c_eventArgData}
