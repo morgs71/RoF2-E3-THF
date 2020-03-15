@@ -23,7 +23,9 @@ Sub WIZ_Setup
 	/call iniToVarV "${Character_Ini},Wizard,Evac Spell" Evac_Spell string outer
 	/call iniToVarV "${Character_Ini},Wizard,Auto-Harvest (On/Off)" autoHarvest bool outer
 	/call IniToArrayV "${Character_Ini},Wizard,Harvest#" harvestSpells
+	/call iniToVarV "${Character_Ini},Wizard,Pyromancy (On/Off)" Pyro bool outer
   /if (${Defined[harvestSpells]}) /call BuildSpellArray "harvestSpells"	"harvestSpells2D"
+  
 
 /if (${Debug}) /echo <== WIZ_Setup -|
 /return
@@ -43,6 +45,7 @@ SUB WIZ_CharacterSettings
 	/call WriteToIni "${Character_Ini},Wizard,Evac Spell"
 	/call WriteToIni "${Character_Ini},Wizard,Auto-Harvest (On/Off)" Off
 	/call WriteToIni "${Character_Ini},Wizard,Harvest"
+	/call WriteToIni "${Character_Ini},Wizard,Pyromancy (On/Off)"
 /if (${Debug}) /echo <== WIZ_CharacterSettings -|
 /RETURN
 |----------------------------------------------------------------------------|
@@ -59,7 +62,7 @@ Sub WIZ_Background_Events
     }
   }
   
- /if (${Bool[${Me.AltAbility[Pyromancy]}]} && ${Me.AltAbilityReady[Pyromancy]} && !${Me.Buff[Pyromancy].ID})  /alt act 514
+/if (${Pyro} && ${Bool[${Me.AltAbility[Pyromancy]}]} && ${Me.AltAbilityReady[Pyromancy]} && !${Me.Buff[Pyromancy].ID})  /alt act 514
 
 /if (${Me.Pet.ID} && ${Me.Pet.CleanName.Find[${Me.CleanName}`s Familiar]}) /pet get lost	
 /return
