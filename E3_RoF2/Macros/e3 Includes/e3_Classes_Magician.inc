@@ -98,8 +98,10 @@ SUB give_PetsWeapons(autoWeap)
     } else /if (${Cursor.ID}) {
 		:OpenTrade_Loop
         /call TrueTarget ${petIDArray[${p}]}
+		/if (${Target.ID} && ${Target.Distance}>19) /call MoveToLoc ${Target.Y} ${Target.X} 50 15
+		/delay 2s
         /click left target
-        /delay 2s ${Window[GiveWnd].Open}
+        /delay 1s ${Window[GiveWnd].Open}
         /if (!${Window[GiveWnd].Open}) {
             /if (${retryWeapTimer} && ${Cursor.ID}) {
 				/goto :OpenTrade_Loop
@@ -120,6 +122,9 @@ SUB give_PetsWeapons(autoWeap)
             }
         }
     }
+	/if (${Cursor.ID}) {
+		/destroy
+	}
     /next w
     /if (${autoWeap} && ${allWeapSuccess}) {
         /call WriteToIni "${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Auto-Pet Weapons-${Spawn[id ${petIDArray[${p}]}].Master}" "${Spawn[id ${petIDArray[${p}]}].CleanName}" 1
