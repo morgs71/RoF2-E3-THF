@@ -27,11 +27,11 @@ Sub DRU_Aliases
 |----------------------------------------------------------------------------|
 
 |---Druid Rez---|
-#event Rez "<#1#> Rez"
-#event Rez "<#*#> Rez On #1#"
-#event Rez "#1# tells you, 'Rez'"
-#event Rez "#*# tells you, 'Rez On #1#'"
-#event Rez "#1# tells the group, 'Rez'"
+#event DruRez "<#1#> Rez"
+#event DruRez "<#*#> Rez On #1#"
+#event DruRez "#1# tells you, 'Rez'"
+#event DruRez "#*# tells you, 'Rez On #1#'"
+#event DruRez "#1# tells the group, 'Rez'"
 sub Event_DruRez(line, ChatSender)
 	/if (${ChatSender.Left[1].Compare[ ]}<0) /varset ChatSender ${ChatSender.Right[-2].Left[-1]}
 	/if (${Me.Class.ShortName.Equal[DRU]} && ${Spawn[${ChatSender}'s].ID}) {
