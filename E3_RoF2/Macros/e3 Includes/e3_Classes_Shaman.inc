@@ -4,22 +4,22 @@
 SUB check_Canni
 /if (${Debug}) /echo |- autoCanni ==>
 	/if (${AutoCanni}) {
-	  |only canni if im not in ooc regen
+	    |only canni if im not in ooc regen
 		/if (${Me.CombatState.NotEqual[RESTING]} && ${Me.PctMana} < ${StartCanni}) {
 			/declare s int local
 			/for s 1 to ${canniSpells2D.Size[1]}
-			  /if (${canniSpells2D[${s},${iCastName}].NotEqual[Spiritual Channeling]} || (${canniSpells2D[${s},${iCastName}].Equal[Spiritual Channeling]} && ${Me.CombatState.Equal[COMBAT]})) {
-          /call check_Ready "canniSpells2D" ${s}
-          /if (${c_Ready}) {
-            /if (${check_Mana["canniSpells2D",${s}]}) {
-            	/if (!${canniSpells2D[${s},${iCastName}].Equal[Cannibalization]} || ${Me.CurrentHPs} > 2000) {
-								/if (${canniSpells2D[${s},${iMinHP}]} <= ${Me.PctHPs}) {
-              		/call e3_Cast ${Me.ID} "canniSpells2D" ${s}
-                }
+			/if (${canniSpells2D[${s},${iCastName}].NotEqual[Spiritual Channeling]} || (${canniSpells2D[${s},${iCastName}].Equal[Spiritual Channeling]} && ${Me.CombatState.Equal[COMBAT]})) {
+				/call check_Ready "canniSpells2D" ${s}
+				/if (${c_Ready}) {
+					/if (${check_Mana["canniSpells2D",${s}]}) {
+						/if (!${canniSpells2D[${s},${iCastName}].Equal[Cannibalization]} || ${Me.CurrentHPs} > 2000) {
+							/if (${canniSpells2D[${s},${iMinHP}]} <= ${Me.PctHPs}) {
+							/call e3_Cast ${Me.ID} "canniSpells2D" ${s}
 							}
-            }
-          }
-        }
+						}
+					}
+				}
+			}
 			/if (!${ActionTaken}) /next s
 		}
 	}
@@ -29,11 +29,11 @@ SUB check_Canni
 |----------------------------------------------------------------------------|
 
 |---Shaman Rez---|
-#event Rez "<#1#> Rez"
-#event Rez "<#*#> Rez On #1#"
-#event Rez "#1# tells you, 'Rez'"
-#event Rez "#*# tells you, 'Rez On #1#'"
-#event Rez "#1# tells the group, 'Rez'"
+#event ShmRez "<#1#> Rez"
+#event ShmRez "<#*#> Rez On #1#"
+#event ShmRez "#1# tells you, 'Rez'"
+#event ShmRez "#*# tells you, 'Rez On #1#'"
+#event ShmRez "#1# tells the group, 'Rez'"
 sub Event_ShmRez(line, ChatSender)
 	/if (${ChatSender.Left[1].Compare[ ]}<0) /varset ChatSender ${ChatSender.Right[-2].Left[-1]}
 	/if (${Me.Class.ShortName.Equal[SHM]} && ${Spawn[${ChatSender}'s].ID}) {
