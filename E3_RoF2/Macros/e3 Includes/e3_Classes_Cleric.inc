@@ -276,11 +276,11 @@ Sub defineRezSpell
   
   /if (${FindItem[Aphrodite's Gauntlets of Desire].ID}) {
     /varset rezSpell Aphrodite's Gauntlets of Desire
-  } else/if (${FindItem[Staff of the Earthcrafter].ID}) {
+  } else /if (${FindItem[Staff of the Earthcrafter].ID}) {
     /varset rezSpell Staff of the Earthcrafter
-  } else/if (${FindItem[Hammer of Kerafyrm].ID}) {
+  } else /if (${FindItem[Hammer of Kerafyrm].ID}) {
     /varset rezSpell Hammer of Kerafyrm
-  } else/if (${FindItem[Water Sprinkler of Nem Ankh].ID}) {
+  } else /if (${FindItem[Water Sprinkler of Nem Ankh].ID}) {
     /varset rezSpell Water Sprinkler of Nem Ankh
   } else /if (${Me.AltAbility[Blessing of Resurrection].ID}) {
     /varset rezSpell Blessing of Resurrection
