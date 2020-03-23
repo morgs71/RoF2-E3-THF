@@ -33,7 +33,7 @@ SUB BER_Background_Events
 	
 |---Band of the Gargoyle---|
  /if (${ZerkGargoyle} && ${Me.Combat} && !${Me.Song[Cold Rage IV].ID} && ${FindItemCount[=Band of the Gargoyle]})  {
-	/useitem Band of the Gargoyle
+	/useitem "Band of the Gargoyle"
 	}
 
 	
