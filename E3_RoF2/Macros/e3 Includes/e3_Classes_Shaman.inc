@@ -100,9 +100,9 @@ Sub defineShmRezSpell
   
   /if (${FindItem[Aphrodite's Gauntlets of Desire].ID}) {
     /varset ShmrezSpell Aphrodite's Gauntlets of Desire
-  } else/if (${FindItem[Staff of the Earthcrafter].ID}) {
+  } else /if (${FindItem[Staff of the Earthcrafter].ID}) {
     /varset ShmrezSpell Staff of the Earthcrafter
-  } else/if (${FindItem[Hammer of Kerafyrm].ID}) {
+  } else /if (${FindItem[Hammer of Kerafyrm].ID}) {
     /varset ShmrezSpell Hammer of Kerafyrm
   } 
   /if (${Bool[${ShmrezSpell}]}) {
@@ -125,6 +125,7 @@ Sub SHM_Setup
 	/call IniToArrayV "${Character_Ini},Shaman,Canni#" canniSpells
 	/call IniToArrayV "${Character_Ini},Shaman,Canni Start (Pct)" StartCanni int outer
   /if (${canniSpells.Size}) /call BuildSpellArray "canniSpells"	"canniSpells2D"
+  /declare canRez int outer 0
 /if (${Debug}) /echo <== SHM_Setup -|
 /return
 |----------------------------------------------------------------------------|

@@ -3,6 +3,7 @@
 |----------------------------------------------------------------------------|
 Sub DRU_Setup
 	/call iniToVarV "${Character_Ini},Druid,Evac Spell" Evac_Spell string outer
+	/declare canRez int outer 0
 /return
 |----------------------------------------------------------------------------|
 SUB DRU_MacroSettings
@@ -98,9 +99,9 @@ Sub defineDruRezSpell
   
   /if (${FindItem[Aphrodite's Gauntlets of Desire].ID}) {
     /varset DrurezSpell Aphrodite's Gauntlets of Desire
-  } else/if (${FindItem[Staff of the Earthcrafter].ID}) {
+  } else /if (${FindItem[Staff of the Earthcrafter].ID}) {
     /varset DrurezSpell Staff of the Earthcrafter
-  } else/if (${FindItem[Hammer of Kerafyrm].ID}) {
+  } else /if (${FindItem[Hammer of Kerafyrm].ID}) {
     /varset DrurezSpell Hammer of Kerafyrm
   } 
   /if (${Bool[${DrurezSpell}]}) {
