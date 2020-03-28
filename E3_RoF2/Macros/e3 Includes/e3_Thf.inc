@@ -188,16 +188,28 @@ Sub check_GatherMana
 		/return	
 	} else /if (${Me.Combat} && ${Me.PctMana} < 30)  {
 		/call defineSmallGather
-		/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
+		/call check_Ready "SmallGatherArray2D" 1
+		/if (!${c_Ready})  {
+			/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
+		}
 	} else /if (${Me.Combat} && ${Me.PctMana} < 10)  {
 		/call defineLargeGather
-		/call e3_cast ${Me.ID} "LargeGatherArray2D" 1
+		/call check_Ready "LargeGatherArray2D" 1
+		/if (!${c_Ready})  {
+			/call e3_cast ${Me.ID} "LargeGatherArray2D" 1
+		}
 	} else /if (!${Me.Combat} && !${Me.Moving} && ${Me.PctMana} < 30)  {
 		/call defineSmallGather
-		/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
+		/call check_Ready "SmallGatherArray2D" 1
+		/if (!${c_Ready})  {
+			/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
+		}
 	} else /if (!${Me.Combat} && !${Me.Moving} && ${Me.PctMana} < 10)  {
 		/call defineLargeGather
-		/call e3_cast ${Me.ID} "LargeGatherArray2D" 1
+		/call check_Ready "LargeGatherArray2D" 1
+		/if (!${c_Ready})  {
+			/call e3_cast ${Me.ID} "LargeGatherArray2D" 1
+		}
 	}
 			
 /Return		
@@ -518,16 +530,6 @@ Sub ReaperFarAway
 	}
 /return
 
-Sub SeravinceStun
-	:SeravinceStunLoop
-		/delay 4
-		/doevents
-	/if (${SeravinceStun}==1)  {
-		/goto :SeravinceStunLoop
-	}
-/return
-
-
 Sub ValikWait
 	:ValikWaitLoop
 		/delay 4
@@ -762,7 +764,6 @@ Sub KillDraekon
 	
 	
 #Event SeravinceAoeStun "Emperor Seravince body goes rigid as he begins to look around at his attackers!"
-#Event SeravinceAoeStunComplete "You avoid the gaze of Seravince!"
 #Event SeravinceCreatesAdds "Seravince calls forth his advisors as he shouts, 'You will never be able to control or strike fear into the hearts of those whom follow their true Emperor!'"
 #Event SeravinceCallsAddsToAttack "The world begins to spin rapidly as Seravince calls forth his guardians!"
 	
@@ -770,24 +771,15 @@ Sub KillDraekon
 	
 Sub Event_SeravinceAoeStun(string line)
 	/call IsTank
-	/varset SeravinceStun 1
 	/popup AoE Stun
 	/if (${Select[${Me.Class.ShortName},MAG,DRU,WIZ,SHM,NEC,ENC,CLR,DRU,SHM]})  {
 		/return
 	} else /if (${IsTank})  {
 		/rsay Turn Away !!!
 		}
+	}
 	/face away
-	/call SeravinceStun
-/return
-
-Sub Event_SeravinceAoeStunComplete(string line)
-	/call IsTank
-	/varset SeravinceStun 0
-	/popup AoE Stun Complete
-	/if (${Select[${Me.Class.ShortName},MAG,DRU,WIZ,SHM,NEC,ENC,CLR,DRU,SHM]})  {
-		/return
-		}
+	/delay 5s
 	/face fast
 	/if (${IsTank})  {
 		/rsay Safe to Attack !!!
@@ -799,6 +791,8 @@ Sub Event_SeravinceAoeStunComplete(string line)
 		}
 	}
 /return
+
+
 
 Sub Event_SeravinceCreatesAdds(string line)
 	/call IsTank
@@ -830,13 +824,13 @@ Sub SeravinceMez
 		:EnchanterSeravinceLoop
 		/target Advisor Tel`Quka
 		/call MezmerizeTarget
-		/delay 20
+		/delay 3s
 		/target Advisor Vulth`Rak
 		/call MezmerizeTarget
-		/delay 20
+		/delay 3s
 		/target Advisor Zser`Vith
 		/call MezmerizeTarget
-		/delay 20
+		/delay 1m
 		/doevents
 		/if (${SpawnCount[npc "Emperor Seravince"]} > 0) {
 			/goto :EnchanterSeravinceLoop
@@ -1084,8 +1078,9 @@ Sub	Event_ValikEnd
 		}
 	/return
 }
-	/moveto loc 5.71 -60.22
-	:KillValik
+/moveto loc 5.71 -60.22
+/call WaitUntilNotMoving
+:KillValik
 /if (${IsTank})  {	
 			/rsay Return to the fight!!!
 			/call KillValik		
