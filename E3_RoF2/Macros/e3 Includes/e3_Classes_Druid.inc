@@ -97,12 +97,12 @@ Sub defineDruRezSpell
   /declare i int local
   
   
-  /if (${FindItem[Aphrodite's Gauntlets of Desire].ID}) {
-    /varset DrurezSpell Aphrodite's Gauntlets of Desire
-  } else /if (${FindItem[Staff of the Earthcrafter].ID}) {
-    /varset DrurezSpell Staff of the Earthcrafter
-  } else /if (${FindItem[Hammer of Kerafyrm].ID}) {
-    /varset DrurezSpell Hammer of Kerafyrm
+  /if (${FindItem[Aphrodite's Gauntlets of Desire (Tier 10)].ID}) {
+    /varset DrurezSpell Aphrodite's Gauntlets of Desire (Tier 10)
+  } else /if (${FindItem[Staff of the Earthcrafter (Tier 6)].ID}) {
+    /varset DrurezSpell Staff of the Earthcrafter (Tier 6)
+  } else /if (${FindItem[Hammer of Kerafyrm (Tier 3)].ID}) {
+    /varset DrurezSpell Hammer of Kerafyrm (Tier 3)
   } 
   /if (${Bool[${DrurezSpell}]}) {
     /if (${Defined[DrurezArray]}) /deletevar DrurezArray

@@ -98,12 +98,12 @@ Sub defineShmRezSpell
   /declare i int local
   
   
-  /if (${FindItem[Aphrodite's Gauntlets of Desire].ID}) {
-    /varset ShmrezSpell Aphrodite's Gauntlets of Desire
-  } else /if (${FindItem[Staff of the Earthcrafter].ID}) {
-    /varset ShmrezSpell Staff of the Earthcrafter
-  } else /if (${FindItem[Hammer of Kerafyrm].ID}) {
-    /varset ShmrezSpell Hammer of Kerafyrm
+  /if (${FindItem[Aphrodite's Gauntlets of Desire (Tier 10)].ID}) {
+    /varset ShmrezSpell Aphrodite's Gauntlets of Desire (Tier 10)
+  } else /if (${FindItem[Staff of the Earthcrafter (Tier 6)].ID}) {
+    /varset ShmrezSpell Staff of the Earthcrafter (Tier 6)
+  } else /if (${FindItem[Hammer of Kerafyrm (Tier 3)].ID}) {
+    /varset ShmrezSpell Hammer of Kerafyrm (Tier 3)
   } 
   /if (${Bool[${ShmrezSpell}]}) {
     /if (${Defined[ShmrezArray]}) /deletevar ShmrezArray

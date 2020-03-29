@@ -274,12 +274,12 @@ Sub defineRezSpell
   /declare i int local
   
   
-  /if (${FindItem[Aphrodite's Gauntlets of Desire].ID}) {
-    /varset rezSpell Aphrodite's Gauntlets of Desire
-  } else /if (${FindItem[Staff of the Earthcrafter].ID}) {
-    /varset rezSpell Staff of the Earthcrafter
-  } else /if (${FindItem[Hammer of Kerafyrm].ID}) {
-    /varset rezSpell Hammer of Kerafyrm
+  /if (${FindItem[Aphrodite's Gauntlets of Desire (Tier 10)].ID}) {
+    /varset rezSpell Aphrodite's Gauntlets of Desire (Tier 10)
+  } else /if (${FindItem[Staff of the Earthcrafter (Tier 6)].ID}) {
+    /varset rezSpell Staff of the Earthcrafter (Tier 6)
+  } else /if (${FindItem[Hammer of Kerafyrm (Tier 3)].ID}) {
+    /varset rezSpell Hammer of Kerafyrm (Tier 3)
   } else /if (${FindItem[Water Sprinkler of Nem Ankh].ID}) {
     /varset rezSpell Water Sprinkler of Nem Ankh
   } else /if (${Me.AltAbility[Blessing of Resurrection].ID}) {
@@ -323,10 +323,10 @@ Sub definedArbSpell
   /declare i int local
   
   
-  /if (${FindItem[Ancient Frozen Aegis of Divinity].ID}) {
-    /varset dArbSpell Ancient Frozen Aegis of Divinity
-  } else  /if (${FindItem[Ancient Shield of the Divine].ID}) {
-    /varset dArbSpell Ancient Shield of the Divine
+  /if (${FindItem[Ancient Frozen Aegis of Divinity (Tier 2)].ID}) {
+    /varset dArbSpell Ancient Frozen Aegis of Divinity (Tier 2)
+  } else  /if (${FindItem[Ancient Shield of the Divine (Tier 1)].ID}) {
+    /varset dArbSpell Ancient Shield of the Divine (Tier 1)
   } else /if (${Bool[${Me.AltAbility[Divine Arbitration]}]}) {
     /varset dArbSpell Divine Arbitration
   }
