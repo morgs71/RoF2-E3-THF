@@ -23,8 +23,8 @@ SUB BER_Background_Events
   |---Cry Havoc---|
 /if (${CryHavoc} && ${Me.Combat} && !${Me.Song[Cry Havoc].ID})  {
 
-	/if (${FindItem[=Dark Shadow Rage Spaulders].ID}) {
-		/useitem Dark Shadow Rage Spaulders
+	/if (${FindItem[=Dark Shadow Rage Spaulders (Tier 7)].ID}) {
+		/useitem Dark Shadow Rage Spaulders (Tier 7)
 	} else /if (${Me.CombatAbilityReady[Cry Havoc]}) {
 		/disc Cry Havoc
 	}
@@ -32,8 +32,8 @@ SUB BER_Background_Events
 
 	
 |---Band of the Gargoyle---|
- /if (${ZerkGargoyle} && ${Me.Combat} && !${Me.Song[Cold Rage IV].ID} && ${FindItemCount[=Band of the Gargoyle]})  {
-	/useitem "Band of the Gargoyle"
+ /if (${ZerkGargoyle} && ${Me.Combat} && !${Me.Song[Cold Rage IV].ID} && ${FindItemCount[=Band of the Gargoyle (Tier 7)]})  {
+	/useitem "Band of the Gargoyle (Tier 7)"
 	}
 
 	

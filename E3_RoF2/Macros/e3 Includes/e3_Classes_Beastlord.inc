@@ -38,10 +38,9 @@ sub Event_AE_POS(string line)
 |----------------------------------------------------------------------------|
 Sub BST_Background_Events
   /doevents AE_POS
-  /if (${BeastGargoyle} && !${BeastGargoyleTimer} && ${Me.Combat} && ${FindItemCount[=Band of the Gargoyle]})  {
+  /if (${BeastGargoyle} && ${Me.Combat} && ${FindItemCount[=Band of the Gargoyle (Tier 7)]})  {
 
-	/call e3_Cast ${Me.ID} "Band of the Gargoyle"
-	/call CreateTimer BeastGargoyleTimer 21
+	/call e3_Cast ${Me.ID} "Band of the Gargoyle (Tier 7)"
 	}
 
 
