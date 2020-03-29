@@ -32,16 +32,16 @@ SUB EVENT_thfgate
 Sub definethfgate
   /declare thfgateitem string local
   /declare i int local
-  /if (${FindItem[Elite Charm of Queen Adrianne].ID}) {
-    /varset thfgateitem Elite Charm of Queen Adrianne
-  } else /if (${FindItem[=Exquisite Charm of Queen Adrianne].ID}) {
-    /varset thfgateitem Exquisite Charm of Queen Adrianne
-  } else /if (${FindItem[=Exceptional Charm of Queen Adrianne].ID}) {
-    /varset thfgateitem Exceptional Charm of Queen Adrianne
-  } else /if (${FindItem[=Superior Magical Charm of Queen Adrianne].ID}) {
-    /varset thfgateitem Superior Magical Charm of Queen Adrianne
-  } else /if (${FindItem[=Advanced Magical Charm of Queen Adrianne].ID}) {
-    /varset thfgateitem Advanced Magical Charm of Queen Adrianne
+  /if (${FindItem[Elite Charm of Queen Adrianne (Tier 7)].ID}) {
+    /varset thfgateitem Elite Charm of Queen Adrianne (Tier 7)
+  } else /if (${FindItem[=Exquisite Charm of Queen Adrianne (Tier 6)].ID}) {
+    /varset thfgateitem Exquisite Charm of Queen Adrianne (Tier 6)
+  } else /if (${FindItem[=Exceptional Charm of Queen Adrianne (Tier 5)].ID}) {
+    /varset thfgateitem Exceptional Charm of Queen Adrianne (Tier 5)
+  } else /if (${FindItem[=Superior Magical Charm of Queen Adrianne (Tier 4)].ID}) {
+    /varset thfgateitem Superior Magical Charm of Queen Adrianne (Tier 4)
+  } else /if (${FindItem[=Advanced Magical Charm of Queen Adrianne (Tier 3)].ID}) {
+    /varset thfgateitem Advanced Magical Charm of Queen Adrianne (Tier 3)
   } else /if (${FindItem[=Magical Charm of Queen Adrianne].ID}) {
     /varset thfgateitem Magical Charm of Queen Adrianne
   } else /if (${FindItem[=Advanced Charm of Queen Adrianne].ID}) {
@@ -150,22 +150,22 @@ Sub defineLargeGather
 
   /declare LargeGatheritem string local
   /declare i int local
-  /if (${FindItem[=Fire Crystal Wristguard].ID}) {
-    /varset LargeGatheritem Fire Crystal Wristguard
-  } else /if (${FindItem[=Entropic Orb of Lithluran].ID}) {
-    /varset LargeGatheritem Entropic Orb of Lithluran
-  } else /if (${FindItem[=Immaculate Glowing Black Stone].ID}) {
-    /varset LargeGatheritem Immaculate Glowing Black Stone
-  } else /if (${FindItem[=Powerful Silk Slippers].ID}) {
-    /varset LargeGatheritem Powerful Silk Slippers
+  /if (${FindItem[=Fire Crystal Wristguard (Tier 10)].ID}) {
+    /varset LargeGatheritem Fire Crystal Wristguard (Tier 10)
+  } else /if (${FindItem[=Entropic Orb of Lithluran (Tier 8)].ID}) {
+    /varset LargeGatheritem Entropic Orb of Lithluran (Tier 8)
+  } else /if (${FindItem[=Immaculate Glowing Black Stone (Tier 8)].ID}) {
+    /varset LargeGatheritem Immaculate Glowing Black Stone (Tier 8)
+  } else /if (${FindItem[=Powerful Silk Slippers (Tier 4)].ID}) {
+    /varset LargeGatheritem Powerful Silk Slippers (Tier 4)
   } else /if (${FindItem[=Strange Silk Slippers].ID}) {
     /varset LargeGatheritem Strange Silk Slippers
-  } else /if (${FindItem[=Glowing Chains].ID}) {
-    /varset LargeGatheritem Glowing Chains
-  }else /if (${FindItem[=Silver Chains of the Burgerz].ID}) {
-    /varset LargeGatheritem Silver Chains of the Burgerz
-  } else /if (${FindItem[=Silver Chains].ID}) {
-    /varset LargeGatheritem Silver Chains
+  } else /if (${FindItem[=Glowing Chains (Tier 2)].ID}) {
+    /varset LargeGatheritem Glowing Chains (Tier 2)
+  }else /if (${FindItem[=Silver Chains of the Burgerz (Tier 4)].ID}) {
+    /varset LargeGatheritem Silver Chains of the Burgerz (Tier 4)
+  } else /if (${FindItem[=Silver Chains (Tier 2)].ID}) {
+    /varset LargeGatheritem Silver Chains (Tier 2)
   } 
   /if (${Bool[${LargeGatheritem}]}) {
     /if (${Defined[LargeGatherArray]}) /deletevar LargeGatherArray
@@ -236,12 +236,12 @@ Sub definecohspell
   /declare i int local
   /if (${Me.Book[Call of the Hero]}) {
     /varset cohspell Call of the Hero
-  } else /if (${FindItem[=Ino's Lost Trinket].ID}) {
-    /varset cohspell Ino's Lost Trinket
-  } else /if (${FindItem[=Arion, Skull of the Ancient].ID}) {
-    /varset cohspell Arion, Skull of the Ancient
-  } else /if (${FindItem[=Orb of the Crimson Bull].ID}) {
-    /varset cohspell Orb of the Crimson Bull
+  } else /if (${FindItem[=Ino's Lost Trinket (Tier 10)].ID}) {
+    /varset cohspell Ino's Lost Trinket (Tier 10)
+  } else /if (${FindItem[=Arion, Skull of the Ancient (Tier 10)].ID}) {
+    /varset cohspell Arion, Skull of the Ancient (Tier 10)
+  } else /if (${FindItem[=Orb of the Crimson Bull (Tier 2)].ID}) {
+    /varset cohspell Orb of the Crimson Bull (Tier 2)
   } 
   /if (${Bool[${cohspell}]}) {
     /if (${Defined[cohspellArray]}) /deletevar cohspellArray
@@ -278,7 +278,7 @@ sub Event_cohme(line, ChatSender)
 					/Return
 				} else  {
 					/tell ${ChatSender} Call of Hero is Incoming...Please Standby.
-					/call e3_cast ${Spawn[${ChatSender}'s].ID} "cohspellArray2D" 1		
+					/call e3_cast ${Spawn[pc =${ChatSender}].ID} "cohspellArray2D" 1		
 				}
 			}	
 		
@@ -725,7 +725,7 @@ Sub Event_MoveToDraekon
 	/call IsTank
 	/if (${IsTank})  {
 		/rsay Safe to move back ${Time}
-		/delay 30
+		/delay 3s
 		/goto :MovedtoDraekonNowKill
 	}
 	:MoveToDraekon
@@ -775,20 +775,19 @@ Sub Event_SeravinceAoeStun(string line)
 	/if (${Select[${Me.Class.ShortName},MAG,DRU,WIZ,SHM,NEC,ENC,CLR,DRU,SHM]})  {
 		/return
 	} else /if (${IsTank})  {
-		/rsay Turn Away !!!
-		}
+		/rsay Turn Away !!!	
 	}
-	/face away
+	/stick off
+	/varset AllowControl FALSE
+	/face away 
 	/delay 5s
-	/face fast
+	/face fast 
 	/if (${IsTank})  {
 		/rsay Safe to Attack !!!
 		/call KillSeravince
-	} else /if (!${IsTank})  {	
-		/if (${MainAssist.Equal[${Me.CleanName}]})  {
+	} else /if (${MainAssist.Equal[${Me.CleanName}]})  {
 			/rsay Safe to Attack !!!
 			/call KillSeravince
-		}
 	}
 /return
 
@@ -823,16 +822,15 @@ Sub SeravinceMez
 	/if (${Me.Class.ShortName.Equal[ENC]}) {
 		:EnchanterSeravinceLoop
 		/target Advisor Tel`Quka
-		/call MezmerizeTarget
-		/delay 3s
+		/call Mez
+		/delay 4s
 		/target Advisor Vulth`Rak
-		/call MezmerizeTarget
-		/delay 3s
+		/call Mez
+		/delay 4s
 		/target Advisor Zser`Vith
-		/call MezmerizeTarget
-		/delay 1m
-		/doevents
+		/call Mez
 		/if (${SpawnCount[npc "Emperor Seravince"]} > 0) {
+			/delay 3s
 			/goto :EnchanterSeravinceLoop
 		}
 	}
@@ -1474,7 +1472,7 @@ Sub thf_Aliases
 	/squelch /alias /attendance /bc attendance
 	/squelch /alias /ralloson /bc ralloszek on
 	/squelch /alias /rallosoff /bc ralloszek off
-	/squelch /alias /mezit /bc Mez on ${Target.ID}
+	/noparse /squelch /alias /mezit /bc Mez on ${Target.ID}
 
 
 /if (${Debug} || ${Debug_Thf}) /echo <== thf_Aliases -|
