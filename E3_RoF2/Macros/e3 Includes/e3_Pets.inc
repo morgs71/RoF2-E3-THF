@@ -213,8 +213,8 @@ SUB pet_spellArrays
   }
   /if (${Defined[petHeal]})   /call BuildSpellArray "petHeal"	"petHeal2D"
 
-  /if (${FindItemCount[=Green Mask]}) {
-    /call BuildArray petShrink "Green Mask"
+  /if (${FindItemCount[=Green Mask (Tier 1)]}) {
+    /call BuildArray petShrink "Green Mask (Tier 1)"
   } else /if (${FindItemCount[=Chaotic Brigandine Ring]}) {
     /call BuildArray petShrink "Chaotic Brigandine Ring"
   } else /if (${FindItemCount[=Chaotic Shimmering White Shroud]}) {
