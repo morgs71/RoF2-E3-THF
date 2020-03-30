@@ -107,45 +107,22 @@ Sub check_rune
 
 SUB event_MezTarget(line, ChatSender, int MobID)
 
-/target ${MobID}
-/call MezmerizeTarget
+/target id ${MobID}
+/call Mez
 
 /return
 
 
-sub MezmerizeTarget
 
-/declare GiveUpValue int local 2
-/if (${${Target.ID}${Spell[${Mez_Spell}].ID}} == 0) {
-	/if (!${Defined[${Target.ID}${Spell[${Mez_Spell}].ID}]}) /declare ${Target.ID}${Spell[${Mez_Spell}].ID} timer outer 0
-	:recast
-	/call e3_Cast ${Target.ID} "${Mez_Spell}" 
-	/if (${Select[${castReturn},CAST_RESISTED]}) {
-		/if (!${Defined[ResistRetry]}) /declare ResistRetry int local 0
-		/docommand ${ChatToggle} **Warning** ${Target.CleanName} resisted ${Mez_Spell}.
-		/if (${Defined[ResistRetry]}) /varcalc ResistRetry ${ResistRetry}+1
-		/if (${ResistRetry} < ${GiveUpValue}) /goto :recast
-	} else /if (${Select[${castReturn},CAST_IMMUNE]}) {
-		/varset ${Target.ID}${Spell[${Mez_Spell}].ID} 20000000
-		/docommand ${ChatToggle} **Warning** ${Target.CleanName} is IMMUNE to ${Mez_Spell}.
-	} else /if (${Select[${castReturn},CAST_CANNOTSEE]} && ${spamTimer}==0) {
-		/if (!${Defined[Retry]}) /declare LOSRetry int local 0
-		/docommand ${ChatToggle} **Warning** I cannot see ${Target.CleanName}!!.
-		/if (${Defined[spamTimer]}) /varset spamTimer 15s
-		/if (${Defined[LOSRetry]}) /varcalc LOSRetry ${LOSRetry}+1
-		/if (${LOSRetry} < ${GiveUpValue}) /goto :recast
-	} else /if (${Select[${castReturn},CAST_OUTOFMANA]} && ${spamTimer}==0) {
-		/docommand ${ChatToggle} **Warning** I do not have enough mana to cast ${MyDebuffs[${i}]}!!.
-		/if (${Defined[spamTimer]}) /varset spamTimer 15s
-	} else /if (${Select[${castReturn},CAST_OUTOFRANGE]} && ${spamTimer}==0) {
-		/docommand ${ChatToggle} **Warning** ${MyDebuffs[${i}]} is out of range for ${MyDebuffs[${i}]}!!.
-		/if (${Defined[spamTimer]}) /varset spamTimer 15s
-	} else /if (${Select[${castReturn},CAST_SUCCESS]})	{
-		/docommand ${ChatToggle} Landed ${Mez_Spell} on ${Target.CleanName}!!.
-		/if (${Defined[${Target.ID}${Spell[${Mez_Spell}].ID}]}) /varset ${Target.ID}${Spell[${Mez_Spell}].ID} ${Math.Calc[${Spell[${Mez_Spell}].Duration} * 6-6]}s
-	}
-}
-/delay 5s !${Me.Casting.ID}
+
+Sub Mez
+
+/declare mezTarg int local
+/varset mezTarg ${Target.ID}
+/call TrueTarget ${mezTarg}
+
+/call e3_Cast ${mezTarg} "mezArray2D" 1
+		
 /return
 
 
@@ -155,15 +132,25 @@ Sub ENC_Setup
   /declare Debug_Ench bool outer FALSE
   /declare autoRune bool outer FALSE
 
+
 	/if (${Ini[${Character_Ini},Enchanter,AutoRune].Length}) /call iniToVarV "${Character_Ini},Enchanter,AutoRune (On/Off)" autoRune bool outer
 	/if (${Ini[${Character_Ini},Enchanter,GatherMana Pct].Length}) /call iniToVarV "${Character_Ini},Enchanter,GatherMana Pct" gatherManaPCT int outer
 
   /call IniToArrayV "${Character_Ini},Enchanter,RuneTarget#"  runeTargets
   /call IniToArrayV "${Character_Ini},Enchanter,RuneSpell#"   runeArray
-  /call INItoVarV "${Character_Ini},Enchanter,Mez Spell" Mez_Spell string outer
+  /call IniToArrayV "${Character_Ini},Enchanter,Mez Spell"  mezArray 
+  
+  /if (${Bool[${mezArray.Size}]}) {
+	/declare i int local
+    /call BuildSpellArray "mezArray"	"mezArray2D"
+	/for i 1 to ${mezArray2D.Size[1]}
+        /varset mezArray2D[${i},${iCastInvis}] 1
+      /next i
+  }
   
   /if (${Bool[${runeArray.Size}]}) {
     /call BuildSpellArray "runeArray"	"runeArray2D"
+
   } else {
     /if (${Defined[autoRune]}) /varset autoRune FALSE
   }
@@ -175,6 +162,8 @@ Sub ENC_Background_Events
 	/doevents toggleRune
 	/doevents add_RuneTarget
 	/doevents remove_RuneTarget
+	/doevents MezTarget
+	
 	/if (${Assisting} && ${Bool[${gatherManaPCT}]} && ${Me.PctMana} < ${gatherManaPCT} && ${Me.AltAbilityReady[Gather Mana]} && ${Me.CombatState.Equal[COMBAT]}) /casting "Gather Mana" -maxtries|3
 /return
 |----------------------------------------------------------------------------|
