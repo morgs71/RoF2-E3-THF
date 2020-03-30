@@ -1139,189 +1139,149 @@ Sub Event_MoarburgerzFull
 
 
 
-|-------------------------------Creeping Doom Cures--------------------------------|
+|-----------------------------Xeru------------------------------------------|
 
 
-#Event CreepingDoom "#1# feels death call their name."
-#Event CreepingDoomCure "#1# tells the raid, 'Cure Creeping Doom'"
+#Event XeruVamp "Xeru The Arbiter of Mayong takes the form of the first Vampire"
+#Event XeruForm "Xeru The Arbiter of Mayong begins to dissolve and blur as he changes forms"
+#Event XeruForm "<#1#> #2# Casting Chains of Reflection"
 
-Sub Event_CreepingDoom (string line, string Infected)
 
-/call IsTank
-/if (${Me.Name.Equal[${Infected}]} && ${Select[${Me.Class.ShortName},DRU,SHM,PAL]} && !${IsTank})  {
-	:RGCloopa
-	/if (${Me.Buff[Creeping Doom].ID})  {
-		/call e3_Cast ${Me.ID} "Remove Greater Curse"
-		/delay 60
-		/goto :RGCloopa
-	}
-	/return
-} else /if (${Me.Name.Equal[${Infected}]} && ${IsTank})  {
-	/rsay Cure Creeping Doom
-	/return
-} else /if (${Me.Name.Equal[${Infected}]} && !${IsTank})  {
-	/call CreepingDoomRGCitemChk
-	/if (${Me.Buff[Creeping Doom].ID})  {
-		/rsay Cure Creeping Doom
-	}
-}
+Sub Event_XeruVamp
+
+
+    /echo [XeruVamp - ${Time.Time24}] Started
+
+    /if (!${Defined[XeruVamp]})             /declare XeruVamp int outer             0
+    /if (!${Defined[XeruVampSpamFilter]})   /declare XeruVampSpamFilter int outer   0
+    /if (!${Defined[XeruVampSpamTimer]})    /declare XeruVampSpamTimer timer outer  0
+    /if (!${Defined[XeruName]})             /declare XeruName string local          Xeru The Arbiter of Mayong
+    | For Cazic Test: /varset XeruName Cazic Thule Dummy
+
+    | Change Form or Cast Spam Filter Wait 2s for Recast
+    /if (${XeruVampSpamFilter}) {
+        /echo [XeruVamp - ${Time.Time24}] SpamFilter Timer=<${XeruVampSpamTimer}>
+        /declare k int local                0
+        /for k 0 to ${Math.Calc[${XeruVampSpamFilter} * 2]}
+            /doevents XeruForm
+            /if (!${XeruVampSpamTimer}) /goto :XeruVampSpamFilter_end
+            | delay 1/2s
+            /delay 5
+        /next k
+        :XeruVampSpamFilter_end
+        /varset XeruVampSpamFilter 0
+        /varset XeruVampSpamTimer 0
+    }
+
+    /if (${Spawn[NPC =${XeruName}].Distance}<=300 && ${Spawn[NPC =${XeruName}].LineOfSight} && ${Cast.Ready[Chains of Reflection]} && !${XeruVampSpamFilter}) {
+        /echo [XeruVamp - ${Time.Time24}] Event Start
+        | Set XeruVamp Form
+        /varset XeruVamp 1
+
+        /target npc id ${Spawn[NPC =${XeruName}].ID}
+        /delay 20 ${Target.ID}==${Spawn[NPC =${XeruName}].ID}
+
+        /if (${Me.Casting.ID} && ${Me.Casting.ID}!=8974) {
+            /stopcast
+            /delay 1s !${Me.Casting.ID}
+        }
+
+        /declare i int local                0
+        /declare j int local                0
+        /for i 1 to ${NetBots.Counts}
+            /if (${NetBots[${NetBots.Client.Arg[${i}]}].InZone} && ${NetBots[${NetBots.Client.Arg[${i}]}].Name.Find[${Me.CleanName}]}) {
+                /echo [XeruVamp - ${Time.Time24}] ${Me.CleanName} Start Waiting (${Int[${Math.Calc[(${i}-1)]}]}s)
+                | /rsay [XeruVamp - ${Time.Time24}] Waiting (${Int[${Math.Calc[(${i}-1)]}]}s)
+                | Loop event and sequence toons casting
+                /for j 1 to ${Int[${Math.Calc[(${i}-1) * 2]}]}
+                    /doevents XeruForm
+                    | delay 1/2s
+                    /delay 5
+                    /if (!${XeruVamp}) /goto :XeruVamp_end
+                /next j
+                /if (${XeruVamp} && ${Target.ID}==${Spawn[NPC =${XeruName}].ID}) {
+                    /echo [XeruVamp - ${Time.Time24}] ${Me.CleanName} Casting
+                    | Skip other toons
+                    /bca Casting Chains of Reflection
+                    | Casting Chains
+                    /if (${Target.ID}==${Spawn[NPC =Xeru The Arbiter of Mayong].ID}) /casting "Chains of Reflection" item
+                    /rsay [XeruVamp - ${Time.Time24}] Casting <Chains of Reflection> on <${Target.CleanName}>
+                }
+                /goto :XeruVamp_end
+            }
+        /next i
+
+        :XeruVamp_end
+        /echo [XeruVamp - ${Time.Time24}] ${Me.CleanName} ENDED
+        /varset XeruVamp 0
+        /varset XeruVampSpamFilter 2
+        /varset XeruVampSpamTimer 2s
+    }
+
 /return
 
-Sub CreepingDoomRGCitemChk
+Sub Event_XeruForm
 
-:RGCloopb
-/if (${Me.Buff[Creeping Doom].ID})  {
-	/if (${FindItem[=Shissar Empire Badge of Honor].ID})  {
-		/call e3_Cast ${Me.ID} "Shissar Empire Badge of Honor"
-		/delay 50
-		/goto :RGCloopb
-	} else /if (${FindItem[=Frosted Blackflame Sphere].ID})  {
-		/call e3_Cast ${Me.ID} "Frosted Blackflame Sphere" 
-		/delay 65
-		/goto :RGCloopb
-	} else /if (${FindItem[=Blackflame Sphere].ID})  {
-		/call e3_Cast ${Me.ID} Blackflame Sphere" 
-		/delay 75
-		/goto :RGCloopb
-	} else /if (${FindItem[=Shale Shoulderpads of Order].ID})  {
-		/call e3_Cast ${Me.ID} "Shale Shoulderpads of Order" 
-		/delay 80
-		/goto :RGCloopb
-	}
-}	
+    /if (!${Defined[XeruVamp]})             /declare XeruVamp int outer 0
+    /if (!${Defined[XeruVampSpamFilter]})   /declare XeruVampSpamFilter int outer 0
+    /if (!${Defined[XeruVampSpamTimer]})    /declare XeruVampSpamTimer timer outer  0
 
+    | Remove XeruVamp Form
+    /varset XeruVamp 0
+    /varset XeruVampSpamFilter 2
+    /varset XeruVampSpamTimer 2s
 
-Sub Event_CreepingDoomCure (string line, string ChatSender)
+    | Break Casting Chains
+    /if (${Me.Casting.ID}==8974) {
+        /stopcast
+        /interrupt
+    }
 
-| -Verify the event
-		/call verifyEvent "${ChatSender}" "${line}"
-		/if (${Defined[ChatSender]}) /varset ChatSender ${Macro.Return.Arg[1,_]}
-		|    |-----------Valid User----------|
-		/if (!${Bool[${Macro.Return.Arg[2,_]}]}) {
-
-			/call IniToVar "${genSettings_Ini},Buff Requests,Allow Buff Requests (On/Off)" allow_BuffRequests bool local
-			
-			| If the user is not valid, check allow_BuffRequests
-			/if (${Macro.Return}) {
-		
-				| If allow_BuffRequests=TRUE, check restricked PCs
-				/if (!${Select[${ChatSender},${Ini[${Macro_Ini},Buff Requests,Restricted PCs]}]}) /goto :allowAccess
-			}
-		} else {
-		
-			:allowAccess
-			
-			/call IsTank
-			/if (${Select[${Me.Class.ShortName},DRU,SHM,PAL]} && !${IsTank})  {
-				:RGCloopc
-				/target ${ChatSender}
-				/if (${Target.Buff[Creeping Doom].ID})  {
-					/call e3_Cast ${ChatSender} "Remove Greater Curse"
-					/delay 60
-					/goto :RGCloopc
-	}
-/return			
-
-|--------------Rage of Ssraeshza------------------------|
-
-
-#Event RageofSsraeshza "You tell your raid, 'Check Rage of Ssraeshza'"
-#Event RageofSsraeshza "#*# tells the raid, 'Check Rage of Ssraeshza'"
-#Event RageofSsraeshzaCure "#1# tells the raid, 'Cure Rage of Ssraeshza'"
-
-
-Sub Event_RageofSsraeshza 
-
-/call IsTank
-/if (${Select[${Me.Class.ShortName},DRU,SHM,PAL]} && !${IsTank})  {
-	:RGCloopa
-	/if (${Me.Buff[Rage of Ssraeshza].ID})  {
-		/call e3_Cast ${Me.ID} "Remove Greater Curse"
-		/delay 60
-		/goto :RGCloopa
-	}
-	/return
-} else /if (${IsTank})  {
-	/rsay Cure Rage of Ssraeshza
-	/return
-} else /if (${Me.Name.Equal[${Infected}]} && !${IsTank})  {
-	/call RageofSsraeshzaCureRGCitemChk
-	/if (${Me.Buff[Rage of Ssraeshza].ID})  {
-		/rsay Cure Rage of Ssraeshza
-	}
-}
 /return
 
 
 
-Sub RageofSsraeshzaCureRGCitemChk
-
-:RGCloopb
-/if (${Me.Buff[Rage of Ssraeshza].ID})  {
-	/if (${FindItem[=Shissar Empire Badge of Honor].ID})  {
-		/call e3_Cast ${Me.ID} "Shissar Empire Badge of Honor"
-		/delay 50
-		/goto :RGCloopb
-	} else /if (${FindItem[=Frosted Blackflame Sphere].ID})  {
-		/call e3_Cast ${Me.ID} "Frosted Blackflame Sphere" 
-		/delay 65
-		/goto :RGCloopb
-	} else /if (${FindItem[=Blackflame Sphere].ID})  {
-		/call e3_Cast ${Me.ID} Blackflame Sphere" 
-		/delay 75
-		/goto :RGCloopb
-	} else /if (${FindItem[=Shale Shoulderpads of Order].ID})  {
-		/call e3_Cast ${Me.ID} "Shale Shoulderpads of Order" 
-		/delay 80
-		/goto :RGCloopb
-	}
-}	
-/return
 
 
-Sub Event_RageofSsraeshzaCure (string line, string ChatSender)
 
-| -Verify the event
-		/call verifyEvent "${ChatSender}" "${line}"
-		/if (${Defined[ChatSender]}) /varset ChatSender ${Macro.Return.Arg[1,_]}
-		|    |-----------Valid User----------|
-		/if (!${Bool[${Macro.Return.Arg[2,_]}]}) {
 
-			/call IniToVar "${genSettings_Ini},Buff Requests,Allow Buff Requests (On/Off)" allow_BuffRequests bool local
-			
-			| If the user is not valid, check allow_BuffRequests
-			/if (${Macro.Return}) {
-		
-				| If allow_BuffRequests=TRUE, check restricked PCs
-				/if (!${Select[${ChatSender},${Ini[${Macro_Ini},Buff Requests,Restricted PCs]}]}) /goto :allowAccess
-			}
-		} else {
-		
-			:allowAccess
-			
-			/call IsTank
-			/if (${Select[${Me.Class.ShortName},DRU,SHM,PAL]} && !${IsTank})  {
-				:RGCloopc
-				/target ${ChatSender}
-				/if (${Target.Buff[Rage of Ssraeshza].ID})  {
-					/call e3_Cast ${ChatSender} "Remove Greater Curse"
-					/delay 60
-					/goto :RGCloopc
-	}
-/return			
-			
-			
-			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 |---------------------------------------Events Section End----------------------------------------|
 
 
+|---------------------------------------------Trash Mob Scripts-------------------------------------|
 
+|--------------------------Dreadspire Keep-------------------------|
 
+#Event VampStake "Enraged Vampire staggers and collapses."
+#Event VampStake "Ravaged Vampire staggers and collapses."
+#Event VampStake "Vampire Researcher staggers and collapses."
+#Event VampStake "Xurith The Bloody staggers and collapses."
 
+SUB Event_VampStake(string line) 
 
-
+/popup Vampire Down....Stake It !!!!
+/if (${FindItem[Vampire Bane Earring (Tier 7)].ID} && ${Select[${Me.Class.ShortName},PAL,SHD,WAR,MNK,BER,BRD,ROG,RNG,BST]}) {
+	/casting "Vampire Bane Earring (Tier 7)" item
+}
+/Return
 
 
 
@@ -1435,7 +1395,6 @@ Sub Thf_Background_Events
 /doevents DraekonSafeFromGrass
 /doevents DraekonVoiceEnd
 /doevents SeravinceAoeStun
-/doevents SeravinceAoeStunComplete
 /doevents SeravinceCreatesAdds
 /doevents SeravinceCallsAddsToAttack
 /doevents VistrindaEggs
@@ -1455,6 +1414,11 @@ Sub Thf_Background_Events
 /doevents HoHCsarth
 /doevents HoHEnji
 /doevents HoHCruthz
+/doevents VampStake
+/doevents XeruVamp
+/doevents XeruForm
+
+
 
 /if (${GatherManaCheck} && ${Me.PctMana} < 30)  /call check_GatherMana
 	
