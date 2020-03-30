@@ -295,7 +295,11 @@ Sub e3_Cast(int targetID, ArrayName, int ArrayIndex)
 			/if (${Debug_Casting} && ${Target.ID}) /docommand ${ChatToggle} ** ${Target.Name} resisted ${pendingCast} **
 		} else /if (${castReturn.Equal[CAST_IMMUNE]}) {
       /docommand ${ChatToggle} ${Target.Name} is immune to ${pendingCast} **
-			/varset immuneList ${immuneList}${pendingCastID}_${castTargetName},
+				/if (${Me.Class.ShortName.Equal[ENC]}) {
+					/goto :skipCast
+				} else {
+					/varset immuneList ${immuneList}${pendingCastID}_${castTargetName},
+				}
     |dont create a nohold timer for detrimental AE spells
 		} else /if (${castReturn.Equal[CAST_TAKEHOLD]} && ${Select[${ArrayName},TargetAE_Spells2D,PBAE_Spells2D]}==0) {
       /if (${Target.ID}==${targetID}) {
