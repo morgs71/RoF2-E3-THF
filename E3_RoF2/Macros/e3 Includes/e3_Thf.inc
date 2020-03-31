@@ -890,7 +890,8 @@ Sub	Event_VistrindaEggs
 
 /popup EGGS HAVE SPAWNED !!!!
 /if (${Select[${Me.Class.ShortName},MAG,WIZ,NEC,ENC]})  {
-	/declare originalLoc string local ${Me.Loc.Replace[ ,]}
+	/declare originalLoc string local
+	/varset originalLoc string local ${Me.Loc.Replace[ ,]}
 	/doevents BackOff
 	/moveto loc 722.02 1562.18
 	/call WaitUntilNotMoving
@@ -908,7 +909,7 @@ Sub	Event_VistrindaEggs
 	/call WaitUntilNotMoving
 	/call EggCheck
 	/call EggTrigger
-	/call MoveTo -Loc|${originalLoc}
+	/call MoveTo loc ${originalLoc.Arg[1,,]} ${originalLoc.Arg[2,,]}
 	/call WaitUntilNotMoving
 	/call KillVistrinda
 }
