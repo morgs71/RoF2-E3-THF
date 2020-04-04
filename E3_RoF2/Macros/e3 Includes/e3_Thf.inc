@@ -612,7 +612,7 @@ Sub Event_ReaperOfMortalityDuck(string line)
 	/popup Duck!!!
 	/if (${IsTank}) /return
 	/varset ReaperDucking 1
-	/keypress d
+	/keypress ${DuckKey}
 	/call ReaperDuck
 
 /return
@@ -622,7 +622,7 @@ Sub Event_ReaperOfMortalityUnduck(string line)
 	/popup Ducking finished
 	/if (${IsTank}) /goto :SkipDuck
 	/varset ReaperDucking 0
-	/keypress d
+	/keypress ${DuckKey}
 	:SkipDuck
 	/if (${IsTank})  {
 		/call KillReaper
@@ -1425,6 +1425,7 @@ Sub Thf_Setup
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
 /if (${Ini[${Character_Ini},Misc,Gather Mana (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Gather Mana (On/Off)" GatherManaCheck bool outer
 /if (${Ini[${Character_Ini},Misc,Self Shrink (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Self Shrink (On/Off)" SelfShrink bool outer
+/if (${Ini[${Character_Ini},Misc,Duck Key Assignment].Length})  /call IniToVarV "${Character_Ini},Misc,Duck Key Assignment" DuckKey string outer
 	
 /if (${Debug}) /echo <== Thf_Setup -|
 /return
@@ -1511,7 +1512,8 @@ SUB Thf_CharacterSettings
 
 
 /if (${Select[${Me.Class.ShortName},CLR,PAL,RNG,SHD,ENC,MAG,NEC,BST,WIZ,DRU,SHM]})  /call WriteToIni "${Character_Ini},Misc,Gather Mana (On/Off)" On
-/call WriteToIni "${Character_Ini},Misc,Self Shrink (On/Off)" On	
+/call WriteToIni "${Character_Ini},Misc,Self Shrink (On/Off)" On
+/call WriteToIni "${Character_Ini},Misc,Duck Key Assignment" X	
 
 
 
