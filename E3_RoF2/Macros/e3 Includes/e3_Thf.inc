@@ -5,6 +5,10 @@
 |- Contains various events for The Hidden Forest Server			-|
 |----------------------------------------------------------------|
 
+|---------------------------------------THF Utility Items ---------------------------------|
+
+
+
 |---------------THF Forest Gate-----------------|
 
 #EVENT thfgate "<#1#> thfgate"
@@ -217,6 +221,46 @@ Sub check_GatherMana
 		
 
 		
+|---------------------------Auto Shrink-------------------------|	
+
+SUB Auto_Shrink
+
+/call SelfShrink_Spell
+/call check_Ready "SelfShrinkSpellArray2D" 1
+/if (${c_Ready})  {
+	/call e3_cast ${Me.ID} "SelfShrinkSpellArray2D" 1
+}
+
+
+/Return
+
+
+SUB SelfShrink_Spell
+
+/declare SelfShrinkSpell string local
+
+/if (${FindItem[=Green Mask (Tier 1)].ID}) {
+    /varset SelfShrinkSpell "Green Mask (Tier 1)"
+  } else /if (${FindItem[=Chaotic Brigandine Ring].ID}) {
+    /varset SelfShrinkSpell "Chaotic Brigandine Ring"
+  } else /if (${FindItem[=Chaotic Shimmering White Shroud].ID}) {
+    /varset SelfShrinkSpell "Chaotic Shimmering White Shroud"
+  } else /if (${FindItem[=Vial of Shrieker Essence].ID}) {
+    /varset SelfShrinkSpell "Vial of Shrieker Essence"
+  }
+  
+ /if (${Bool[${SelfShrinkSpell}]}) {
+    /if (${Defined[SelfShrinkSpellArray]}) /deletevar SelfShrinkSpellArray
+    /declare SelfShrinkSpellArray[1] string outer ${SelfShrinkSpell}
+    /if (${SelfShrinkSpellArray.Size}) {
+		/call BuildSpellArray "SelfShrinkSpellArray" "SelfShrinkSpellArray2D"
+	}
+} else {
+    /bc I do not have a Shrink item available
+  }
+
+	
+/Return		
 		
 | -------------------------------------------------------------------------------------------------------|
 | -- Call of the Hero: Single Target, Group, All (Netbots)          Written by Muergan                  -|
@@ -1368,8 +1412,10 @@ Sub Thf_Setup
 /declare ValikWait int outer 0	
 /declare TankName string outer NULL
 
+
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
 /if (${Ini[${Character_Ini},Misc,Gather Mana (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Gather Mana (On/Off)" GatherManaCheck bool outer
+/if (${Ini[${Character_Ini},Misc,Self Shrink (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Self Shrink (On/Off)" SelfShrink bool outer
 	
 /if (${Debug}) /echo <== Thf_Setup -|
 /return
@@ -1420,10 +1466,11 @@ Sub Thf_Background_Events
 /doevents XeruVamp
 /doevents XeruForm
 
+/if (${SelfShrink} && ${Me.Height} > 2)  /call Auto_Shrink
 
 
 /if (${GatherManaCheck} && ${Me.PctMana} < 30)  /call check_GatherMana
-	
+
 
 
 /return
@@ -1455,7 +1502,7 @@ SUB Thf_CharacterSettings
 
 
 /if (${Select[${Me.Class.ShortName},CLR,PAL,RNG,SHD,ENC,MAG,NEC,BST,WIZ,DRU,SHM]})  /call WriteToIni "${Character_Ini},Misc,Gather Mana (On/Off)" On
-	
+/call WriteToIni "${Character_Ini},Misc,Self Shrink (On/Off)" On	
 
 
 
