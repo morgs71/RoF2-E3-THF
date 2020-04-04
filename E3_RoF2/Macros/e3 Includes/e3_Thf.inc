@@ -241,12 +241,19 @@ SUB SelfShrink_Spell
 
 /if (${FindItem[=Green Mask (Tier 1)].ID}) {
     /varset SelfShrinkSpell "Green Mask (Tier 1)"
+	/varset NoShrinkItem 0
   } else /if (${FindItem[=Chaotic Brigandine Ring].ID}) {
     /varset SelfShrinkSpell "Chaotic Brigandine Ring"
+	/varset NoShrinkItem 0
   } else /if (${FindItem[=Chaotic Shimmering White Shroud].ID}) {
     /varset SelfShrinkSpell "Chaotic Shimmering White Shroud"
+	/varset NoShrinkItem 0
   } else /if (${FindItem[=Vial of Shrieker Essence].ID}) {
     /varset SelfShrinkSpell "Vial of Shrieker Essence"
+	/varset NoShrinkItem 0
+	} else /if (${Me.Book[Shrink]}) {
+    /varset SelfShrinkSpell Shrink
+  } 
   }
   
  /if (${Bool[${SelfShrinkSpell}]}) {
@@ -257,6 +264,7 @@ SUB SelfShrink_Spell
 	}
 } else {
     /bc I do not have a Shrink item available
+	/varset NoShrinkItem 1
   }
 
 	
@@ -1411,6 +1419,7 @@ Sub Thf_Setup
 /declare IsTank bool outer FALSE
 /declare ValikWait int outer 0	
 /declare TankName string outer NULL
+/declare NoShrinkItem bool outer 0
 
 
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
@@ -1466,7 +1475,7 @@ Sub Thf_Background_Events
 /doevents XeruVamp
 /doevents XeruForm
 
-/if (${SelfShrink} && ${Me.Height} > 2)  /call Auto_Shrink
+/if (${SelfShrink} && !${NoShrinkItem} && ${Me.Height} > 2)  /call Auto_Shrink
 
 
 /if (${GatherManaCheck} && ${Me.PctMana} < 30)  /call check_GatherMana
