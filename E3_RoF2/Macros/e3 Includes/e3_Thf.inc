@@ -184,30 +184,31 @@ Sub defineLargeGather
 
 Sub check_GatherMana
 
+
 	/if (${Me.Combat} && ${Select[${Me.Class.ShortName},BST,PAL,RNG,SHD]})  {
 		/return	
 	} else /if (${Me.Combat} && ${Me.PctMana} < 30)  {
 		/call defineSmallGather
 		/call check_Ready "SmallGatherArray2D" 1
-		/if (!${c_Ready})  {
+		/if (${c_Ready})  {
 			/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
 		}
 	} else /if (${Me.Combat} && ${Me.PctMana} < 10)  {
 		/call defineLargeGather
 		/call check_Ready "LargeGatherArray2D" 1
-		/if (!${c_Ready})  {
+		/if (${c_Ready})  {
 			/call e3_cast ${Me.ID} "LargeGatherArray2D" 1
 		}
 	} else /if (!${Me.Combat} && !${Me.Moving} && ${Me.PctMana} < 30)  {
 		/call defineSmallGather
 		/call check_Ready "SmallGatherArray2D" 1
-		/if (!${c_Ready})  {
+		/if (${c_Ready})  {
 			/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
 		}
 	} else /if (!${Me.Combat} && !${Me.Moving} && ${Me.PctMana} < 10)  {
 		/call defineLargeGather
 		/call check_Ready "LargeGatherArray2D" 1
-		/if (!${c_Ready})  {
+		/if (${c_Ready})  {
 			/call e3_cast ${Me.ID} "LargeGatherArray2D" 1
 		}
 	}
