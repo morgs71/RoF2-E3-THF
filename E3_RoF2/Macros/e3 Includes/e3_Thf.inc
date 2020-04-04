@@ -910,14 +910,14 @@ Sub	Event_VistrindaEggs
 	/call WaitUntilNotMoving
 	/call EggCheck
 	/call EggTrigger
-	/call MoveTo loc ${originalLoc.Arg[1,,]} ${originalLoc.Arg[2,,]}
+	/moveTo loc 668.37 1604.41
 	/call WaitUntilNotMoving
 	/call KillVistrinda
 }
 /return
 
 
-Sub	Event_VistrindaAddA
+Sub	Event_VistrindaAddA0
 
 /if (${VistrindaAddATimer} == 0)  {
 	/if (${SpawnCount[npc "a corrupted caretaker"]})  {
