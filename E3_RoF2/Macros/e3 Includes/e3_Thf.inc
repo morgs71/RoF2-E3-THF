@@ -641,6 +641,7 @@ Sub Event_ReaperOfMortalityMoveClose(string line)
 		/rsay Move close to reaper !
 		/return
 	}
+	
 	/call Event_MoveToReaper
 /return
 
@@ -653,9 +654,8 @@ Sub Event_ReaperOfMortalityMoveFar(string line)
 		/return
 		} 
 	/varset ReaperFar 1
-	/stick off
-	/attack off
-	/moveto loc 37 -34
+	/doevents BackOff
+	/moveto loc -14.97 -146.53
 	/call WaitUntilNotMoving
 	/if (${Select[${Me.Class.ShortName},MAG,DRU,WIZ,SHM,NEC,ENC]})  {
 		/return
@@ -681,16 +681,14 @@ Sub Event_MoveToReaper
 	/call IsTank
 	/if (${IsTank})  {
 		/rsay Safe to move back ${Time}
-		/delay 20
+		/delay 4s
 		/goto :KillReaper
 		}
-	:MoveToReaper
 	/if (${Spawn[NPC =The Reaper of Mortality].ID} && ${Spawn[NPC =The Reaper of Mortality].Distance} > 12)  {
 		/moveto id ${Spawn[NPC =The Reaper of Mortality].ID}
-		/delay 5
-		}
-    /if (${Spawn[NPC =The Reaper of Mortality].ID}!=NULL && ${Spawn[NPC =The Reaper of Mortality].Distance} > 12) /goto :MoveToReaper
-	/call WaitUntilNotMoving
+		/call WaitUntilNotMoving
+		/delay 2s
+	}
 	:KillReaper
 	/if (${IsTank})  {
 		/call KillReaper
