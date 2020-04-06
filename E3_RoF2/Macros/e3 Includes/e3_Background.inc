@@ -193,10 +193,10 @@ SUB Event_YourKill(line)
     }
   }
   /if (${autoSetPctAAExp}) {
-    /if ((${Me.Level}<70 || ${Me.PctExp}<=25) && ${Window[AAWindow].Child[AAW_PercentCount].Text.Left[-1]}>0) {
-      /squelch /alternateadv on 0
-      /bc [+y+] Auto setting AA Exp to 0%, at ${Me.PctExp}% of Level ${Me.Level}
-    } else /if (${Me.Level}==70 && ${Me.PctExp}>=50 && ${Window[AAWindow].Child[AAW_PercentCount].Text.Left[-1]}<100) {
+    /if ((${Me.Level}==70 && ${Me.PctExp}<=75) && ${Window[AAWindow].Child[AAW_PercentCount].Text.Left[-1]}==100) {
+      /squelch /alternateadv on 90
+      /bc [+y+] Auto setting AA Exp to 90%, at ${Me.PctExp}% of Level ${Me.Level}
+    } else /if (${Me.Level}==70 && ${Me.PctExp}>=90 && ${Window[AAWindow].Child[AAW_PercentCount].Text.Left[-1]}<100) {
       /squelch /alternateadv on 100
       /bc [+y+] Auto setting AA Exp to 100%, at ${Me.PctExp}% of Level ${Me.Level}
     }
