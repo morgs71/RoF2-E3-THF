@@ -1152,7 +1152,7 @@ Sub	Event_ValikEnd
 Sub	Event_MaestroGoto
 /popup Run To Maestro !!!!
 /if (${Select[${Me.Class.ShortName},MNK,BER,ROG,RNG,BST,BRD]})  {
-	/doevents BackOff
+	/call AssistOff
 	/moveto loc -1.10 -2.68
 	/call WaitUntilNotMoving
 	/moveto loc -108.45 2.44
@@ -1166,10 +1166,12 @@ Sub	Event_MaestroGoto
 Sub	Event_MaestroGoAdds
 /popup Run To Hallway !!!!
 /if (${Select[${Me.Class.ShortName},WIZ,ENC,MAG,NEC,DRU,CLR,SHM]})  {
-	/doevents BackOff	
+	/call AssistOff	
 } else /if (${Select[${Me.Class.ShortName},MNK,BER,ROG,RNG,BST,BRD]})  {
-	/doevents BackOff
+	/call AssistOff
 	/moveto loc -108.45 2.44
+	/call WaitUntilNotMoving
+	/moveto loc -55.31 10.25
 	/call WaitUntilNotMoving
 	/moveto loc -1.10 -2.68
 	/call WaitUntilNotMoving
