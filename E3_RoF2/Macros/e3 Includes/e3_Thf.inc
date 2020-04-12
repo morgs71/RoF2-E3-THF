@@ -854,7 +854,7 @@ Sub Event_SeravinceCreatesAdds(string line)
 	/if (${Me.Class.ShortName.Equal[ENC]})  {
 		/doevents BackOff
 		/pet get lost
-		/moveto loc 2.02 -1030.79
+		/moveto loc 3.29 -1044.19
 		/call WaitUntilNotMoving
 		/call SeravinceMez
 	}
@@ -900,12 +900,12 @@ Sub KillSeravince
 
 #Event VistrindaEggs "Out of the corner of your eye you see Vistrinda's Eggs begin to wobble as a strange voice enters your mind, 'Free me mortal! Only your words can break this shelled prison!'"	
 #Event VistrindaAddADead "a corrupted caretaker has been slain by #*#!"
-#event VistrindaAddADead "You have slain a corrupted caretaker!"
+#Event VistrindaAddADead "You have slain a corrupted caretaker!"
 #Event VistrindaAddA "A corrupted caretaker hits YOU for #*# points of damage."
 #Event VistrindaAddAKill "<#*#> KillAddA"
 #Event VistrindaAddBKill "<#*#> KillAddB"
 #Event VistrindaAddBDead "A Corrupted Dragorn has been slain by #*#!"
-#event VistrindaAddBDead "You have slain A Corrupted Dragorn!"
+#Event VistrindaAddBDead "You have slain A Corrupted Dragorn!"
 #Event VistrindaAddB "A Corrupted Dragorn hits YOU for #*# points of damage."
 
 
@@ -967,7 +967,7 @@ Sub	Event_VistrindaEggs
 /return
 
 
-Sub	Event_VistrindaAddA0
+Sub	Event_VistrindaAddA
 
 /if (${VistrindaAddATimer} == 0)  {
 	/if (${SpawnCount[npc "a corrupted caretaker"]})  {
@@ -1135,11 +1135,53 @@ Sub	Event_ValikEnd
 			/rsay Return to the fight!!!
 			/call KillValik		
 } else /if (!${IsTank})  {	
-	/if (${MainAssist.Equal[${Me.CleanName}]})  {
+	0
 		/rsay Return to the fight!!!
 		/call KillValik
 	}
 }
+/return
+
+
+
+|-----------------------------Maestro Tan'Lor-------------------|
+#event MaestroGoAdds "The Maestro raises his head and beckons forth the Souls of his minions."
+#event MaestroGoto "The Maestro staggers and stumbles a little."
+
+
+Sub	Event_MaestroGoto
+/popup Run To Maestro !!!!
+/if (${Select[${Me.Class.ShortName},MNK,BER,ROG,RNG,BST,BRD]})  {
+	/doevents BackOff
+	/moveto loc -1.10 -2.68
+	/call WaitUntilNotMoving
+	/moveto loc -108.45 2.44
+	/call WaitUntilNotMoving
+}
+/if (${MainAssist.Equal[${Me.CleanName}]})  {
+	/call KillMaestro
+}
+/RETURN
+
+Sub	Event_MaestroGoAdds
+/popup Run To Hallway !!!!
+/if (${Select[${Me.Class.ShortName},WIZ,ENC,MAG,NEC,DRU,CLR,SHM]})  {
+	/doevents BackOff	
+} else /if (${Select[${Me.Class.ShortName},MNK,BER,ROG,RNG,BST,BRD]})  {
+	/doevents BackOff
+	/moveto loc -108.45 2.44
+	/call WaitUntilNotMoving
+	/moveto loc -1.10 -2.68
+	/call WaitUntilNotMoving
+}
+/RETURN
+
+
+Sub KillMaestro
+
+/delay 4s
+/bc Assist ${MainAssist} on ${Spawn[NPC =Maestro Tan`Lor].ID}
+	
 /return
 
 
@@ -1473,6 +1515,8 @@ Sub Thf_Background_Events
 /doevents VampStake
 /doevents XeruVamp
 /doevents XeruForm
+/doevents MaestroGoto
+/doevents MaestroGoAdds
 
 /if (${SelfShrink} && !${NoShrinkItem} && ${Me.Height} > 2)  /call Auto_Shrink
 
