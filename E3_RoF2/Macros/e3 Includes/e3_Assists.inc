@@ -44,6 +44,7 @@ SUB event_Assist(line, ChatSender, int MobID)
       | Set Assist Variables.
       /varset Assisting TRUE
       /varset AssistTarget ${MobID}
+	  /varset AntithesisTarget ${MobID}
       /varset AllowControl FALSE
       /varset isEnraged FALSE
       | If I am the assist caller, or I am feigning, don't allow macro control.
@@ -266,6 +267,10 @@ SUB check_AssistStatus
 SUB CombatAbilities
   /if (${Debug} || ${Debug_Assists}) /echo |- CombatAbilities ==>
   /if (${Me.Stunned}) /return
+  /if (${Assisting} && ${Zone.ShortName.Equal[causeway]} && !${AntithesisTimer}) {
+	/call createTimer "AntithesisTimer" "10s"
+	/call Apply_Antithesis
+  }
   /declare i int local
   | Prereq/priorities
   /if (${Defined[doTaunt]}) {
@@ -389,6 +394,10 @@ SUB check_AutoAssist
 |--------------------------------------------------------|
 SUB check_Nukes
 /if (${Debug} || ${Debug_Assists}) /echo |- check_Nukes ==>
+/if (${Assisting} && ${Zone.ShortName.Equal[causeway]} && !${AntithesisTimer}) {
+	/call createTimer "AntithesisTimer" "10s"
+	/call Apply_Antithesis
+  }
 	/if	(${RallosZek} && !${BlueRodTimer} && ${Assisting})  {
 		/casting "Blue Rod of Zek" -targetid|${AssistTarget}
 		/call createTimer "BlueRodTimer" "5s"
@@ -1245,7 +1254,7 @@ Sub assist_Setup
 	/declare use_PBAE bool outer FALSE
 	/declare use_AssistDots bool outer TRUE
   /declare use_CommandDots bool outer TRUE
-
+	/declare AntithesisTarget int outer
   /declare use_FULLBurns bool outer FALSE
   /declare use_LONGBurns bool outer FALSE
   /declare use_QUICKBurns bool outer FALSE

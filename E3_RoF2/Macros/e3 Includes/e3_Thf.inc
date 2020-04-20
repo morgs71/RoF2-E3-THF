@@ -46,8 +46,8 @@ Sub definethfgate
     /varset thfgateitem Superior Magical Charm of Queen Adrianne (Tier 4)
   } else /if (${FindItem[=Advanced Magical Charm of Queen Adrianne (Tier 3)].ID}) {
     /varset thfgateitem Advanced Magical Charm of Queen Adrianne (Tier 3)
-  } else /if (${FindItem[=Magical Charm of Queen Adrianne].ID}) {
-    /varset thfgateitem Magical Charm of Queen Adrianne
+  } else /if (${FindItem[=Magical Charm of Queen Adrianne (Tier 1)].ID}) {
+    /varset thfgateitem Magical Charm of Queen Adrianne (Tier 1)
   } else /if (${FindItem[=Advanced Charm of Queen Adrianne].ID}) {
     /varset thfgateitem Advanced Charm of Queen Adrianne
   } else /if (${FindItem[=Charm of Queen Adrianne].ID}) {
@@ -1381,8 +1381,75 @@ SUB Event_VampStake(string line)
 
 
 
+|-------------------------Nobles Causeway------------------------|
+#Event Antithesis "<#1#> antithesis"
 
-|--------------------------Spawn Alerts Section------------------------|
+Sub Event_Antithesis(string line)
+
+/if (${Assisting} && ${Zone.ShortName.Equal[causeway]} && !${AntithesisTimer}) {
+	/call createTimer "AntithesisTimer" "10s"
+	/call Apply_Antithesis
+}
+
+/Return
+
+
+Sub Apply_Antithesis
+
+
+/if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Ukun]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Bazu]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Feran]} || ${Spawn[${AntithesisTarget}].Race.Name.Equal[Dragorn]} && ${Spawn[${AntithesisTarget}].Distance} < 200)  {
+		/call Check_AntithesisItem
+		/call check_Ready "AntithesisArray2D" 1
+		/if (${c_Ready})  {
+			/call e3_cast ${AntithesisTarget} "AntithesisArray2D" 1
+		}
+} 
+
+/Return
+
+
+
+
+Sub Check_AntithesisItem
+
+/declare AntithesisItem string local
+ /declare i int local
+
+/if (${FindItem[Stone of Absolute Antithesis].ID}) {
+    /varset AntithesisItem Stone of Absolute Antithesis 
+} else /if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Dragorn]})  {
+	/if (${FindItem[=Imbued Dragorn Bone].ID}) {
+		/varset AntithesisItem Imbued Dragorn Bone
+	}
+} else /if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Ukun]})  {
+	/if (${FindItem[=Ukun Friendship Bracelet].ID}) {
+		/varset AntithesisItem Ukun Friendship Bracelet
+	}
+} else /if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Bazu]})  {
+	/if (${FindItem[=Blighted Bazu Banisher].ID}) {
+		/varset AntithesisItem Blighted Bazu Banisher
+	}
+} else /if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Feran]})  {
+	/if (${FindItem[=Feral Heart of the Alpha].ID}) {
+		/varset AntithesisItem Feral Heart of the Alpha
+	}
+} 
+
+/if (${Bool[${AntithesisItem}]}) {
+    /if (${Defined[AntithesisArray]}) /deletevar AntithesisArray
+    /declare AntithesisArray[1] string outer ${AntithesisItem}
+    /if (${AntithesisArray.Size}) {
+      /call BuildSpellArray "AntithesisArray" "AntithesisArray2D"
+      /for i 1 to ${AntithesisArray2D.Size[1]}
+        /varset AntithesisArray2D[${i},${iCastInvis}] 1
+      /next i
+      }
+  } else {
+    /bc I do not have a Antithesis item available
+  }
+
+/Return
+|-------------------------------------Spawn Alerts Section---------------------------------------|
 
 
 
@@ -1464,6 +1531,10 @@ Sub Thf_Setup
 /declare NoShrinkItem bool outer 0
 
 
+
+
+
+
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
 /if (${Ini[${Character_Ini},Misc,Gather Mana (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Gather Mana (On/Off)" GatherManaCheck bool outer
 /if (${Ini[${Character_Ini},Misc,Self Shrink (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Self Shrink (On/Off)" SelfShrink bool outer
@@ -1519,6 +1590,7 @@ Sub Thf_Background_Events
 /doevents XeruForm
 /doevents MaestroGoto
 /doevents MaestroGoAdds
+/doevents Antithesis
 
 /if (${SelfShrink} && !${NoShrinkItem} && ${Me.Height} > 2)  /call Auto_Shrink
 
