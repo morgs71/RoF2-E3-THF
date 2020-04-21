@@ -1382,16 +1382,6 @@ SUB Event_VampStake(string line)
 
 
 |-------------------------Nobles Causeway------------------------|
-#Event Antithesis "<#1#> antithesis"
-
-Sub Event_Antithesis(string line)
-
-/if (${Assisting} && ${Zone.ShortName.Equal[causeway]} && !${AntithesisTimer}) {
-	/call createTimer "AntithesisTimer" "10s"
-	/call Apply_Antithesis
-}
-
-/Return
 
 
 Sub Apply_Antithesis
@@ -1590,7 +1580,7 @@ Sub Thf_Background_Events
 /doevents XeruForm
 /doevents MaestroGoto
 /doevents MaestroGoAdds
-/doevents Antithesis
+
 
 /if (${SelfShrink} && !${NoShrinkItem} && ${Me.Height} > 2)  /call Auto_Shrink
 
