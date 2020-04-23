@@ -128,7 +128,7 @@ SUB AssistOff
 	/if (${Me.AutoFire})  /autofire off
 	/if (${Me.Pet.ID}) /squelch /pet back off
 	/delay 5 !${Me.Combat} && !${Me.AutoFire}
-
+	/varset AntithesisSpam FALSE
 	/varset Assisting FALSE
 	/varset AssistTarget 0
 	/varset AllowControl FALSE
