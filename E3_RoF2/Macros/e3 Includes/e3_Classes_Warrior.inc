@@ -89,7 +89,7 @@ Sub WAR_Background_Events
 |--Warrior Provoke--|
 
 
-/if (${provokeDiscOn})  {
+/if (${provokeDiscOn} && ${Assisting} && ${Me.Combat} )  {
 	/if (${Me.PctAggro} <=10 || ${Me.SecondaryPctAggro} >=75)  {
 	/call defineprovokeDisc
 
