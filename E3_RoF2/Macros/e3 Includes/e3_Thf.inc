@@ -362,15 +362,23 @@ sub Event_cohall(line, ChatSender)
 						/docommand ${ChatToggle} (${NetBots.Client[${i}]}) is not in zone!
 						
 						
-					} else /if (${NetBots[${NetBots.Client[${i}]}].Zone} && ${Spawn[pc ${NetBots.Client[${i}]}].Distance} < 20)  {
+					} else /if (${NetBots[${NetBots.Client[${i}]}].Zone} && ${Spawn[pc ${NetBots.Client[${i}]}].Distance} < 30)  {
 						/docommand ${ChatToggle} (${NetBots.Client[${i}]}) is already here!
 				
-					} else /if (${NetBots[${NetBots.Client[${i}]}].Zone} && ${Spawn[pc ${NetBots.Client[${i}]}].Distance} > 20)  {
+					} else /if (${NetBots[${NetBots.Client[${i}]}].Zone} && ${Spawn[pc ${NetBots.Client[${i}]}].Distance} > 30)  {
 						
 							/docommand ${ChatToggle} Call of Hero is Incoming on (${NetBots.Client[${i}]})!
-							
-							/call e3_cast ${NetBots[${NetBots.Client[${i}]}].ID} "cohspellArray2D" 1							
-							/delay 5s
+							:cohspellready
+							/call check_Ready "cohspellArray2D" 1
+							/if (${c_Ready})  {
+								/call e3_cast ${NetBots[${NetBots.Client[${i}]}].ID} "cohspellArray2D" 1
+								/if (${Spawn[pc ${NetBots.Client[${i}]}].Distance} > 30)  {
+									/goto :cohspellready
+								}
+							} else {
+								|/delay 2s
+								/goto :cohspellready
+							}
 						
 						}	
 
