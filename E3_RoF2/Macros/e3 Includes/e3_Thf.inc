@@ -1442,10 +1442,7 @@ Sub Check_AntithesisItem
         /varset AntithesisArray2D[${i},${iCastInvis}] 1
       /next i
       }
-  } else /if (!${AntithesisSpam}) {
-    /bc I do not have a Antithesis item available
-	/varset AntithesisSpam TRUE
-  }
+  } 
 
 /Return
 |-------------------------------------Spawn Alerts Section---------------------------------------|
@@ -1531,7 +1528,7 @@ Sub Thf_Setup
 
 
 
-/declare AntithesisSpam bool outer FALSE
+
 
 
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
