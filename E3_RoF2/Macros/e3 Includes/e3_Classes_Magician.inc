@@ -151,7 +151,7 @@ SUB check_SummonItems
 		}
     }
 
-	/if (${autoWeapons} && ${Macro.RunTime} > 10) {
+	/if (${autoWeapons} && !${Following} && ${Macro.RunTime} > 10) {
 		/if (!${Me.Moving} && !${combatTimer} && !${activeTimer} && !${rebuffTimer}) {
 			/declare i int local
 			/declare p int local
