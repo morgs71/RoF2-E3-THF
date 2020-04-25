@@ -41,9 +41,7 @@ Sub defineprovokeDisc
       /for i 1 to ${provokeDiscArray2D.Size[1]}
         /varset provokeDiscArray2D[${i},${iCastInvis}] 1
       /next i
-      }
-  } else {
-    /bc I do not have Provoke Discs available
+    }
   }
 /RETURN
 
