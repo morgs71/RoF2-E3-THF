@@ -255,7 +255,7 @@ Sub BRD_Setup
 Sub BRD_Background_Events
   /if (${returnTwist} && !${Bool[${Me.Casting}]} && !${Twist.Twisting} && !${resumeTwistDelay}) /call unpauseTwist
   
-  /if (${autoSelo} && ${selooutdoors} && !${Me.Buff[${selosong}].ID}) {
+  /if (${autoSelo} && ${Defined[selosong]} && ${selooutdoors} && !${Me.Buff[${selosong}].ID}) {
 		/varset queueSelo TRUE
 		/if (${Twist.Twisting}) {
 			/call pauseTwist
