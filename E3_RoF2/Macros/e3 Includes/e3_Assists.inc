@@ -379,12 +379,12 @@ SUB check_AutoAssist
 	/if (!${Assisting}) {
 		/if ((${Target.ID} && ${Me.Combat}) || (${Target.ID} && ${Spell[${Me.Casting.ID}].SpellType.Equal[Detrimental]})) {
 			/if (${Target.PctHPs} < ${EngagePct} && ${Select[${Spawn[id ${Target.ID}].Type},${AcceptableTargetTypes}]}) {
-			  /if ((!${Bool[${PauseTarget}]} || ${Target.ID} != ${PauseTarget}) && (!${Bool[${Me.Pet.ID}]} || ${Target.ID} != ${Me.Pet.ID})) {
-			/if (${Debug} || ${Debug_Assists}) /echo I am attacking, calling Assist
-          /assistme
-        }
+				/if ((!${Bool[${PauseTarget}]} || ${Target.ID} != ${PauseTarget}) && (!${Bool[${Me.Pet.ID}]} || ${Target.ID} != ${Me.Pet.ID})) {
+					/if (${Debug} || ${Debug_Assists}) /echo I am attacking, calling Assist
+					/assistme
+				}
 			}
-    }
+		}
 	}
 /if (${Debug} || ${Debug_Assists}) /echo <== check_AutoAssist -|
 /RETURN
