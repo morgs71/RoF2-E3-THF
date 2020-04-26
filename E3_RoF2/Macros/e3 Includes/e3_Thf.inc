@@ -741,10 +741,10 @@ Sub ArmorMerch
 	} else /if (${Select[${Me.Class.ShortName},CLR]})  {
 		/target npc id ${Spawn[NPC =Moun].ID}
 		/varset ArmorMerch ${Spawn[NPC =Moun].ID}
-		/varset buyParams Ethereal Mist Boots|1/Ethereal Mist|2/Ethereal Mist Breastplate|1/Ethereal Mist Gauntlets|1/Ethereal Mist Greaves|1/Ethereal Mist Helm|1/Ethereal Mist Vambraces|1
+		/varset buyParams Ethereal Mist Boots|1/Ethereal Mist Bracers|2/Ethereal Mist Breastplate|1/Ethereal Mist Gauntlets|1/Ethereal Mist Greaves|1/Ethereal Mist Helm|1/Ethereal Mist Vambraces|1
 		/call AutoBuyArmor
 	}
-} else /if (${Select[${Me.Class.ShortName},MNK,DRU,BER]})  {
+} else /if (${Select[${Me.Class.ShortName},MNK,DRU,BST]})  {
 	/moveto id ${Spawn[NPC =Moarn].ID}
 	/call WaitUntilNotMoving
 	/target npc id ${Spawn[NPC =Moarn].ID}
@@ -760,7 +760,7 @@ Sub ArmorMerch
 	} else /if (${Select[${Me.Class.ShortName},MNK]})  {
 		/target npc id ${Spawn[NPC =Moarn].ID}
 		/varset ArmorMerch ${Spawn[NPC =Moarn].ID}
-		/varset buyParams Shiverback-hide Boots|1/Shiverback-hide Wristbands|2/Shiverback-hide Jerkin|1/Shiverback-hide Gloves|1/Shiverback-hide Leggings|1/Shiverback-hide Headband|1/Shiverback-hide Armbands|1
+		/varset buyParams Shiverback-hide Boots|1/Shiverback-hide Wristbands|2/Shiverback-hide Jerkin|1/Shiverback-hide Gloves|1/Shiverback-hide Leggings|1/Shiverback Headband|1/Shiverback-hide Armbands|1
 		/call AutoBuyArmor
 	} else /if (${Select[${Me.Class.ShortName},BST]})  {
 		/target npc id ${Spawn[NPC =Moarn].ID}
