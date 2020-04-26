@@ -132,7 +132,10 @@ Sub defineSmallGather
     /varset SmallGatheritem Tears of Frozen Mana
   } else /if (${FindItem[=Tears of Frozen Spirits].ID}) {
     /varset SmallGatheritem Tears of Frozen Spirits
-  } 
+  } else {
+    /bc I do not have a small gather mana item available
+	/Varset SmallGatheritemCapable FALSE
+  }
   /if (${Bool[${SmallGatheritem}]}) {
     /if (${Defined[SmallGatherArray]}) /deletevar SmallGatherArray
     /declare SmallGatherArray[1] string outer ${SmallGatheritem}
@@ -142,9 +145,7 @@ Sub defineSmallGather
         /varset SmallGatherArray2D[${i},${iCastInvis}] 1
       /next i
       }
-  } else {
-    /bc I do not have a small gather mana item available
-  }
+  } 
 /RETURN
 
 
@@ -170,7 +171,10 @@ Sub defineLargeGather
     /varset LargeGatheritem Silver Chains of the Burgerz (Tier 4)
   } else /if (${FindItem[=Silver Chains (Tier 2)].ID}) {
     /varset LargeGatheritem Silver Chains (Tier 2)
-  } 
+  } else {
+    /bc I do not have a Large gather mana item available
+	/varset LargeGatheritemCapable FALSE
+  }
   /if (${Bool[${LargeGatheritem}]}) {
     /if (${Defined[LargeGatherArray]}) /deletevar LargeGatherArray
     /declare LargeGatherArray[1] string outer ${LargeGatheritem}
@@ -180,9 +184,7 @@ Sub defineLargeGather
         /varset LargeGatherArray2D[${i},${iCastInvis}] 1
       /next i
       }
-  } else {
-    /bc I do not have a Large gather mana item available
-  }
+  } 
 /RETURN
 
 
@@ -191,25 +193,25 @@ Sub check_GatherMana
 
 	/if (${Me.Combat} && ${Select[${Me.Class.ShortName},BST,PAL,RNG,SHD]})  {
 		/return	
-	} else /if (${Me.Combat} && ${Me.PctMana} < 30)  {
+	} else /if (${Me.Combat} && ${SmallGatheritemCapable} && ${Me.PctMana} < 30)  {
 		/call defineSmallGather
 		/call check_Ready "SmallGatherArray2D" 1
 		/if (${c_Ready})  {
 			/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
 		}
-	} else /if (${Me.Combat} && ${Me.PctMana} < 10)  {
+	} else /if (${Me.Combat} && ${LargeGatheritemCapable} && ${Me.PctMana} < 10)  {
 		/call defineLargeGather
 		/call check_Ready "LargeGatherArray2D" 1
 		/if (${c_Ready})  {
 			/call e3_cast ${Me.ID} "LargeGatherArray2D" 1
 		}
-	} else /if (!${Me.Combat} && !${Me.Moving} && ${Me.PctMana} < 30)  {
+	} else /if (!${Me.Combat} && ${SmallGatheritemCapable} && !${Me.Moving} && ${Me.PctMana} < 30)  {
 		/call defineSmallGather
 		/call check_Ready "SmallGatherArray2D" 1
 		/if (${c_Ready})  {
 			/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
 		}
-	} else /if (!${Me.Combat} && !${Me.Moving} && ${Me.PctMana} < 10)  {
+	} else /if (!${Me.Combat} && ${LargeGatheritemCapable} && !${Me.Moving} && ${Me.PctMana} < 10)  {
 		/call defineLargeGather
 		/call check_Ready "LargeGatherArray2D" 1
 		/if (${c_Ready})  {
@@ -226,9 +228,11 @@ Sub check_GatherMana
 SUB Auto_Shrink
 
 /call SelfShrink_Spell
-/call check_Ready "SelfShrinkSpellArray2D" 1
-/if (${c_Ready})  {
-	/call e3_cast ${Me.ID} "SelfShrinkSpellArray2D" 1
+/if (${NoShrinkItem})  {
+	/call check_Ready "SelfShrinkSpellArray2D" 1
+	/if (${c_Ready})  {
+		/call e3_cast ${Me.ID} "SelfShrinkSpellArray2D" 1
+	}
 }
 
 
@@ -241,20 +245,24 @@ SUB SelfShrink_Spell
 
 /if (${FindItem[=Green Mask (Tier 1)].ID}) {
     /varset SelfShrinkSpell "Green Mask (Tier 1)"
-	/varset NoShrinkItem 0
+	/varset NoShrinkItem TRUE
   } else /if (${FindItem[=Chaotic Brigandine Ring].ID}) {
     /varset SelfShrinkSpell "Chaotic Brigandine Ring"
-	/varset NoShrinkItem 0
+	/varset NoShrinkItem TRUE
   } else /if (${FindItem[=Chaotic Shimmering White Shroud].ID}) {
     /varset SelfShrinkSpell "Chaotic Shimmering White Shroud"
-	/varset NoShrinkItem 0
+	/varset NoShrinkItem TRUE
   } else /if (${FindItem[=Vial of Shrieker Essence].ID}) {
     /varset SelfShrinkSpell "Vial of Shrieker Essence"
-	/varset NoShrinkItem 0
-	} else /if (${Me.Book[Shrink]}) {
+	/varset NoShrinkItem TRUE
+  } else /if (${Me.Book[Shrink]}) {
     /varset SelfShrinkSpell Shrink
-  } 
+	/varset NoShrinkItem TRUE
+  } else {
+    /bc I do not have a Shrink item available
+	/varset NoShrinkItem FALSE
   }
+}
   
  /if (${Bool[${SelfShrinkSpell}]}) {
     /if (${Defined[SelfShrinkSpellArray]}) /deletevar SelfShrinkSpellArray
@@ -262,10 +270,7 @@ SUB SelfShrink_Spell
     /if (${SelfShrinkSpellArray.Size}) {
 		/call BuildSpellArray "SelfShrinkSpellArray" "SelfShrinkSpellArray2D"
 	}
-} else {
-    /bc I do not have a Shrink item available
-	/varset NoShrinkItem 1
-  }
+} 
 
 	
 /Return		
@@ -488,6 +493,457 @@ SUB EVENT_attendance(line, ChatSender)
 }
 
 /return
+
+
+|-----------------------New Character Setup------------------------|
+
+#event NewTHFChar "<#1#> New Character Setup"
+
+
+Sub Event_NewTHFChar
+
+/echo New Character Setup is Starting ***Please do NOT Interfere with the Process*** !!!
+/popup New Character Setup is Starting ***Please do NOT Interfere with the Process*** !!!
+
+/moveto loc 29.46 19.89
+/call WaitUntilNotMoving
+/call QueenAdrianne
+/call Curious
+/moveto loc -13.01 -11.08
+/call WaitUntilNotMoving
+/call Herald
+/moveto loc -12.44 -109.82
+/call WaitUntilNotMoving
+/call Gorgoza
+/moveto loc -12.44 -109.82
+/call WaitUntilNotMoving
+/call Darton
+/moveto loc 0.86 33.46
+/call WaitUntilNotMoving
+/moveto loc -123.14 -7.00
+/call WaitUntilNotMoving
+/call Organ
+/moveto loc -123.14 -7.00
+/call WaitUntilNotMoving
+/call Chump
+/moveto loc -123.14 -7.00
+/call WaitUntilNotMoving
+/call Tremmo
+/moveto loc -123.14 -7.00
+/call WaitUntilNotMoving
+/call Wimbledink
+/moveto loc -68.93 15.77
+/call WaitUntilNotMoving
+/moveto loc 128.64 30.84
+/call WaitUntilNotMoving
+/call Moosher
+/moveto loc 128.64 30.84
+/call WaitUntilNotMoving
+/call ArmorMerch
+/moveto loc 128.64 30.84
+/call WaitUntilNotMoving
+/moveto loc -68.93 15.77
+/call WaitUntilNotMoving
+/moveto loc -123.14 -7.00
+/call WaitUntilNotMoving
+/call Twinken
+/moveto loc -123.14 -7.00
+/call WaitUntilNotMoving
+/moveto loc -123.47 39.01
+/call WaitUntilNotMoving
+/call Sune
+/moveto loc -123.14 -7.00
+/call WaitUntilNotMoving
+/moveto loc -154.97 -27.80
+/call WaitUntilNotMoving
+/call Trix
+/moveto loc -154.97 -27.80
+/call WaitUntilNotMoving
+/moveto loc -123.14 -7.00
+/call WaitUntilNotMoving
+/moveto loc -5.78 43.64
+/call WaitUntilNotMoving
+/echo New Character Setup is Complete !!!
+/popup New Character Setup is Complete !!!
+/beep
+
+/Return
+
+
+
+Sub QueenAdrianne
+
+/moveto id ${Spawn[NPC =Queen Adrianne].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Queen Adrianne].ID}
+/delay 1s
+/hail
+/delay 1s
+/say My name is ${Me.Name}
+/delay 1s
+/say make a difference
+/delay 1s
+/say interested
+/delay 1s
+/say gift
+/delay 1s
+/if (${Cursor.ID})  {
+	/autoinventory
+}
+	
+/Return
+
+
+Sub Curious
+
+/moveto id ${Spawn[NPC =Curious].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Curious].ID}
+/delay 1s
+/hail
+/delay 1s
+	
+/Return
+
+Sub Herald
+
+/moveto id ${Spawn[NPC =Herald of Diamond Crusade].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Herald of Diamond Crusade].ID}
+/delay 1s
+/hail
+/delay 1s
+	
+/Return
+
+
+Sub Darton
+
+/moveto id ${Spawn[NPC =Darton the Blademaster].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Darton the Blademaster].ID}
+/delay 1s
+/hail
+/delay 1s
+	
+/Return
+
+
+Sub Organ
+
+/moveto id ${Spawn[NPC =Organ].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Organ].ID}
+/delay 1s
+/hail
+/delay 1s
+/if (${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG,PAL,SHD,BST,RNG,BRD]})  {
+	/say scribe
+	/delay 3s
+	/say meditate
+	/delay 1s
+}
+	
+/Return
+
+
+Sub Chump
+
+/moveto id ${Spawn[NPC =Chump].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Chump].ID}
+/delay 1s
+/hail
+/delay 1s
+/say bind my soul
+/delay 1s
+	
+/Return
+
+
+Sub Tremmo
+
+/moveto id ${Spawn[NPC =Tremmo].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Tremmo].ID}
+/delay 1s
+/hail
+/delay 1s
+/say learn
+/delay 1s
+/say teach
+/delay 1s
+/if (${Select[${Me.Class.ShortName},BRD]})  {
+	/say bard
+	/delay 1s
+}
+	
+/Return
+
+
+Sub Wimbledink
+
+/moveto id ${Spawn[NPC =Wimbledink].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Wimbledink].ID}
+/delay 1s
+/hail
+/delay 1s
+/say learn
+/delay 1s
+	
+/Return
+
+
+Sub Moosher
+
+/moveto id ${Spawn[NPC =Moosher].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Moosher].ID}
+/delay 1s
+/hail
+/delay 1s
+	
+/Return
+
+
+Sub ArmorMerch
+
+
+/if (${Select[${Me.Class.ShortName},CLR,PAL,SHD,BRD,WAR]})  {
+	/moveto id ${Spawn[NPC =Moun].ID}
+	/call WaitUntilNotMoving
+	/target npc id ${Spawn[NPC =Moun].ID}
+	/delay 1s
+	/hail
+	/delay 1s
+
+	/if (${Select[${Me.Class.ShortName},BRD]})  {
+		/target npc id ${Spawn[NPC =Moun].ID}
+		/varset ArmorMerch ${Spawn[NPC =Moun].ID}
+		/varset buyParams Imbrued Platemail Boots|1/Imbrued Platemail Bracer|2/Imbrued Platemail Breastplate|1/Imbrued Platemail Gauntlets|1/Imbrued Platemail Greaves|1/Imbrued Platemail Helm|1/Imbrued Platemail Vambraces|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},PAL]})  {
+		/target npc id ${Spawn[NPC =Moun].ID}
+		/varset ArmorMerch ${Spawn[NPC =Moun].ID}
+		/varset buyParams Valorium Boots|1/Valorium Bracer|2/Valorium Breastplate|1/Valorium Gauntlets|1/Valorium Greaves|1/Valorium Helm|1/Valorium Vambraces|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},WAR]})  {
+		/target npc id ${Spawn[NPC =Moun].ID}
+		/varset ArmorMerch ${Spawn[NPC =Moun].ID}
+		/varset buyParams Legionnaire Scale Boots|1/Legionnaire Scale Bracer|2/Legionnaire Scale Breastplate|1/Legionnaire Scale Gauntlets|1/Legionnaire Scale Greaves|1/Legionnaire Scale Helm|1/Legionnaire Scale Vambraces|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},SHD]})  {
+		/target npc id ${Spawn[NPC =Moun].ID}
+		/varset ArmorMerch ${Spawn[NPC =Moun].ID}
+		/varset buyParams Umbral Platemail Boots|1/Umbral Platemail Bracer|2/Umbral Platemail Breastplate|1/Umbral Platemail Gauntlets|1/Umbral Platemail Greaves|1/Umbral Platemail Helm|1/Umbral Platemail Vambraces|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},CLR]})  {
+		/target npc id ${Spawn[NPC =Moun].ID}
+		/varset ArmorMerch ${Spawn[NPC =Moun].ID}
+		/varset buyParams Ethereal Mist Boots|1/Ethereal Mist|2/Ethereal Mist Breastplate|1/Ethereal Mist Gauntlets|1/Ethereal Mist Greaves|1/Ethereal Mist Helm|1/Ethereal Mist Vambraces|1
+		/call AutoBuyArmor
+	}
+} else /if (${Select[${Me.Class.ShortName},MNK,DRU,BER]})  {
+	/moveto id ${Spawn[NPC =Moarn].ID}
+	/call WaitUntilNotMoving
+	/target npc id ${Spawn[NPC =Moarn].ID}
+	/delay 1s
+	/hail
+	/delay 1s
+
+	/if (${Select[${Me.Class.ShortName},DRU]})  {
+		/target npc id ${Spawn[NPC =Moarn].ID}
+		/varset ArmorMerch ${Spawn[NPC =Moarn].ID}
+		/varset buyParams Vermiculated Boots|1/Vermiculated Bracelet|2/Vermiculated Tunic|1/Vermiculated Gloves|1/Vermiculated Leggings|1/Vermiculated Crown|1/Vermiculated Armplates|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},MNK]})  {
+		/target npc id ${Spawn[NPC =Moarn].ID}
+		/varset ArmorMerch ${Spawn[NPC =Moarn].ID}
+		/varset buyParams Shiverback-hide Boots|1/Shiverback-hide Wristbands|2/Shiverback-hide Jerkin|1/Shiverback-hide Gloves|1/Shiverback-hide Leggings|1/Shiverback-hide Headband|1/Shiverback-hide Armbands|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},BST]})  {
+		/target npc id ${Spawn[NPC =Moarn].ID}
+		/varset ArmorMerch ${Spawn[NPC =Moarn].ID}
+		/varset buyParams Anthemion Boots|1/Anthemion Wristguard|2/Anthemion Jerkin|1/Anthemion Leggings|1/Anthemion Gloves|1/Anthemion Skullcap|1/Anthemion Armbands|1
+		/call AutoBuyArmor
+	}
+} else /if (${Select[${Me.Class.ShortName},ROG,SHM,RNG,BER]})  {
+	/moveto id ${Spawn[NPC =Foon].ID}
+	/call WaitUntilNotMoving
+	/target npc id ${Spawn[NPC =Foon].ID}
+	/delay 1s
+	/hail
+	/delay 1s
+
+	/if (${Select[${Me.Class.ShortName},SHM]})  {
+		/target npc id ${Spawn[NPC =Foon].ID}
+		/varset ArmorMerch ${Spawn[NPC =Foon].ID}
+		/varset buyParams Scaled Hierophant Boots|1/Scaled Hierophant Bracers|2/Scaled Hierophant Breastplate|1/Scaled Hierophant Gauntlets|1/Scaled Hierophant Greaves|1/Scaled Hierophant Helm|1/Scaled Hierophant Vambraces|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},BER]})  {
+		/target npc id ${Spawn[NPC =Foon].ID}
+		/varset ArmorMerch ${Spawn[NPC =Foon].ID}
+		/varset buyParams Shadow Rage Boots|1/Shadow Rage Wristguard|2/Shadow Rage Tunic|1/Shadow Rage Gloves|1/Shadow Rage Leggings|1/Shadow Rage Helm|1/Shadow Rage Sleeves|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},RNG]})  {
+		/target npc id ${Spawn[NPC =Foon].ID}
+		/varset ArmorMerch ${Spawn[NPC =Foon].ID}
+		/varset buyParams Thorny Vine Boots|1/Thorny Vine Bracers|2/Thorny Vine Breastplate|1/Thorny Vine Gauntlets|1/Thorny Vine Greaves|1/Thorny Vine Helm|1/Thorny Vine Vambraces|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},ROG]})  {
+		/target npc id ${Spawn[NPC =Foon].ID}
+		/varset ArmorMerch ${Spawn[NPC =Foon].ID}
+		/varset buyParams Woven Shadow Boots|1/Woven Shadow Bracers|2/Woven Shadow Breastplate|1/Woven Shadow Gauntlets|1/Woven Shadow Greaves|1/Woven Shadow Helm|1/Woven Shadow Vambraces|1
+		/call AutoBuyArmor
+	}
+} else /if (${Select[${Me.Class.ShortName},ENC,MAG,NEC,WIZ]})  {
+	/moveto id ${Spawn[NPC =Ammo].ID}
+	/call WaitUntilNotMoving
+	/target npc id ${Spawn[NPC =Ammo].ID}
+	/delay 1s
+	/hail
+	/delay 1s
+	
+	/if (${Select[${Me.Class.ShortName},MAG]})  {
+		/target npc id ${Spawn[NPC =Ammo].ID}
+		/varset ArmorMerch ${Spawn[NPC =Ammo].ID}
+		/varset buyParams Apothic Boots|1/Apothic Warband|2/Apothic Robe|1/Apothic Gloves|1/Apothic Kilt|1/Apothic Crown|1/Apothic Sleeves|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},NEC]})  {
+		/target npc id ${Spawn[NPC =Ammo].ID}
+		/varset ArmorMerch ${Spawn[NPC =Ammo].ID}
+		/varset buyParams Blighted Boots|1/Blighted Armband|2/Blighted Robe|1/Blighted Gloves|1/Blighted Trousers|1/Blighted Skullcap|1/Blighted Sleeves|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},WIZ]})  {
+		/target npc id ${Spawn[NPC =Ammo].ID}
+		/varset ArmorMerch ${Spawn[NPC =Ammo].ID}
+		/varset buyParams Carmine Boots|1/Carmine Trinket|2/Carmine Robe|1/Carmine Gloves|1/Carmine Pants|1/Carmine Turban|1/Carmine Sleeves|1
+		/call AutoBuyArmor
+	} else /if (${Select[${Me.Class.ShortName},ENC]})  {
+		/target npc id ${Spawn[NPC =Ammo].ID}
+		/varset ArmorMerch ${Spawn[NPC =Ammo].ID}
+		/varset buyParams Insidious Slippers|1/Insidious Manacle|2/Insidious Robe|1/Insidious Gloves|1/Insidious Pantaloons|1/Insidious Halo|1/Insidious Sleeves|1
+		/call AutoBuyArmor
+	}
+}
+
+/Return
+
+
+	
+Sub Twinken
+
+/moveto id ${Spawn[NPC =Twinken].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Twinken].ID}
+/delay 1s
+/hail
+/delay 1s
+	
+/Return	
+	
+	
+Sub Sune
+
+/moveto id ${Spawn[NPC =Sune The High Priest].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Sune The High Priest].ID}
+/delay 1s
+/hail
+/delay 1s
+/say buff
+/delay 1s
+	
+/Return	
+	
+	
+	
+Sub Trix
+
+/moveto id ${Spawn[NPC =Trix].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Trix].ID}
+/delay 1s
+/hail
+/delay 1s
+	
+/Return		
+	
+	
+Sub Gorgoza
+
+/moveto id ${Spawn[NPC =Gorgoza the Headhunter].ID}
+/call WaitUntilNotMoving
+/target npc id ${Spawn[NPC =Gorgoza the Headhunter].ID}
+/delay 1s
+/hail
+/delay 1s
+/say mission
+/delay 1s
+/say task
+/delay 1s
+/say ready
+/delay 1s
+	
+/Return		
+	
+	
+Sub AutoBuyArmor
+
+/declare itemToBuy string local
+/declare numToBuy int local
+/declare lastItemCount int local
+/declare numToBuyRemaining int local
+/declare listPosition int local
+/declare i int local 1
+
+
+
+| Open trade with the nearest merchant and waits for merchant list to populate
+/call openMerchant ${ArmorMerch}
+
+
+:lookForItems
+| Makes sure merchant window is open
+/if (${Window[MerchantWnd].Open}) {
+	/if (${buyParams.Arg[${i},/].Length}) {
+		/varset itemToBuy ${buyParams.Arg[${i},/].Arg[1,|]}
+		/varset numToBuy ${buyParams.Arg[${i},/].Arg[2,|]}
+		/echo Buying ${itemToBuy} (x${numToBuy})
+		| Searches merchant's item list for the item, sets variable for list position of item.
+		/varset listPosition ${Window[MerchantWnd].Child[ItemList].List[=${itemToBuy},2]}
+		| Checks if the item has been found on the merchant's list.
+		/if (!${listPosition}) {
+			/docommand ${ChatToggle} This merchant doesn't have ${itemToBuy}!
+		} else {
+			| Selects item on merchant's list.
+			/notify MerchantWnd ItemList listselect ${listPosition}
+			/delay 1s ${Window[MerchantWnd].Child[MW_SelectedItemLabel].Text.Equal[${itemToBuy}]}
+			/if (${i} > 1) /delay 1s
+			| If the item is not stackable, need to press the buy button until we have numToBuy
+			/if (!${Merchant.Item[=${itemToBuy}].Stackable}) {
+				:buying
+				/notify MerchantWnd MW_Buy_Button leftmouseup
+				/delay 2s ${FindItemCount[=${itemToBuy}]} != ${oldItemCount}
+				/delay 5
+				| Finds out how many you have bought and compares to numToBuy
+					/if (${Math.Calc[${FindItemCount[=${itemToBuy}]}-${oldItemCount}]} < ${numToBuy}) /goto :buying
+			}		
+
+		}
+	/varcalc i ${i}+1
+	/goto :lookForItems	
+	}
+	/docommand ${ChatToggle} Done buying items.
+}
+:closeOut
+| Close merchant window
+/if (${Window[MerchantWnd].Open}) /call closeMerchant
+
+/Return
+
+
 
 
 
@@ -1524,11 +1980,11 @@ Sub Thf_Setup
 /declare IsTank bool outer FALSE
 /declare ValikWait int outer 0	
 /declare TankName string outer NULL
-/declare NoShrinkItem bool outer 0
-
-
-
-
+/declare NoShrinkItem bool outer TRUE
+/declare LargeGatheritemCapable bool outer TRUE
+/declare SmallGatheritemCapable bool outer  TRUE
+/declare ArmorMerch int outer
+/declare buyParams string outer
 
 
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
@@ -1586,9 +2042,11 @@ Sub Thf_Background_Events
 /doevents XeruForm
 /doevents MaestroGoto
 /doevents MaestroGoAdds
+/doevents NewTHFChar
 
 
-/if (${SelfShrink} && !${NoShrinkItem} && ${Me.Height} > 2)  /call Auto_Shrink
+
+/if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2)  /call Auto_Shrink
 
 
 /if (${GatherManaCheck} && ${Me.PctMana} < 30)  /call check_GatherMana
@@ -1607,6 +2065,7 @@ Sub thf_Aliases
 	/squelch /alias /attendance /bc attendance
 	/squelch /alias /ralloson /bc ralloszek on
 	/squelch /alias /rallosoff /bc ralloszek off
+	/squelch /alias /newchar /bc New Character Setup
 	/noparse /squelch /alias /mezit /bc Mez on ${Target.ID}
 
 
