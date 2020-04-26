@@ -15,6 +15,7 @@ SUB check_Yaulp
 |----------------------------------------------------------------------------|
 sub check_DivineArb
 /if (${Debug}) /echo |- check_DivineArb ==>
+/if (${DivineArbCapable})  {
 	/call definedArbSpell
 	/if (${Defined[dArbArray2D]}) {
 		/if (${DivineArb_Pct} && ${Group}>1 && ${dArbArray2D.Size[1]}>0) {
@@ -37,6 +38,7 @@ sub check_DivineArb
 			/if (!${ActionTaken}) /next i
 		}
 	}
+}
 /if (${Debug}) /echo <== check_DivineArb -|
 /return
 |----------------------------------------------------------------------------|
@@ -325,10 +327,16 @@ Sub definedArbSpell
   
   /if (${FindItem[Ancient Frozen Aegis of Divinity (Tier 2)].ID}) {
     /varset dArbSpell Ancient Frozen Aegis of Divinity (Tier 2)
+	/varset DivineArbCapable TRUE
   } else  /if (${FindItem[Ancient Shield of the Divine (Tier 1)].ID}) {
     /varset dArbSpell Ancient Shield of the Divine (Tier 1)
+	/varset DivineArbCapable TRUE
   } else /if (${Bool[${Me.AltAbility[Divine Arbitration]}]}) {
     /varset dArbSpell Divine Arbitration
+	/varset DivineArbCapable TRUE
+  } else {
+    /bc I do not have a Divine Arbitration available
+	/varset DivineArbCapable FALSE
   }
   /if (${Bool[${dArbSpell}]}) {
     /if (${Defined[dArbArray]}) /deletevar dArbArray
@@ -339,9 +347,7 @@ Sub definedArbSpell
         /varset dArbArray2D[${i},${iCastInvis}] 1
       /next i
       }
-  } else {
-    /bc I do not have a Divine Arbitration available
-  }
+  } 
 /RETURN
 |----------------------------------------------------------------------------|
 
@@ -387,6 +393,7 @@ Sub CLR_Setup
   /declare canRez int outer 0
   /declare CorpseListSize int outer 0
   /declare otherRezList string outer
+  /declare DivineArbCapable bool outer TRUE
   /declare corpseList string outer
 	/call iniToVarV "${Character_Ini},Cleric,Divine Arbitration (Pct)" DivineArb_Pct int outer
 	/call iniToVarV "${Character_Ini},Cleric,Celestial Regeneration (Pct)" celestialRegen_Pct int outer
