@@ -119,6 +119,53 @@ Sub defineValegate
 
 
 
+
+|---------------Halls of Honor Gate-----------------|
+
+#EVENT hohgate "<#1#> hohgate"
+#event hohgate "you tell your party, 'hohgate'"
+#event hohgate "#1# tells the group, 'hohgate'"
+#event hohgate "#1# tells you, 'hohgate'"
+SUB EVENT_hohgate
+    /if (${Select[${Me.Class.ShortName},BRD]} && ${Twist.Twisting}) /twist stop
+	/call definehohgate
+    :checkReady
+    /call check_Ready "hohgateArray2D" 1
+      /if ((!${c_Ready} || !${check_Mana["hohgateArray2D",1]}) && ${Me.CombatState.NotEqual[COMBAT]}) {
+        /if (!${Me.Sitting}) /sit on
+        /delay 1s
+        /goto :checkReady
+      }
+     /call e3_cast ${Me.ID} "hohgateArray2D" 1
+   
+/return
+
+
+Sub definehohgate
+
+  /declare hohgateitem string local
+  /declare i int local
+  /if (${FindItem[=Shimmering Portal Fragment (Tier 8)].ID}) {
+    /varset hohgateitem Shimmering Portal Fragment (Tier 8)
+  }
+  /if (${Bool[${hohgateitem}]}) {
+    /if (${Defined[hohgateArray]}) /deletevar hohgateArray
+    /declare hohgateArray[1] string outer ${hohgateitem}
+    /if (${hohgateArray.Size}) {
+      /call BuildSpellArray "hohgateArray" "hohgateArray2D"
+      /for i 1 to ${hohgateArray2D.Size[1]}
+        /varset hohgateArray2D[${i},${iCastInvis}] 1
+      /next i
+      }
+  } else {
+    /bc I do not have a Halls of Honor Gate Item available
+  }
+/RETURN
+
+
+
+
+
 |-------------- Gather Mana Items -----------------|
 
 
@@ -2001,6 +2048,7 @@ Sub Thf_Background_Events
 
 /doevents thfgate
 /doevents valegate
+/doevents hohgate
 /doevents attendance
 /doevents cohme
 /doevents cohall
@@ -2061,6 +2109,7 @@ Sub thf_Aliases
 
 	/squelch /alias /thfgate /bc thfgate
 	/squelch /alias /valegate /bc valegate
+	/squelch /alias /hohgate /bc hohgate
 	/squelch /alias /xeru /bc Xeru deathtouch
 	/squelch /alias /attendance /bc attendance
 	/squelch /alias /ralloson /bc ralloszek on
