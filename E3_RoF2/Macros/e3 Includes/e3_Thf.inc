@@ -2046,7 +2046,7 @@ Sub Thf_Background_Events
 
 
 
-/if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2)  /call Auto_Shrink
+/if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
 
 
 /if (${GatherManaCheck} && ${Me.PctMana} < 30)  /call check_GatherMana
