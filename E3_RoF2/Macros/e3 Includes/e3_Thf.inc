@@ -44,8 +44,8 @@ Sub definethfgate
     /varset thfgateitem Exceptional Charm of Queen Adrianne (Tier 5)
   } else /if (${FindItem[=Superior Magical Charm of Queen Adrianne (Tier 4)].ID}) {
     /varset thfgateitem Superior Magical Charm of Queen Adrianne (Tier 4)
-  } else /if (${FindItem[=Advanced Magical Charm of Queen Adrianne (Tier 3)].ID}) {
-    /varset thfgateitem Advanced Magical Charm of Queen Adrianne (Tier 3)
+  } else /if (${FindItem[=Advanced Magical Charm of Queen Adrianne (Tier 2)].ID}) {
+    /varset thfgateitem Advanced Magical Charm of Queen Adrianne (Tier 2)
   } else /if (${FindItem[=Magical Charm of Queen Adrianne (Tier 1)].ID}) {
     /varset thfgateitem Magical Charm of Queen Adrianne (Tier 1)
   } else /if (${FindItem[=Advanced Charm of Queen Adrianne].ID}) {
