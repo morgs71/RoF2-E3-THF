@@ -12,6 +12,7 @@ SUB check_Pets
     /if (!${Me.Pet.ID} && !${ActionTaken} && ${Defined[petSpell2D]} && ${SpawnCount[pc ${Me}]} && (${petSummonCombat} || ${Me.CombatState.NotEqual[COMBAT]})) /call summonPet
     /if (${BuffCheck} && ${Me.Pet.ID} && ${Defined[petBuffs2D]} && !${medBreak} && (${petBuffCombat} || ${Me.CombatState.NotEqual[COMBAT]}))	/call buffPet
     /if (${BuffCheck} && ${Me.Pet.ID} && ${petAutoShrink} && !${combatTimer}) /call check_AutoShrink
+	/if (${AutoPetClass} && ${Me.CombatState.NotEqual[COMBAT]}) /call PetClassCheck
 	}
 /if (${Debug} || ${Debug_Pets}) /echo <== check_Pets -|
 /RETURN
@@ -26,12 +27,20 @@ SUB summonPet
     /call check_Zone
     /return
   }
+  :CheckClass
   /call check_Ready "petSpell2D" 1
   /if (${c_Ready}) {
     /if (${check_Mana["petSpell2D",1]}) {
 	    /call e3_Cast ${Me.ID} "petSpell2D" 1
     }
   }
+  /if (${AutoPetClass} && ${Me.CombatState.NotEqual[COMBAT]}) {
+	/call PetClassCheck
+	/if (!${Me.Pet.ID}) {
+		/goto :CheckClass
+	}
+  }
+
   /if (${Me.Pet.ID} && ${petTaunt}) {
     /pet taunt on
   } else {
@@ -42,6 +51,15 @@ SUB summonPet
   }  
 	/if (${Debug} || ${Debug_Pets}) /echo <== summonPet -|
 /RETURN
+
+|----------------------Pet Class Check-------------------|
+
+SUB PetClassCheck
+
+/if (${Me.Pet.Class.ID} != ${PetClassNum}) /pet get lost
+
+/Return
+
 
 |------------------------------------------|
 |- Automatically shrinks pets to min size	-|
@@ -192,9 +210,27 @@ Sub pet_Setup
 		/if (${Ini[${Character_Ini},Pets,Pet Auto-Shrink (On/Off)].Length}) /call iniToVarV "${Character_Ini},Pets,Pet Auto-Shrink (On/Off)" petAutoShrink bool outer
 		/if (${Ini[${Character_Ini},Pets,Pet Summon Combat (On/Off)].Length}) /call iniToVarV "${Character_Ini},Pets,Summon Combat (On/Off)" petSummonCombat bool outer
 		/if (${Ini[${Character_Ini},Pets,Pet Buff Combat (On/Off)].Length}) /call iniToVarV "${Character_Ini},Pets,Pet Buff Combat (On/Off)" petBuffCombat bool outer
+		/if (${Ini[${Character_Ini},Pets,Auto T8+ Pet Class Select (On/Off)].Length}) /call iniToVarV "${Character_Ini},Pets,Auto T8+ Pet Class Select (On/Off)" AutoPetClass bool outer 
+		/if (${Ini[${Character_Ini},Pets,Pet Class (WAR/ROG/BER/MNK)].Length}) /call iniToVarV "${Character_Ini},Pets,Pet Class (WAR/ROG/BER/MNK)" PetClassChoice string outer
 	}
 
 	/call pet_spellArrays
+	
+/declare PetClassNum int outer 0
+
+/if (${AutoPetClass})  {
+	/if (${PetClassChoice.Equal[WAR]})  {
+		/varset PetClassNum 1
+	} else /if (${PetClassChoice.Equal[ROG]})  {
+		/varset PetClassNum 9
+	} else /if (${PetClassChoice.Equal[MNK]})  {
+		/varset PetClassNum 7
+	} else /if (${PetClassChoice.Equal[BER]})  {
+		/varset PetClassNum 16
+	}
+}
+
+	
 /if (${Debug} || ${Debug_Pets}) /echo <== pet_Setup -|
 /return
 
@@ -245,6 +281,8 @@ SUB pet_CharacterSettings
     /call WriteToIni "${Character_Ini},Pets,Pet Auto-Shrink (On/Off)" Off
     /call WriteToIni "${Character_Ini},Pets,Pet Summon Combat (On/Off)" Off
     /call WriteToIni "${Character_Ini},Pets,Pet Buff Combat (On/Off)" Off
+	/if (${Select[${Me.Class.ShortName},MAG,NEC]}) /call WriteToIni "${Character_Ini},Pets,Auto T8+ Pet Class Select (On/Off)" Off
+	/if (${Select[${Me.Class.ShortName},MAG,NEC]}) /call WriteToIni "${Character_Ini},Pets,Pet Class (WAR/ROG/BER/MNK)" MNK
 	
 /if (${Debug}) /echo <== pet_CharacterSettings -|
 /RETURN
