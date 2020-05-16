@@ -14,6 +14,7 @@ Movement:
 /Attendance - Counts bots present, and tells you if any are stuck/lost
 /thfgate - All bots will use thier Queen charm to travel to the forest
 /valegate - All bots will use thier token to travel to the vale
+/hohgate = All bots will use the hoh gate item off Draekon
 
 CoH:
 /tell <bot> cohme - bot will summon the sender to them if mage or has item
@@ -42,6 +43,7 @@ Groups:
 THF Events
 /ralloson  - Engages Rallos Zek Bane Nukes (Blue Rod of Zek)
 /rallosoff - Disengages Rallos Zek Bane Nukes (Blue Rod of Zek) will also reset on zone
+/newchar - Use on new character creation when first zoning to forest.  Will automatically do starting quest & get spells/skills/armor
 
 Pets:
 /pets on/off  - Toggle the use of WoS/Draekon/Other Item summoned pets in Non-Pet class bots.
