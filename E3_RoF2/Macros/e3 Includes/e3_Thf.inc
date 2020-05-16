@@ -173,16 +173,15 @@ Sub defineSmallGather
 
   /declare SmallGatheritem string local
   /declare i int local
-  /if (${FindItem[=Orb of Spirits].ID}) {
-    /varset SmallGatheritem Orb of Spirits
-  } else /if (${FindItem[=Tears of Frozen Mana].ID}) {
+  
+/if (${FindItem[=Tears of Frozen Mana].ID}) {
     /varset SmallGatheritem Tears of Frozen Mana
-  } else /if (${FindItem[=Tears of Frozen Spirits].ID}) {
+} else /if (${FindItem[=Tears of Frozen Spirits].ID}) {
     /varset SmallGatheritem Tears of Frozen Spirits
-  } else {
+} else {
     /bc I do not have a small gather mana item available
 	/Varset SmallGatheritemCapable FALSE
-  }
+ }
   /if (${Bool[${SmallGatheritem}]}) {
     /if (${Defined[SmallGatherArray]}) /deletevar SmallGatherArray
     /declare SmallGatherArray[1] string outer ${SmallGatheritem}
@@ -214,10 +213,12 @@ Sub defineLargeGather
     /varset LargeGatheritem Strange Silk Slippers
   } else /if (${FindItem[=Glowing Chains (Tier 2)].ID}) {
     /varset LargeGatheritem Glowing Chains (Tier 2)
-  }else /if (${FindItem[=Silver Chains of the Burgerz (Tier 4)].ID}) {
+  } else /if (${FindItem[=Silver Chains of the Burgerz (Tier 4)].ID}) {
     /varset LargeGatheritem Silver Chains of the Burgerz (Tier 4)
   } else /if (${FindItem[=Silver Chains (Tier 2)].ID}) {
     /varset LargeGatheritem Silver Chains (Tier 2)
+  } else /if (${FindItem[=Orb of Spirits].ID}) {
+    /varset LargeGatheritem Orb of Spirits
   } else {
     /bc I do not have a Large gather mana item available
 	/varset LargeGatheritemCapable FALSE
@@ -1076,23 +1077,6 @@ Sub DraekonGrass
 	}
 /return
 
-Sub ReaperDuck
-	:ReaperDuckLoop
-		/delay 4
-		/doevents
-	/if (${ReaperDucking}==1)  {
-		/goto :ReaperDuckLoop
-	}
-/return
-
-Sub ReaperFarAway
-	:ReaperFarAwayLoop
-		/delay 4
-		/doevents
-	/if (${ReaperFar}==1)  {
-		/goto :ReaperFarAwayLoop
-	}
-/return
 
 Sub ValikWait
 	:ValikWaitLoop
@@ -1110,30 +1094,18 @@ Sub ValikWait
 |-----------------------------------------------------------------------------------------------------------------|
 
 #Event ReaperOfMortalityDuck "The Reaper of Mortality levels his eyes with your throat."
-#Event ReaperOfMortalityUnduck "You feel the hand of death steal the mortality of those who are too afraid to stand toe-to-toe with their foe."
-#Event ReaperOfMortalityMoveClose "Come Foolish Mortals, if you wish to play, then so be it. We shall see how brave you really are! Come to Me!"
-#Event ReaperOfMortalityUnmoveClose "You feel the hand of death steal the mortality of those who are too afraid to stand toe-to-toe with their foe."
-#Event ReaperOfMortalityMoveFar "Come Foolish Mortals, if you wish to play, then so be it. We shall play a quick game of cat and mouse.  Run fools!"
-#Event ReaperOfMortalityUnmoveFar "You feel the hand of death steal the mortality of those who dare approach too closely."
+#Event ReaperOfMortalityMove "The Reaper of Mortality looks around, assessing his foes."
 
 
 
 Sub Event_ReaperOfMortalityDuck(string line)
 	/call IsTank
 	/popup Duck!!!
-	/if (${IsTank}) /return
-	/varset ReaperDucking 1
-	/keypress ${DuckKey}
-	/call ReaperDuck
-
-/return
-
-Sub Event_ReaperOfMortalityUnduck(string line)
-	/call IsTank
-	/popup Ducking finished
 	/if (${IsTank}) /goto :SkipDuck
-	/varset ReaperDucking 0
+	/call AssistOff
 	/keypress ${DuckKey}
+	/delay 10s
+	/stand
 	:SkipDuck
 	/if (${IsTank})  {
 		/call KillReaper
@@ -1145,57 +1117,35 @@ Sub Event_ReaperOfMortalityUnduck(string line)
 
 /return
 
-Sub Event_ReaperOfMortalityMoveClose(string line)
-	/call IsTank
-	/popup Move close!!!
-	/if (${IsTank})  {  
-		/rsay Move close to reaper !
-		/return
-	}
-	
-	/call Event_MoveToReaper
-/return
 
 
-Sub Event_ReaperOfMortalityMoveFar(string line)
+Sub Event_ReaperOfMortalityMove(string line)
 	/call IsTank
 	/popup Run away!!!
 	/if (${IsTank})  {
 		/rsay Move away from reaper !
-		/return
 		} 
-	/varset ReaperFar 1
-	/doevents BackOff
-	/moveto loc -14.97 -146.53
-	/call WaitUntilNotMoving
-	/if (${Select[${Me.Class.ShortName},MAG,DRU,WIZ,SHM,NEC,ENC]})  {
-		/return
-		}
-	/call ReaperFarAway
-/return
-
-Sub Event_ReaperOfMortalityUnmoveFar(string line)
-	/call IsTank
-	/popup Run away finished
-	/if (${IsTank})  {
-		/rsay Safe to move !
-		/return
-	} 
-	/varset ReaperFar 0
-	/call Event_MoveToReaper
+	/call AssistOff
+	/if (${Spawn[NPC =The Reaper of Mortality].Distance} <= ${Math.Calc[${Spawn[${Spawn[NPC =The Reaper of Mortality].ID}].MaxRangeTo}*.75].Int}12)  {
+		/moveto loc -59.60 -167.54
+		/call WaitUntilNotMoving
+		/delay 5s
+	}
+	/call MoveToReaper
+	
 /return
 
 
-Sub Event_MoveToReaper
+
+Sub MoveToReaper
 
  /bc [Event] - Returning to The Reaper of Mortality
 	/call IsTank
 	/if (${IsTank})  {
-		/rsay Safe to move back ${Time}
-		/delay 4s
+		/delay 5s
 		/goto :KillReaper
-		}
-	/if (${Spawn[NPC =The Reaper of Mortality].ID} && ${Spawn[NPC =The Reaper of Mortality].Distance} > 12)  {
+	}
+	/if (${Spawn[NPC =The Reaper of Mortality].Distance} >= ${Math.Calc[${Spawn[${Spawn[NPC =The Reaper of Mortality].ID}].MaxRangeTo}*.75].Int}12)  {
 		/moveto id ${Spawn[NPC =The Reaper of Mortality].ID}
 		/call WaitUntilNotMoving
 		/delay 2s
@@ -1215,6 +1165,7 @@ Sub Event_MoveToReaper
 Sub KillReaper
 
 /bc Assist ${TankName} on ${Spawn[NPC =The Reaper of Mortality].ID}
+
 /return
 		
 	
@@ -1225,6 +1176,7 @@ Sub KillReaper
 #Event DraekonGoToGrass "The world begins to spin as Draekon starts to chant an evil spell pulling you towards him."
 #Event DraekonGoToMelee "The world begins to spin as Draekon starts to chant a powerful spell pushing you away from him"
 #Event DraekonSafeFromGrass "You escape the power of Draekon's spell"
+#Event DraekonSafeFromGrass "Your body explodes from the inside as Draekon's spell grabs hold of you!"
 #Event DraekonVoiceEnd "You join your powers with #1#, preventing Draekon from attacking!"
 
 
@@ -1244,12 +1196,12 @@ Sub Event_DraekonMoveToNpc(string line, string NpcName)
 Sub Event_DraekonGoToGrass(string line)
 	/call IsTank
 	/if (${IsTank})  {
-		/rsay Everyone move to grass ${Time}
+		/rsay Everyone move to grass !
 		/return
 		}
 	/varset DraekonGrass 1
-	/stick off
-	/attack off
+	/if (${Me.Casting.ID}) /call interrupt
+	/call AssistOff
 	/moveto loc 335.71 -1582.96
 	/call WaitUntilNotMoving
 	/if (${Select[${Me.Class.ShortName},MAG,DRU,WIZ,SHM,NEC,ENC]})  {
@@ -1261,7 +1213,7 @@ Sub Event_DraekonGoToGrass(string line)
 Sub Event_DraekonGoToMelee(string line)
 	/call IsTank
 	/if (${IsTank})  {
-		/rsay Everyone move to melee range ${Time}
+		/rsay Everyone move to melee range !
 		/return
 		}
 	/stick off
@@ -1286,7 +1238,7 @@ Sub Event_MoveToDraekon
 
 	/call IsTank
 	/if (${IsTank})  {
-		/rsay Safe to move back ${Time}
+		/rsay Safe to move back !
 		/delay 3s
 		/goto :MovedtoDraekonNowKill
 	}
@@ -1841,7 +1793,7 @@ Sub Event_XeruForm
     | Break Casting Chains
     /if (${Me.Casting.ID}==8974) {
         /stopcast
-        /interrupt
+        /call interrupt
     }
 
 /return
@@ -1895,10 +1847,11 @@ SUB Event_VampStake(string line)
 |-------------------------Nobles Causeway------------------------|
 
 
+|----------Antithesis---------------|
 Sub Apply_Antithesis
 
 
-/if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Ukun]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Bazu]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Feran]} || ${Spawn[${AntithesisTarget}].Race.Name.Equal[Dragorn]} && ${Spawn[${AntithesisTarget}].Distance} < 200)  {
+/if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Ukun]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Murkglider]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Noc]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Discordling]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Bazu]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Feran]} || ${Spawn[${AntithesisTarget}].Race.Name.Equal[Dragorn]} && ${Spawn[${AntithesisTarget}].Distance} < 200)  {
 		/call Check_AntithesisItem
 		/call check_Ready "AntithesisArray2D" 1
 		/if (${c_Ready})  {
@@ -1934,6 +1887,18 @@ Sub Check_AntithesisItem
 	/if (${FindItem[=Feral Heart of the Alpha].ID}) {
 		/varset AntithesisItem Feral Heart of the Alpha
 	}
+} else /if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Discordling]})  {
+	/if (${FindItem[=Discordant Accords].ID}) {
+		/varset AntithesisItem Discordant Accords
+	}
+} else /if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Noc]})  {
+	/if (${FindItem[=Idol of the Sprayblood].ID}) {
+		/varset AntithesisItem Idol of the Sprayblood
+	}
+} else /if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Murkglider]})  {
+	/if (${FindItem[=Murkglider Soulrod].ID}) {
+		/varset AntithesisItem Murkglider Soulrod
+	}
 } 
 
 /if (${Bool[${AntithesisItem}]}) {
@@ -1948,6 +1913,15 @@ Sub Check_AntithesisItem
   } 
 
 /Return
+
+
+
+
+
+
+
+
+
 |-------------------------------------Spawn Alerts Section---------------------------------------|
 
 
@@ -2013,6 +1987,18 @@ Sub Event_HoHCruthz(string line)
 
 |--------------------------Spawn Alerts Section End------------------------|
 	
+	
+|---------Test Event------For Development Only-------|	
+#Event TestCode	"<#1#> TestCode"
+
+Sub Event_TestCode
+	
+
+	
+/Return	
+
+
+|----------End Test Event-------------------------------|
 
 Sub Thf_Setup
 /if (${Debug}) /echo |- Thf_Setup ==>
@@ -2032,6 +2018,8 @@ Sub Thf_Setup
 /declare SmallGatheritemCapable bool outer  TRUE
 /declare ArmorMerch int outer
 /declare buyParams string outer
+
+
 
 
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
@@ -2091,7 +2079,7 @@ Sub Thf_Background_Events
 /doevents MaestroGoto
 /doevents MaestroGoAdds
 /doevents NewTHFChar
-
+/doevents TestCode
 
 
 /if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
@@ -2100,9 +2088,7 @@ Sub Thf_Background_Events
 /if (${GatherManaCheck} && ${Me.PctMana} < 30)  /call check_GatherMana
 
 
-
-/return
-
+/Return 
 
 Sub thf_Aliases
 /if (${Debug} || ${Debug_Thf}) /echo |- thf_Aliases ==>
@@ -2116,7 +2102,7 @@ Sub thf_Aliases
 	/squelch /alias /rallosoff /bc ralloszek off
 	/squelch /alias /newchar /bc New Character Setup
 	/noparse /squelch /alias /mezit /bc Mez on ${Target.ID}
-
+	/squelch /alias /testcode /bc TestCode
 
 /if (${Debug} || ${Debug_Thf}) /echo <== thf_Aliases -|
 /return

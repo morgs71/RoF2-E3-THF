@@ -114,6 +114,7 @@ SUB EVENT_AutoBuy(line, ChatSender, merchantID, eventParams)
 			/goto :lookForItems
 		}
 		/docommand ${ChatToggle} Done buying items.
+
 	}
 
 	:closeOut
