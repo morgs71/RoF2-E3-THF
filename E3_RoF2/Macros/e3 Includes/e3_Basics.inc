@@ -608,7 +608,7 @@ SUB EVENT_FindItems(line, ChatSender, ItemToFind)
         /next e
       }
     /next i
-  /if (${totalItems} > 0) /docommand ${ChatToggle} >> Found (${totalItems}) : [${ItemToFind}] <<
+  /if (${totalItems} == 0) /docommand ${ChatToggle} >> Missing : [${ItemToFind}] <<
 
 /if (${Debug} || ${Debug_Basics}) /echo <== EVENT_FindItems -|
 /RETURN
@@ -720,9 +720,9 @@ SUB EVENT_FindItemCompact(line, ChatSender, ItemToFind)
 
   |/echo ${raINDX} ${reportArray[1]}
   /for r 1 to ${raINDX}
-    /if (${reportArray[${r}].NotEqual[NIL]}) /docommand ${ChatToggle} ${reportArray[${r}]}/${totalItems})
+    /if (${reportArray[${r}].NotEqual[NIL]}) /docommand ${ChatToggle} ${totalItems}
   /next r
-  |/if (${totalItems} > 0) /docommand ${ChatToggle} >> Found (${totalItems}) : [${ItemToFind}] <<
+  /if (${totalItems} == 0) /docommand ${ChatToggle} >> ${totalItems} <<
 
   /if (${Debug} || ${Debug_Basics}) /echo <== EVENT_FindItems -|
 /RETURN
