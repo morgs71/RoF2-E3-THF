@@ -26,6 +26,9 @@ SUB check_Zone
   }
   
  | Reset Variables
+	/if (${MapNPCShow})  {
+		/squelch /mapshow NPC
+	}
 	/varset RallosZek False
 	/if (${Select[${Me.Class.ShortName},BRD]}) /varset selooutdoors TRUE
 
@@ -347,6 +350,7 @@ SUB EVENT_manualTributeSet(line, ChatSender, eventParams)
 |----------------------------------------------------------------------------------------------------|
 Sub background_Setup
 /call iniToVarV "${advSettings_Ini},Debug,Debug Background (On/Off)" Debug_Background bool outer
+/call iniToVarV "${genSettings_Ini},General,MapNPC (On/Off)" MapNPCShow bool outer
 /if (${Debug} || ${Debug_Background}) /echo |- background_Setup ==>
 	/declare idle bool outer false
 	/declare idleTimer timer outer
@@ -415,6 +419,7 @@ Sub background_Setup
 	/call IniToArrayV "${advSettings_Ini},NetBots HUD,NetBot#" netBotsHUDArray
 
   /call iniToVarV "${genSettings_Ini},Background,AutoSetPctAAExp (On/Off)" autoSetPctAAExp bool outer
+ 
 
 /if (${Debug} || ${Debug_Background}) /echo <== background_Setup -|
 /return
@@ -428,6 +433,7 @@ SUB background_MacroSettings
 	/call WriteToIni "${genSettings_Ini},Background,Close Spellbook Timer (Sec)" 30
   /call WriteToIni "${genSettings_Ini},Background,AutoSetPctAAExp (On/Off)" On
   /call WriteToIni "${genSettings_Ini},Auto-Tribute,Auto-Tribute (On/Off)" Off
+  	/call WriteToIni "${genSettings_Ini},General,MapNPC (On/Off)" Off
 /RETURN
 
 |----------------------------------------------------------------------------------------------------|
