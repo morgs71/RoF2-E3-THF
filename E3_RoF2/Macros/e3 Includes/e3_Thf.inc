@@ -341,7 +341,7 @@ Sub definecohspell
   /declare cohspell string local
   /declare i int local
   /if (${Me.Book[Call of the Hero]}) {
-    /varset cohspell Call of the Hero
+    /varset cohspell ${Spell[1771]}
   } else /if (${FindItem[=Ino's Lost Trinket (Tier 10)].ID}) {
     /varset cohspell Ino's Lost Trinket (Tier 10)
   } else /if (${FindItem[=Arion, Skull of the Ancient (Tier 10)].ID}) {
