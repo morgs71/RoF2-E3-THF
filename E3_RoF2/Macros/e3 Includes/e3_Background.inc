@@ -26,14 +26,22 @@ SUB check_Zone
   }
   
  | Reset Variables
-	/if (${MapNPCShow})  {
-		/squelch /mapshow NPC
-	}
+	
 	/varset RallosZek False
 	/if (${Select[${Me.Class.ShortName},BRD]}) /varset selooutdoors TRUE
 
 /if (${Debug} || ${Debug_Background}) /echo <== check_Zone -|
 /RETURN
+
+|-----------------------NPC MapShow------------------------|
+
+Sub NPCMapShow
+
+
+/varset MapNPCShowTimer 60s
+/squelch /mapshow NPC
+
+/Return
 
 |--------------------------------------------------------------------------------------------------------------------|
 |- Attempts to load the spellset specified in your Macro_Ini, if you're missing more than 3 gems on your spellbar.  -|
@@ -350,7 +358,7 @@ SUB EVENT_manualTributeSet(line, ChatSender, eventParams)
 |----------------------------------------------------------------------------------------------------|
 Sub background_Setup
 /call iniToVarV "${advSettings_Ini},Debug,Debug Background (On/Off)" Debug_Background bool outer
-/call iniToVarV "${genSettings_Ini},General,MapNPC (On/Off)" MapNPCShow bool outer
+/call iniToVarV "${Character_Ini},Misc,MapNPC (On/Off)" MapNPCShow bool outer
 /if (${Debug} || ${Debug_Background}) /echo |- background_Setup ==>
 	/declare idle bool outer false
 	/declare idleTimer timer outer
@@ -363,6 +371,7 @@ Sub background_Setup
 	/declare Old_cursorID int outer 0
 	/declare rebuffTimer timer outer
 	/declare rebuffDelay int outer 3s
+	/declare MapNPCShowTimer timer outer 15s
 	
 	/if (!${Defined[tributeZone]}) /declare tributeZone string global FALSE
   /if (!${Ini[${MacroData_Ini},File Paths,Tribute Settings].Length}) {
@@ -433,11 +442,14 @@ SUB background_MacroSettings
 	/call WriteToIni "${genSettings_Ini},Background,Close Spellbook Timer (Sec)" 30
   /call WriteToIni "${genSettings_Ini},Background,AutoSetPctAAExp (On/Off)" On
   /call WriteToIni "${genSettings_Ini},Auto-Tribute,Auto-Tribute (On/Off)" Off
-  	/call WriteToIni "${genSettings_Ini},General,MapNPC (On/Off)" Off
+
 /RETURN
 
 |----------------------------------------------------------------------------------------------------|
 SUB background_CharacterSettings
+
+  	/call WriteToIni "${Character_Ini},Misc,MapNPC (On/Off)" Off
+	
 /RETURN
 
 |----------------------------------------------------------------------------------------------------|
@@ -455,4 +467,7 @@ Sub background_Background_Events
   /doevents manualTributeSet
 	/doevents updateAliases
   /doevents YourKill
+/if (${MapNPCShow} && ${MapNPCShowTimer} == 0) {
+	/call NPCMapShow
+}
 /return
