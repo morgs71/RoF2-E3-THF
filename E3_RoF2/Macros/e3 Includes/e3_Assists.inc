@@ -267,8 +267,8 @@ SUB check_AssistStatus
 SUB CombatAbilities
   /if (${Debug} || ${Debug_Assists}) /echo |- CombatAbilities ==>
   /if (${Me.Stunned}) /return
-  /if (${Assisting} && ${Zone.ShortName.Equal[causeway]} && !${AntithesisTimer}) {
-	/call createTimer "AntithesisTimer" "10s"
+  /if (${Assisting} && ${Zone.ShortName.Equal[causeway]} && ${AntithesisTimer} == 0) {
+	/varset AntithesisTimer 10s
 	/call Apply_Antithesis
   }
   /declare i int local
@@ -394,13 +394,13 @@ SUB check_AutoAssist
 |--------------------------------------------------------|
 SUB check_Nukes
 /if (${Debug} || ${Debug_Assists}) /echo |- check_Nukes ==>
-/if (${Assisting} && ${Zone.ShortName.Equal[causeway]} && !${AntithesisTimer}) {
-	/call createTimer "AntithesisTimer" "10s"
+/if (${Assisting} && ${Zone.ShortName.Equal[causeway]} && ${AntithesisTimer} == 0) {
+	/varset AntithesisTimer 10s
 	/call Apply_Antithesis
   }
-	/if	(${RallosZek} && !${BlueRodTimer} && ${Assisting})  {
+	/if	(${RallosZek} && ${BlueRodTimer} == 0 && ${Assisting})  {
 		/casting "Blue Rod of Zek" -targetid|${AssistTarget}
-		/call createTimer "BlueRodTimer" "5s"
+		/varset BlueRodTimer 5s
 		/popup Rallos Zek Bane Damage is Engaged!
 	} else /if (${Defined[Nukes2D]} && ${Assisting} && ${use_Nukes}) {
 	  /declare castIndex int local
@@ -1265,6 +1265,8 @@ Sub assist_Setup
 	/declare revertRngToMelee bool outer FALSE
 	/declare pauseRanged bool outer FALSE
   /declare aeTarget int outer
+  /declare AntithesisTimer timer outer 0
+  /declare BlueRodTimer timer outer 0
   /if (!${Defined[spellsToUse]})   /declare spellsToUse string global Main
 
 | ------------------------------------- Import Macro_Ini Settings.
