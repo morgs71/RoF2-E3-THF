@@ -996,6 +996,10 @@ Sub AutoBuyArmor
 
 
 
+
+
+
+
 |---------------------------------------Events Section----------------------------------------|
 
 
@@ -1073,6 +1077,14 @@ Sub DraekonGrass
 	}
 /return
 
+Sub ZenurixWait
+	:ZenurixWaitLoop
+		/delay 4
+		/doevents
+	/if (${ZenurixWait}==1)  {
+		/goto :ZenurixWaitLoop
+	}
+/return
 
 Sub ValikWait
 	:ValikWaitLoop
@@ -1122,7 +1134,7 @@ Sub Event_ReaperOfMortalityMove(string line)
 		/rsay Move away from reaper !
 		} 
 	/call AssistOff
-	/if (${Spawn[NPC =The Reaper of Mortality].Distance} <= ${Math.Calc[${Spawn[${Spawn[NPC =The Reaper of Mortality].ID}].MaxRangeTo}*.75].Int}12)  {
+	/if (${Select[${Me.Class.ShortName},PAL,SHD,WAR,RNG,BST,BER,ROG,MNK]})  {
 		/moveto loc -59.60 -167.54
 		/call WaitUntilNotMoving
 		/delay 5s
@@ -1350,6 +1362,67 @@ Sub KillSeravince
 
 /bc Assist ${TankName} on ${Spawn[NPC =Emperor Seravince].ID}
 /return
+
+
+
+
+|-------------------------------Zenurix-----By Muergan----------------|
+
+#Event ContractedDoom "#1# feels death call their name."
+#Event ZenurixRunAway "Zenurix's eyes lock on #1# #2#"
+#Event ZenurixSafe "You evade Zenurix's Chaos Fire."
+
+Sub Event_ContractedDoom(string line, string Player)
+
+/if (${Player.Equal[${Me}]}) {
+	/if (${Me.Buff[Creeping Doom].ID}) {
+		/rsay >> Has Creeping Doom <<
+	}
+}
+
+/return
+
+
+Sub Event_ZenurixRunAway(string line, string PlayerName, string RestOfLine)
+
+/call IsTank
+/declare RunAwayName string local ${PlayerName.Right[-2].Left[-1]}
+	
+/if (${IsTank})  /return
+
+/if (${Me.Name.Equal[${RunAwayName}]}) {
+    /rsay >> I need to Run Away !!! <<
+	/declare originalLoc string local
+	/varset originalLoc string local ${Me.Loc.Replace[ ,]}
+	/varset ZenurixWait 1
+	/moveto loc 1957 -1017
+	/call WaitUntilNotMoving
+	/call ZenurixWait
+	/moveto originalLoc
+	/call WaitUntilNotMoving
+	/call check_AutoAssist
+}
+	
+/Return	
+
+
+Sub Event_ZenurixSafe
+
+/varset ZenurixWait 0
+	
+	
+/return
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1593,8 +1666,8 @@ Sub	Event_ValikEnd
 /if (${IsTank})  {	
 			/rsay Return to the fight!!!
 			/call KillValik		
-} else /if (!${IsTank})  {	
-	0
+} else /if (!${IsTank})  {
+	/if (${MainAssist.Equal[${Me.CleanName}]})  {
 		/rsay Return to the fight!!!
 		/call KillValik
 	}
@@ -1988,8 +2061,14 @@ Sub Event_HoHCruthz(string line)
 #Event TestCode	"<#1#> TestCode"
 
 Sub Event_TestCode
-	
 
+:loopforage	
+/if (${Me.AbilityReady[Forage]})  {
+	/doability Forage
+	/delay 1s
+	/autoinventory
+}
+/goto :loopforage
 	
 /Return	
 
@@ -2014,7 +2093,7 @@ Sub Thf_Setup
 /declare SmallGatheritemCapable bool outer  TRUE
 /declare ArmorMerch int outer
 /declare buyParams string outer
-
+/declare ZenurixWait int outer 0
 
 
 
@@ -2076,7 +2155,9 @@ Sub Thf_Background_Events
 /doevents MaestroGoAdds
 /doevents NewTHFChar
 /doevents TestCode
-
+/doevents ContractedDoom 
+/doevents ZenurixRunAway 
+/doevents ZenurixSafe 
 
 /if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
 
