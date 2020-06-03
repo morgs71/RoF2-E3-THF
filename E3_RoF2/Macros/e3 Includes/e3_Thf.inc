@@ -1999,6 +1999,8 @@ Sub Check_AntithesisItem
 |-------------------------DSK Spawn Alerts----------By Muergan-------------|
 
 #Event Wurliz "Wurliz The Destroyer shouts 'Swift Death comes your way!'"
+#Event Zurtic "Zurtic The Researcher shouts 'Come to me fools! You shall be my next specimen!'"
+
 
 Sub Event_Wurliz(string line)
 	/popup Wurliz the Destroyer spawned !!!
@@ -2006,6 +2008,14 @@ Sub Event_Wurliz(string line)
 		/rsay Wurliz the Destroyer spawned !!!
 	}
 /return
+
+Sub Event_Zurtic(string line)
+	/popup Zurtic The Researcher spawned !!!
+	/if (${MainAssist.Equal[${Me.CleanName}]}) {
+		/rsay Zurtic The Researcher spawned !!!
+	}
+/return
+
 
 
 |-------------------------HoH Mini Spawn Alerts-----By Muergan-------------|
