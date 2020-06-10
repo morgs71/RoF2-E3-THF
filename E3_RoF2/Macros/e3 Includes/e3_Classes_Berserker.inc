@@ -21,7 +21,7 @@ SUB BER_Setup
 SUB BER_Background_Events
   
   |---Cry Havoc---|
-/if (${CryHavoc} && ${Me.Combat} && !${Me.Song[Cry Havoc].ID})  {
+/if (${CryHavoc} && ${Me.Combat} && !${Me.Song[Cry Havoc].ID} && !${Me.Song[Strike of Savagery].ID} && !${Me.Song[Prophet's Gift of the Ruchu].ID})  {
 
 	/if (${FindItem[=Dark Shadow Rage Spaulders (Tier 7)].ID}) {
 		/useitem Dark Shadow Rage Spaulders (Tier 7)
