@@ -7,6 +7,36 @@
 
 |---------------------------------------THF Utility Items ---------------------------------|
 
+|--------------------AutoForage-----------------|
+#Event AutoForage "<#1#> AutoForageToggle"
+
+Sub_Event AutoForage
+
+/if (${Me.Ability[Forage]})  {
+	/if (${AutoForageCheck} == 1) {
+		/varset AutoForageCheck 0
+		/bc Auto Forage >>Off<<
+	} else (${AutoForageCheck} == 0) {
+		/varset AutoForageCheck 1
+		/bc Auto Forage >>On<<
+	}
+} else /if (!${Me.Ability[Forage]})  {
+	/bc I do not have the Forage Ability !
+}
+/Return
+
+
+Sub DoForage
+
+	/doability Forage
+	/delay 1s
+	/autoinventory
+
+
+/Return
+
+
+
 
 
 |---------------THF Forest Gate-----------------|
@@ -1483,12 +1513,6 @@ Sub defineCreepDoomCure
 
 
 
-
-
-
-
-
-
 	
 	
 |--------------------------Vistrinda-------By Muergan--------------------|
@@ -2135,13 +2159,7 @@ Sub Event_HoHCruthz(string line)
 
 Sub Event_TestCode
 
-:loopforage	
-/if (${Me.AbilityReady[Forage]})  {
-	/doability Forage
-	/delay 1s
-	/autoinventory
-}
-/goto :loopforage
+
 	
 /Return	
 
@@ -2167,7 +2185,7 @@ Sub Thf_Setup
 /declare ArmorMerch int outer
 /declare buyParams string outer
 /declare ZenurixWait int outer 0
-
+/declare AutoForageCheck int outer 0
 
 
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
@@ -2237,6 +2255,8 @@ Sub Thf_Background_Events
 
 /if (${GatherManaCheck} && ${Me.PctMana} < 30)  /call check_GatherMana
 
+/if (${Me.AbilityReady[Forage]} && ${AutoForageCheck} == 1)  /call DoForage
+
 
 /Return 
 
@@ -2253,6 +2273,7 @@ Sub thf_Aliases
 	/squelch /alias /newchar /bc New Character Setup
 	/noparse /squelch /alias /mezit /bc Mez on ${Target.ID}
 	/squelch /alias /testcode /bc TestCode
+	/squelch /alias /autoforage /bc AutoForageToggle
 
 /if (${Debug} || ${Debug_Thf}) /echo <== thf_Aliases -|
 /return
