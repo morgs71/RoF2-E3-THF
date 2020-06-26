@@ -1371,18 +1371,53 @@ Sub KillSeravince
 #Event ContractedDoom "#1# feels death call their name."
 #Event ZenurixRunAway "Zenurix's eyes lock on #1# #2#"
 #Event ZenurixSafe "You evade Zenurix's Chaos Fire."
+#Event CreepDoomCureMe "<#1#> CureMe >> Creeping Doom <<"
 
 Sub Event_ContractedDoom(string line, string Player)
 
 /if (${Player.Equal[${Me}]}) {
+	 && ${Twist.Twisting}) /twist stop
+	/rs Creeping Doom on ${Me}
+	:CureLoop
 	/if (${Me.Buff[Creeping Doom].ID}) {
-		/rsay >> Has Creeping Doom <<
+		/call defineCreepDoomCure
+		/call check_Ready "CreepDoomCureArray2D" 1
+        /if (${c_Ready}) {
+			/call e3_cast ${Me.ID} "CreepDoomCureArray2D" 1
+			/bc >> Curing Creeping Doom on ${Me} <<
+		}
+		/goto :CureLoop
 	}
 }
+
 
 /return
 
 
+Sub Event_CreepDoomCureMe(string line, ChatSender)
+
+/if (${Me.Class.ShortName.Equal[DRU,SHM,ENC,NEC]})  {
+	/declare CureTarget string local ${line.Right[-${Math.Calc[${line.Find[buff]}+4]}]}
+	/if (${Int[${CureTarget}]}) {
+		/varset CureTarget ${Spawn[id ${CureTarget}].ID}
+	}
+	:CureLoop2
+	/if (${Target.Buff[Creeping Doom].ID}) {
+		/call defineCreepDoomCure
+		/call check_Ready "CreepDoomCureArray2D" 1
+        /if (${c_Ready}) {
+			/call e3_cast ${Me.ID} "CreepDoomCureArray2D" 1
+			/bc >> Curing Creeping Doom on ${Target.CleanName} <<
+		}
+		/goto :CureLoop2
+	}
+}
+
+
+/Return	
+	
+	
+	
 Sub Event_ZenurixRunAway(string line, string PlayerName, string RestOfLine)
 
 /call IsTank
@@ -1412,6 +1447,34 @@ Sub Event_ZenurixSafe
 	
 	
 /return
+
+
+
+
+Sub defineCreepDoomCure
+  /declare CreepDoomCureitem string local
+  /declare i int local
+  /if (${FindItem[Shissar Empire Badge of Honor (Tier 1)].ID}) {
+    /varset CreepDoomCureitem Shissar Empire Badge of Honor (Tier 1)
+  } else /if (${Me.Book[Remove Greater Curse]}) {
+    /varset CreepDoomCureitem Remove Greater Curse
+  } 
+  /if (${Bool[${CreepDoomCureitem}]}) {
+    /if (${Defined[CreepDoomCureArray]}) /deletevar CreepDoomCureArray
+    /declare CreepDoomCureArray[1] string outer ${CreepDoomCureitem}
+    /if (${CreepDoomCureArray.Size}) {
+      /call BuildSpellArray "CreepDoomCureArray" "CreepDoomCureArray2D"
+      /for i 1 to ${CreepDoomCureArray2D.Size[1]}
+        /varset CreepDoomCureArray2D[${i},${iCastInvis}] 1
+      /next i
+      }
+  } else {
+	/if (${Me.Buff[Creeping Doom].ID}) {
+		/bc CureMe >> Creeping Doom << 
+	}
+  }
+/RETURN
+
 
 
 
