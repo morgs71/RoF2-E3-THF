@@ -8,15 +8,15 @@
 |---------------------------------------THF Utility Items ---------------------------------|
 
 |--------------------AutoForage-----------------|
-#Event AutoForage "<#1#> AutoForageToggle"
+#Event AutoForage "<#*#> AutoForageToggle"
 
-Sub_Event AutoForage
+Sub Event_AutoForage
 
 /if (${Me.Ability[Forage]})  {
 	/if (${AutoForageCheck} == 1) {
 		/varset AutoForageCheck 0
 		/bc Auto Forage >>Off<<
-	} else (${AutoForageCheck} == 0) {
+	} else /if (${AutoForageCheck} == 0) {
 		/varset AutoForageCheck 1
 		/bc Auto Forage >>On<<
 	}
@@ -2249,6 +2249,7 @@ Sub Thf_Background_Events
 /doevents ContractedDoom 
 /doevents ZenurixRunAway 
 /doevents ZenurixSafe 
+/doevents AutoForage
 
 /if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
 
