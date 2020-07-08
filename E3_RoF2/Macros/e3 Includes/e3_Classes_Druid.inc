@@ -42,12 +42,9 @@ sub Event_DruRez(line, ChatSender)
     |/echo ${Target.ID}
     /call check_CorpseRezzable
     /if (${canRez}==1) {
-      :checkReady
-      /call check_Ready "DrurezArray2D" 1
-      /if ((!${c_Ready} || !${check_Mana["DrurezArray2D",1]}) && ${Me.CombatState.NotEqual[COMBAT]}) {
-        /if (!${Me.Sitting}) /sit on
-        /delay 1s
-        /goto :checkReady
+        /call check_Ready "DrurezArray2D" 1
+        /if ((!${c_Ready}) {
+			/return
       }
       /tell ${ChatSender} Wait4Rez
       /call e3_cast ${Spawn[${ChatSender}'s].ID} "DrurezArray2D" 1

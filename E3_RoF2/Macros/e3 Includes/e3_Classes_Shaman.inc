@@ -43,12 +43,9 @@ sub Event_ShmRez(line, ChatSender)
     |/echo ${Target.ID}
     /call check_CorpseRezzable
     /if (${canRez}==1) {
-      :checkReady
       /call check_Ready "ShmrezArray2D" 1
-      /if ((!${c_Ready} || !${check_Mana["ShmrezArray2D",1]}) && ${Me.CombatState.NotEqual[COMBAT]}) {
-        /if (!${Me.Sitting}) /sit on
-        /delay 1s
-        /goto :checkReady
+      /if ((!${c_Ready}) {
+			/return
       }
       /tell ${ChatSender} Wait4Rez
       /call e3_cast ${Spawn[${ChatSender}'s].ID} "ShmrezArray2D" 1
