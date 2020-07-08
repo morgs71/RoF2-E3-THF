@@ -1827,7 +1827,7 @@ Sub Feedhim
 /declare i int local 1
 /for i 1 to 5
 /if (${FindItem[=Special Hamburger].ID})  {
-	/useitem Special Hamburger
+	/casting "Special Hamburger" "-targetid|${SpawnCount[npc "Moarburgerz"]}.ID}"
 	/delay 5
 }
 /next i
