@@ -389,6 +389,15 @@ SUB check_AutoAssist
 /if (${Debug} || ${Debug_Assists}) /echo <== check_AutoAssist -|
 /RETURN
 
+|------------------------------------------------------------------------|
+|- Turn off discs if out of combat and long duration disc running   	-|
+|------------------------------------------------------------------------|
+SUB check_LongDisc
+/if (!${Me.Combat} && ${Me.ActiveDisc.ID} && (${Me.PctEndurance} < 40)) {
+	/notify CombatAbilityWnd CAW_CombatEffectButton leftmouseup
+}
+/RETURN
+
 |--------------------------------------------------------|
 |- Casts direct damage spells on a specified target.	  -|
 |--------------------------------------------------------|
@@ -1536,6 +1545,7 @@ Sub assist_Aliases
 Sub assist_Background_Events
   /if (${auto_AssistOn})    /call check_AutoAssist
   /if (${tankKillEngaged})  /call tankKill
+  /call check_LongDisc
   /doevents Assist
   /doevents BackOff
   /if (${Assisting}) {
