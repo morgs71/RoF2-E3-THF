@@ -42,7 +42,7 @@ SUB check_lifeSupport
 					} else {
             /if (${check_Mana["lifeSupport2D",${s}]}) {
 							/if (${Me.Casting.ID} && ${Me.Class.ShortName.NotEqual[BRD]}) /call interrupt
-							/call e3_Cast ${Me.ID} "lifeSupport2D" ${s}
+							/call e3_Cast ${Target.ID} "lifeSupport2D" ${s}
 						}
 					}
 				}
