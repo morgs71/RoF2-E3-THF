@@ -863,16 +863,16 @@ SUB EVENT_FindSlot(line, ChatSender, SlotToFind)
   /if (!${checkEventArgs[${ChatSender},${line},U,${SlotToFind}]}) /return
   /if (${Select[${c_eventArgData},charm,leftear,head,face,rightear,neck,shoulder,arms,back,leftwrist,rightwrist,ranged,hands,mainhand,offhand,leftfinger,rightfinger,chest,legs,feet,waist,powersource,ammo, fingers, wrists, ears]}) {
 
-      /if (${c_eventArgData.Equal[fingers]}) {
-        /say Fingers --- left: ${InvSlot[leftfinger].Item.ItemLink} right : ${InvSlot[rightfinger].Item.ItemLink}
+     /if (${c_eventArgData.Equal[fingers]}) {
+        /gu Fingers --- left: ${InvSlot[leftfinger].Item.ItemLink} right : ${InvSlot[rightfinger].Item.ItemLink}
      } else /if (${c_eventArgData.Equal[wrists]}) {
-        /say Wrists --- left: ${InvSlot[leftear].Item.ItemLink} right : ${InvSlot[rightear].Item.ItemLink}
+        /gu Wrists --- left: ${InvSlot[leftwrist].Item.ItemLink} right : ${InvSlot[rightwrist].Item.ItemLink}
      } else /if (${c_eventArgData.Equal[ears]}) {
-        /say Ears --- left: ${InvSlot[leftear].Item.ItemLink} right: ${InvSlot[rightear].Item.ItemLink}
+        /gu Ears --- left: ${InvSlot[leftear].Item.ItemLink} right: ${InvSlot[rightear].Item.ItemLink}
      } else /if (!${InvSlot[${c_eventArgData}].Item.ID}) {
-        /say ${c_eventArgData}: No Item Equipped
+        /gu ${c_eventArgData}: No Item Equipped
      } else {
-        /say ${c_eventArgData}: ${InvSlot[${c_eventArgData}].Item.ItemLink}
+        /gu ${c_eventArgData}: ${InvSlot[${c_eventArgData}].Item.ItemLink}
      }
 
   } else {
@@ -1048,6 +1048,16 @@ SUB EVENT_medOff(line, ChatSender)
     /if (${Me.Sitting}) /stand
   }
 /if (${Debug} || ${Debug_Basics}) /echo <== EVENT_medOff -|
+/RETURN
+
+|----------------------------------------------------|
+|- disengages MedBreak mode if hurt in combat.		-|
+|----------------------------------------------------|
+#EVENT medInCombat "#*# YOU for #*# points of damage."
+SUB EVENT_medInCombat(line, ChatSender)
+/if (!${medOn_combatBreak}) {
+	/varset medOn_combatBreak TRUE
+}
 /RETURN
 
 |--------------------------------------------------------------------------------|
@@ -1505,6 +1515,15 @@ SUB campDesktop(line,ChatSender)
   /endmacro
 /RETURN
 
+|---------------------------|
+#event JoinedGroup "You have joined the group."
+#event JoinedGroup "#*# has joined the group."
+SUB Event_JoinedGroup(line)
+/if (${Debug}) /echo |- EVENT_JoinedGroup ==>
+  /if (!${Window[TargetOfTargetWindow].Open} && ${Group.GroupSize}>2) /squelch ${Window[TargetOfTargetWindow].DoOpen}
+/if (${Debug}) /echo <== EVENT_JoinedGroup -|
+/RETURN
+
 Sub basics_Setup
 /call iniToVarV "${advSettings_Ini},Debug,Debug Basics (On/Off)" Debug_Basics bool outer
 /if (${Debug} || ${Debug_Basics}) /echo |- basics_Setup ==>
@@ -1578,6 +1597,7 @@ Sub basics_Background_Events
   /doevents fixCorpses
   /doevents set_AAXP
   /doevents medOff
+  /doevents medInCombat
   /doevents medOn
   /doevents EndMacro
   /doevents castItem
@@ -1596,6 +1616,7 @@ Sub basics_Background_Events
   /doevents macroHelp
   /doevents exp_group
   /doevents campdesktop
+  /doevents JoinedGroup
 |		/varset event_counter 1
 |	} else {
 |		/varcalc event_counter ${event_counter}+1
