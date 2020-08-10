@@ -40,9 +40,8 @@ Groups:
 /Group GROUPNAME - Will auto-invite members and re-form any saved GROUPNAME
 /DisbandAll - All bots disband from their groups and raids
 
-THF Events
-/ralloson  - Engages Rallos Zek Bane Nukes (Blue Rod of Zek)
-/rallosoff - Disengages Rallos Zek Bane Nukes (Blue Rod of Zek) will also reset on zone
+THF Events:
+/ralloszek - Toggles Rallos Zek Bane Nukes (Blue Rod of Zek) will also reset on zone
 /newchar - Use on new character creation when first zoning to forest.  Will automatically do starting quest & get spells/skills/armor
 
 Pets:
@@ -50,3 +49,6 @@ Pets:
 
 Crowd Control:
 /mezit - Enchanter will single target mez with spell defined in bot.ini
+
+Misc:
+/autoforage - Toggles Auto Forage function (Characters with forage with auto use ability and put items in your inventory)

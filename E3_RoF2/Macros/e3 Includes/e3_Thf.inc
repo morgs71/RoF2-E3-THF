@@ -1033,35 +1033,26 @@ Sub AutoBuyArmor
 |---------------------------------------Events Section----------------------------------------|
 
 
-|-------------- Rallos Zek Event  -----------------|
-|  Enables Bots to use Blue Rof of Zek             |
-| /ralloson   - Starts Bane Nuking                 |
-| /rallosoff  - Stops Bane Nuking (resets on zone) |
-|--------------------------------------------------|
+|-------------- Rallos Zek Event  ---by Muergan-------|
+|  Enables Bots to use Blue Rof of Zek                |
+| /ralloszek   - Toggles Bane Nuking (resets on zone) |
+|													  |
+|-----------------------------------------------------|
 
 
-#event RallosZekOn "<#1#> ralloszek on"
+#event RallosZek "<#*#> ralloszek toggle"
 		
 		
-sub Event_RallosZekOn
+sub Event_RallosZek
 
-/if (${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG]} && ${FindItem[=Blue Rod of Zek].ID})  {
-	/varset RallosZek True
+/if (${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG]} && ${FindItem[=Blue Rod of Zek (Tier 3)].ID} && ${RallosZek} == 0)  {
+	/varset RallosZek 1
 	/docommand ${ChatToggle} Rallos Zek will burn! BANE NUKES ENGAGED !!!!
-}	
-/RETURN	
-
-#event RallosZekOff "<#1#> ralloszek off"
-		
-		
-sub Event_RallosZekOff
-
-/if (${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG]} && ${FindItem[=Blue Rod of Zek].ID})  {
-	/varset RallosZek False
+} else /if (${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG]} && ${FindItem[=Blue Rod of Zek (Tier 3)].ID} && ${RallosZek} == 1)  {
+	/varset RallosZek 0
 	/docommand ${ChatToggle} Rallos Zek Bane mode DISABLED!!
 }	
 /RETURN	
-	
 
 
 |-----------------Macro Shared Events-------By Bazillions & Muergan--------|
@@ -2159,7 +2150,8 @@ Sub Event_HoHCruthz(string line)
 
 Sub Event_TestCode
 
-
+/bc	${RallosZek} && ${BlueRodTimer} == 0 ${Assisting}
+/bc ${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG]} && ${FindItem[=Blue Rod of Zek (Tier 3)].ID} && ${RallosZek} == 0)
 	
 /Return	
 
@@ -2206,8 +2198,7 @@ Sub Thf_Background_Events
 /doevents attendance
 /doevents cohme
 /doevents cohall
-/doevents RallosZekOn
-/doevents RallosZekOff	
+/doevents RallosZek
 /doevents ReaperOfMortalityDuck
 /doevents ReaperOfMortalityUnduck
 /doevents ReaperOfMortalityMoveClose
@@ -2269,8 +2260,7 @@ Sub thf_Aliases
 	/squelch /alias /hohgate /bc hohgate
 	/squelch /alias /xeru /bc Xeru deathtouch
 	/squelch /alias /attendance /bc attendance
-	/squelch /alias /ralloson /bc ralloszek on
-	/squelch /alias /rallosoff /bc ralloszek off
+	/squelch /alias /ralloszek /bc ralloszek toggle
 	/squelch /alias /newchar /bc New Character Setup
 	/noparse /squelch /alias /mezit /bc Mez on ${Target.ID}
 	/squelch /alias /testcode /bc TestCode
