@@ -7,6 +7,19 @@
 
 |---------------------------------------THF Utility Items ---------------------------------|
 
+#EVENT CheckEmptyAugs "<#*#> Check Empty Aug #1#"
+SUB EVENT_CheckEmptyAugs(line, augSlot)}
+	/declare i int local
+	/declare j int local
+	/for i 0 to 20
+		/for j 1 to ${InvSlot[${i}].Item.Augs}
+			/if (!${InvSlot[${i}].Item.Item[${j}].ID} && (${InvSlot[${i}].Item.AugSlot${j}} == ${augSlot})) {
+				/gu ${InvSlot[${i}].Name} - Type ${augSlot} empty
+			}
+		/next j
+	/next i
+/RETURN
+
 |--------------------AutoForage-----------------|
 #Event AutoForage "<#*#> AutoForageToggle"
 
@@ -2250,6 +2263,7 @@ Sub Thf_Background_Events
 /doevents ZenurixRunAway 
 /doevents ZenurixSafe 
 /doevents AutoForage
+/doevents CheckEmptyAugs
 
 /if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
 
@@ -2275,6 +2289,7 @@ Sub thf_Aliases
 	/noparse /squelch /alias /mezit /bc Mez on ${Target.ID}
 	/squelch /alias /testcode /bc TestCode
 	/squelch /alias /autoforage /bc AutoForageToggle
+	/squelch /alias /aug /bc Check Empty Aug
 
 /if (${Debug} || ${Debug_Thf}) /echo <== thf_Aliases -|
 /return
