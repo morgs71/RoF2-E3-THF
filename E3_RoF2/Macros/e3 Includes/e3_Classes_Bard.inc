@@ -41,12 +41,12 @@ SUB EVENT_saveMelody(line, ChatSender, melodyName, songsToSave)
 #EVENT startMelody "#1# tells you, 'Melody #2#'"
 SUB EVENT_startMelody(line, ChatSender, melodyName)
 /if (${Debug}) /echo |- EVENT_startMelody ==>
-  /if (${Me.Class.ShortName.Equal[BRD]} && !${Me.Casting.ID}) {
+  /if (${Me.Class.ShortName.Equal[BRD]}) {
     /if (!${checkEventArgs[${ChatSender},${line},UZR,${melodyName}]}) /return
     /declare memGem int local
     /varset melodyName ${c_eventArgData}
     | If I don't have the melodyName listed in my ini.
-    /call IniToArrayV "${Character_Ini},${melodyName} Melody,Song" melodyArray
+    /call IniToArrayV "${Character_Ini},${melodyName} Melody,Song#" melodyArray
     /if (!${Defined[melodyArray]}) {
       | If Stop, end, or pause were used, stop the melody.
       /if (${Select[${melodyName},Stop,End,Pause]}) {
@@ -254,33 +254,8 @@ Sub BRD_Setup
 |--------------------------------------------------------------|
 Sub BRD_Background_Events
   /if (${returnTwist} && !${Bool[${Me.Casting}]} && !${Twist.Twisting} && !${resumeTwistDelay}) /call unpauseTwist
-  
-  /if (${autoSelo} && ${Defined[selosong]} && ${selooutdoors} && !${Me.Buff[${selosong}].ID}) {
-		/varset queueSelo TRUE
-		/if (${Twist.Twisting}) {
-			/call pauseTwist
-		}
-		/call e3_Cast ${Me.ID} "${selosong}"
-		/if (${Select[${castReturn},OUTDOORS]}) { 
-			/varset selooutdoors FALSE
-			/varset queueSelo FALSE
-			}
-		/delay 30
-		/stopcast
-	}
-	
-	/if (${queueSelo} && ${Me.Buff[${selosong}].ID}) {
-		/varset queueSelo FALSE
-		/if (!${playingMelody} && !${Twist.Twisting}) {
-			/doevents startMelody
-		}
-	}
 	/doevents saveMelody
 	/doevents startMelody
-	
-	| Check melody
-	/if (${playingMelody} && !${Twist.Twisting} && !${Bool[${Me.Casting}]} && !${queueSelo}) /call unpauseTwist
-	
   /doevents charmTarget
   /doevents toggleMez
   /doevents charmOn

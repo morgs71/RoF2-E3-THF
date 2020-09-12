@@ -289,9 +289,9 @@ SUB CombatAbilities
           | } else /if (${Me.CombatAbilityReady[Bazu Bellow]}) {
           |  /bc Bazu Bellow on ${Target.CleanName}: ${Me.TargetOfTarget.Class.ShortName}-${Me.TargetOfTarget} has aggro
           |   /doability "Bazu Bellow"
-          } else /if (${Me.AltAbilityReady[Divine Stun]}) {
-            /bc Divine Stun on ${Target.CleanName}: ${Me.TargetOfTarget.Class.ShortName}-${Me.TargetOfTarget} has aggro
-            /casting "Divine Stun"
+          } else /if (${Me.AltAbilityReady[Divine Calling Rk. II]}) {
+            /bc Divine Calling Rk. II on ${Target.CleanName}: ${Me.TargetOfTarget.Class.ShortName}-${Me.TargetOfTarget} has aggro
+            /casting "Divine Calling Rk. II"
           } else /if (${Me.SpellReady[Terror of Discord]}) {
             /bc Terror of Discord on ${Target.CleanName}: ${Me.TargetOfTarget.Class.ShortName}-${Me.TargetOfTarget} has aggro
             /casting "Terror of Discord"

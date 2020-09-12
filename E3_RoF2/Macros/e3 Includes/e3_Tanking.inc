@@ -77,7 +77,7 @@ SUB peelTank
         /delay 2
       }
       /if (${Me.CombatAbilityReady[Bazu Bellow]}) /doability "Bazu Bellow"
-      /if (${Me.AltAbilityReady[Divine Stun]}) /casting "Divine Stun"
+      /if (${Me.SpellReady[Divine Calling Rk. II]}) /casting "Divine Calling Rk. II"
       /if (${Me.SpellReady[Terror of Discord]}) /casting "Terror of Discord"
     }
   }
@@ -116,7 +116,7 @@ SUB peelTank
             /delay 2
           }
           /if (${Me.CombatAbilityReady[Bazu Bellow]}) /doability "Bazu Bellow"
-          /if (${Me.AltAbilityReady[Divine Stun]}) /casting "Divine Stun"
+		  /if (${Me.SpellReady[Divine Calling Rk. II]}) /casting "Divine Calling Rk. II"
           /if (${Me.SpellReady[Terror of Discord]}) /casting "Terror of Discord"
           /return
         } else {
