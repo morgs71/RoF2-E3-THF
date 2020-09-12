@@ -23,7 +23,7 @@ sub check_DivineArb
 			/declare s int local
 			/for i 0 to ${Group}
 				/if (${SpawnCount[pc ${Group.Member[${i}]}]}) {
-					/if (${SpawnCount[ID ${Spawn[${Group.Member[${i}]}].ID} radius 70]} > 0 && ${NetBots[${Group.Member[${i}]}].Zone} == ${Zone.ID} && (${NetBots[${Group.Member[${i}]}].PctHPs} < ${DivineArb_Pct} || ${Spawn[pc ${Group.Member[${i}]}].PctHPs} < ${DivineArb_Pct})) {
+					/if (${SpawnCount[ID ${Spawn[${Group.Member[${i}]}].ID} radius 70]} > 0 && ${NetBots[${Group.Member[${i}]}].Zone} == ${Zone.ID} && (${NetBots[${Group.Member[${i}]}].PctHPs} < ${DivineArb_Pct})) {
 			  /for s 1 to ${dArbArray2D.Size[1]}
 				/call check_Ready "dArbArray2D" ${s}
 				/if (${c_Ready}) {

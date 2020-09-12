@@ -60,7 +60,11 @@ SUB EVENT_CheckEmptyAugSlot(line, ChatSender, augSlot)
 			/if (!${InvSlot[rightfinger].Item.Item[${i}].ID}) {
 				/if (!${itemLinkStr.Find[]}) {
 					/varset itemLinkStr ${InvSlot[rightfinger].Item.ItemLink}
-					/varset outStr ${outStr} : Right - ${itemLinkStr} - Type ${InvSlot[rightfinger].Item.AugSlot${i}}
+					/if (!${outStr.Find[]}) {
+						/varset outStr Fingers : Right - ${itemLinkStr} - Type ${InvSlot[rightfinger].Item.AugSlot${i}}
+					} else {
+						/varset outStr ${outStr} : Right - ${itemLinkStr} - Type ${InvSlot[rightfinger].Item.AugSlot${i}}
+					}
 				} else {
 					/varset outStr ${outStr} - Type ${InvSlot[rightfinger].Item.AugSlot${i}}
 				}
@@ -80,7 +84,11 @@ SUB EVENT_CheckEmptyAugSlot(line, ChatSender, augSlot)
 			/if (!${InvSlot[rightwrist].Item.Item[${i}].ID}) {
 				/if (!${itemLinkStr.Find[]}) {
 					/varset itemLinkStr ${InvSlot[rightwrist].Item.ItemLink}
-					/varset outStr ${outStr} : Right - ${itemLinkStr} - Type ${InvSlot[rightwrist].Item.AugSlot${i}}
+					/if (!${outStr.Find[]}) {
+						/varset outStr Wrists : Right - ${itemLinkStr} - Type ${InvSlot[rightfinger].Item.AugSlot${i}}
+					} else {
+						/varset outStr ${outStr} : Right - ${itemLinkStr} - Type ${InvSlot[rightwrist].Item.AugSlot${i}}
+					}
 				} else {
 					/varset outStr ${outStr} - Type ${InvSlot[rightwrist].Item.AugSlot${i}}
 				}
@@ -100,7 +108,11 @@ SUB EVENT_CheckEmptyAugSlot(line, ChatSender, augSlot)
 			/if (!${InvSlot[rightear].Item.Item[${i}].ID}) {
 				/if (!${itemLinkStr.Find[]}) {
 					/varset itemLinkStr ${InvSlot[rightear].Item.ItemLink}
-					/varset outStr ${outStr} : Right - ${itemLinkStr} - Type ${InvSlot[rightear].Item.AugSlot${i}}
+					/if (!${outStr.Find[]}) {
+						/varset outStr Ears : Right - ${itemLinkStr} - Type ${InvSlot[rightfinger].Item.AugSlot${i}}
+					} else {
+						/varset outStr ${outStr} : Right - ${itemLinkStr} - Type ${InvSlot[rightear].Item.AugSlot${i}}
+					}
 				} else {
 					/varset outStr ${outStr} - Type ${InvSlot[rightear].Item.AugSlot${i}}
 				}

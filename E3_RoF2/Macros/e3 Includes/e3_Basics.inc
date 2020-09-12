@@ -608,7 +608,6 @@ SUB EVENT_FindItems(line, ChatSender, ItemToFind)
         /next e
       }
     /next i
-  /if (${totalItems} == 0) /docommand ${ChatToggle} >> Missing : [${ItemToFind}] <<
 
 /if (${Debug} || ${Debug_Basics}) /echo <== EVENT_FindItems -|
 /RETURN
