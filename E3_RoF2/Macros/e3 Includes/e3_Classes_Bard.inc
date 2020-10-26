@@ -91,6 +91,7 @@ SUB EVENT_startMelody(line, ChatSender, melodyName)
         | Twist the newly built songList.
         /varset playingMelody TRUE
         /varset returnTwist FALSE
+		/varset TwistingStopped FALSE
         /varset songSet ${songList}
         /docommand ${ChatToggle} Playing [${melodyName}].
         /twist ${songSet}
@@ -103,7 +104,8 @@ SUB EVENT_startMelody(line, ChatSender, melodyName)
 SUB pauseTwist
 /if (${Debug} || ${Debug_Casting}) /echo |- pauseTwist ==>
 	/varset	returnTwist TRUE
-	/squelch /twist stop
+	/varset resumeTwistDelay 5s
+	/twist stop
 	/delay 2 !${Me.Casting.ID}
 /if (${Debug} || ${Debug_Casting}) /echo <== pauseTwist -|
 /return
@@ -114,6 +116,18 @@ SUB unpauseTwist
 	/squelch 	/twist ${songSet}
 	/delay 2 ${Me.Casting.ID}
 /return
+
+|--------------------------------------------------------------|
+#EVENT TwistStop "<#*#> MelodyStop"
+#EVENT TwistStop "[#*#] MelodyStop"
+
+SUB EVENT_TwistStop(line, ChatSender)
+
+/varset TwistingStopped TRUE
+/twist stop
+/echo Twisting Songs Stopped !!!
+
+/Return
 
 |--------------------------------------------------------------|
 Sub check_bard_charm
@@ -234,6 +248,7 @@ Sub BRD_Setup
   /declare playingMelody	bool outer TRUE
   /declare songSet string outer
   /declare resumeTwistDelay timer outer
+  /declare TwistingStopped bool outer FALSE
 
   /if (${Defined[mezArray]}) {
     /call BuildSpellArray "mezArray"	"mezArray2D"
@@ -253,7 +268,7 @@ Sub BRD_Setup
 /return
 |--------------------------------------------------------------|
 Sub BRD_Background_Events
-  /if (${returnTwist} && !${Bool[${Me.Casting}]} && !${Twist.Twisting} && !${resumeTwistDelay}) /call unpauseTwist
+  /if (${returnTwist} && !${TwistingStopped} && !${Bool[${Me.Casting}]} && !${Twist.Twisting} && !${resumeTwistDelay}) /call unpauseTwist
   
   /if (${autoSelo} && ${Defined[selosong]} && ${selooutdoors} && !${Me.Buff[${selosong}].ID}) {
 		/varset queueSelo TRUE
@@ -279,12 +294,13 @@ Sub BRD_Background_Events
 	/doevents startMelody
 	
 	| Check melody
-	/if (${playingMelody} && !${Twist.Twisting} && !${Bool[${Me.Casting}]} && !${queueSelo}) /call unpauseTwist
+	/if (${playingMelody} && !${TwistingStopped} && !${Twist.Twisting} && !${Bool[${Me.Casting}]} && !${queueSelo}) /call unpauseTwist
 	
   /doevents charmTarget
   /doevents toggleMez
   /doevents charmOn
   /doevents charmOff
+  /doevents TwistStop
 /return
 |--------------------------------------------------------------|
 SUB BRD_MacroSettings
@@ -305,4 +321,5 @@ SUB BRD_CharacterSettings
 Sub BRD_Aliases
 	/squelch /alias /SaveMelody /echo Save Melody
 	/squelch /alias /PlayMelody /bc Melody
+	/squelch /alias /StopMelody /bc MelodyStop
 /return

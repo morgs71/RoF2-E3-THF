@@ -398,8 +398,9 @@ SUB check_Nukes
 	/varset AntithesisTimer 10s
 	/call Apply_Antithesis
   }
-	/if	(${RallosZek} && ${BlueRodTimer} == 0 && ${Assisting})  {
-		/casting "Blue Rod of Zek" -targetid|${AssistTarget}
+	/if	(${RallosZek} == 1 && ${BlueRodTimer} == 0 && ${Assisting})  {
+		/bc testing
+		/casting "Blue Rod of Zek (Tier 3)" "-targetid|${AssistTarget}"
 		/varset BlueRodTimer 5s
 		/popup Rallos Zek Bane Damage is Engaged!
 	} else /if (${Defined[Nukes2D]} && ${Assisting} && ${use_Nukes}) {
@@ -1249,7 +1250,7 @@ Sub assist_Setup
 	/declare PauseTarget string outer
 |	/declare AutoAggro bool outer TRUE
 	/declare use_Nukes bool outer TRUE
-	/declare RallosZek bool outer FALSE
+	/declare RallosZek int outer 0
 	/declare use_TargetAE bool outer FALSE
 	/declare use_PBAE bool outer FALSE
 	/declare use_AssistDots bool outer TRUE

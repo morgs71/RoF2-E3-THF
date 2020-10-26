@@ -7,6 +7,144 @@
 
 |---------------------------------------THF Utility Items ---------------------------------|
 
+
+
+|--------------------Check Empty Augs by Aug Type-----By Tibbs------------|
+#EVENT CheckEmptyAugType "<#1#> Find Empty Aug Type #2#"
+SUB EVENT_CheckEmptyAugType(line, ChatSender, augType)
+	/if (!${checkEventArgs[${ChatSender},${line},U,${augType}]}) /return
+	/if (${Select[${c_eventArgData},30]}) {
+		/if (!${FindItem[Ancient Frozen].Item[5].ID}) {
+			/gu ${FindItem[Ancient Frozen].InvSlot.Name} - Type 30
+		}
+	} else {
+		/declare outStr string local
+	
+		/declare i int local
+		/declare j int local
+		/for i 0 to 20
+			/for j 1 to ${InvSlot[${i}].Item.Augs}
+				/if (!${InvSlot[${i}].Item.Item[${j}].ID} && (${InvSlot[${i}].Item.AugSlot${j}} == ${c_eventArgData})) {
+					/if (!${outStr.Find[Type]}) {
+						/varset outStr Type ${c_eventArgData} : ${InvSlot[${i}].Name} - ${InvSlot[${i}].Item.ItemLink}
+						/continue
+					} else {
+						/varset outStr ${outStr} : ${InvSlot[${i}].Name} - ${InvSlot[${i}].Item.ItemLink}
+						/continue
+					}
+				}
+			/next j
+		/next i
+		/if (${outStr.Find[Type]}) /gu ${outStr}
+	}
+/RETURN
+
+|--------------------Check Empty Augs by Item Slot-----------------|
+#EVENT CheckEmptyAugSlot "<#1#> Find Empty Aug in Slot #2#"
+SUB EVENT_CheckEmptyAugSlot(line, ChatSender, augSlot)
+	/if (!${checkEventArgs[${ChatSender},${line},U,${augSlot}]}) /return
+	/if (${Select[${c_eventArgData},charm,leftear,head,face,rightear,neck,shoulder,arms,back,leftwrist,rightwrist,ranged,hands,mainhand,offhand,leftfinger,rightfinger,chest,legs,feet,waist,powersource,ammo, fingers, wrists, ears]}) {
+		/declare i int local
+		/declare outStr string local
+		/declare itemLinkStr string local
+		
+		/if (${c_eventArgData.Equal[fingers]}) {
+			/for i 1 to ${InvSlot[leftfinger].Item.Augs}
+			/if (!${InvSlot[leftfinger].Item.Item[${i}].ID}) {
+				/if (!${outStr.Find[]}) {
+					/varset outStr Fingers: Left - ${InvSlot[leftfinger].Item.ItemLink} - Type ${InvSlot[leftfinger].Item.AugSlot${i}}
+				} else {
+					/varset outStr ${outStr} - Type ${InvSlot[leftfinger].Item.AugSlot${i}}
+				}
+			}
+			/next i
+			/for i 1 to ${InvSlot[rightfinger].Item.Augs}
+			/if (!${InvSlot[rightfinger].Item.Item[${i}].ID}) {
+				/if (!${itemLinkStr.Find[]}) {
+					/varset itemLinkStr ${InvSlot[rightfinger].Item.ItemLink}
+					/if (!${outStr.Find[]}) {
+						/varset outStr Fingers : Right - ${itemLinkStr} - Type ${InvSlot[rightfinger].Item.AugSlot${i}}
+					} else {
+						/varset outStr ${outStr} : Right - ${itemLinkStr} - Type ${InvSlot[rightfinger].Item.AugSlot${i}}
+					}
+				} else {
+					/varset outStr ${outStr} - Type ${InvSlot[rightfinger].Item.AugSlot${i}}
+				}
+			}
+			/next i
+		} else /if (${c_eventArgData.Equal[wrists]}) {
+			/for i 1 to ${InvSlot[leftwrist].Item.Augs}
+			/if (!${InvSlot[leftwrist].Item.Item[${i}].ID}) {
+				/if (!${outStr.Find[]}) {
+					/varset outStr Wrists: Left - ${InvSlot[leftwrist].Item.ItemLink} - Type ${InvSlot[leftwrist].Item.AugSlot${i}}
+				} else {
+					/varset outStr ${outStr} - Type ${InvSlot[leftwrist].Item.AugSlot${i}}
+				}
+			}
+			/next i
+			/for i 1 to ${InvSlot[rightwrist].Item.Augs}
+			/if (!${InvSlot[rightwrist].Item.Item[${i}].ID}) {
+				/if (!${itemLinkStr.Find[]}) {
+					/varset itemLinkStr ${InvSlot[rightwrist].Item.ItemLink}
+					/if (!${outStr.Find[]}) {
+						/varset outStr Wrists : Right - ${itemLinkStr} - Type ${InvSlot[rightfinger].Item.AugSlot${i}}
+					} else {
+						/varset outStr ${outStr} : Right - ${itemLinkStr} - Type ${InvSlot[rightwrist].Item.AugSlot${i}}
+					}
+				} else {
+					/varset outStr ${outStr} - Type ${InvSlot[rightwrist].Item.AugSlot${i}}
+				}
+			}
+			/next i
+		} else /if (${c_eventArgData.Equal[ears]}) {
+			/for i 1 to ${InvSlot[leftear].Item.Augs}
+			/if (!${InvSlot[leftear].Item.Item[${i}].ID}) {
+				/if (!${outStr.Find[]}) {
+					/varset outStr Ears: Left - ${InvSlot[leftear].Item.ItemLink} - Type ${InvSlot[leftear].Item.AugSlot${i}}
+				} else {
+					/varset outStr ${outStr} - Type ${InvSlot[leftear].Item.AugSlot${i}}
+				}
+			}
+			/next i
+			/for i 1 to ${InvSlot[rightear].Item.Augs}
+			/if (!${InvSlot[rightear].Item.Item[${i}].ID}) {
+				/if (!${itemLinkStr.Find[]}) {
+					/varset itemLinkStr ${InvSlot[rightear].Item.ItemLink}
+					/if (!${outStr.Find[]}) {
+						/varset outStr Ears : Right - ${itemLinkStr} - Type ${InvSlot[rightfinger].Item.AugSlot${i}}
+					} else {
+						/varset outStr ${outStr} : Right - ${itemLinkStr} - Type ${InvSlot[rightear].Item.AugSlot${i}}
+					}
+				} else {
+					/varset outStr ${outStr} - Type ${InvSlot[rightear].Item.AugSlot${i}}
+				}
+			}
+			/next i
+		} else /if (!${InvSlot[${c_eventArgData}].Item.ID}) {
+			/gu ${c_eventArgData}: No Item Equipped
+		} else {
+			/for i 1 to ${InvSlot[${c_eventArgData}].Item.Augs}
+			/if (!${InvSlot[${c_eventArgData}].Item.Item[${i}].ID}) {
+				/if (!${outStr.Find[]}) {
+					/varset outStr ${c_eventArgData} - ${InvSlot[${c_eventArgData}].Item.ItemLink} - Type ${InvSlot[${c_eventArgData}].Item.AugSlot${i}}
+				} else {
+					/varset outStr ${outStr} - Type ${InvSlot[${c_eventArgData}].Item.AugSlot${i}}
+				}
+			}
+			/next i
+		}
+		/if (${outStr.Find[]}) {
+			/gu ${outStr}
+		}
+
+	} else {
+		/if (${c_eventArgChatSender.Equal[${Me}]}) {
+		/echo Valid Slots: charm, leftear, head, face, rightear, neck, shoulder, arms, leftwrist, rightwrist, ranged, hands, mainhand, offhand, ammo, back, leftfinger, rightfinger, chest, legs, feet, waist, powersource, fingers, wrists, ears
+	}
+	}
+/RETURN
+
+
 |--------------------AutoForage-----------------|
 #Event AutoForage "<#*#> AutoForageToggle"
 
@@ -1033,35 +1171,26 @@ Sub AutoBuyArmor
 |---------------------------------------Events Section----------------------------------------|
 
 
-|-------------- Rallos Zek Event  -----------------|
-|  Enables Bots to use Blue Rof of Zek             |
-| /ralloson   - Starts Bane Nuking                 |
-| /rallosoff  - Stops Bane Nuking (resets on zone) |
-|--------------------------------------------------|
+|-------------- Rallos Zek Event  ---by Muergan-------|
+|  Enables Bots to use Blue Rof of Zek                |
+| /ralloszek   - Toggles Bane Nuking (resets on zone) |
+|													  |
+|-----------------------------------------------------|
 
 
-#event RallosZekOn "<#1#> ralloszek on"
+#event RallosZek "<#*#> ralloszek toggle"
 		
 		
-sub Event_RallosZekOn
+sub Event_RallosZek
 
-/if (${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG]} && ${FindItem[=Blue Rod of Zek].ID})  {
-	/varset RallosZek True
+/if (${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG]} && ${FindItem[=Blue Rod of Zek (Tier 3)].ID} && ${RallosZek} == 0)  {
+	/varset RallosZek 1
 	/docommand ${ChatToggle} Rallos Zek will burn! BANE NUKES ENGAGED !!!!
-}	
-/RETURN	
-
-#event RallosZekOff "<#1#> ralloszek off"
-		
-		
-sub Event_RallosZekOff
-
-/if (${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG]} && ${FindItem[=Blue Rod of Zek].ID})  {
-	/varset RallosZek False
+} else /if (${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG]} && ${FindItem[=Blue Rod of Zek (Tier 3)].ID} && ${RallosZek} == 1)  {
+	/varset RallosZek 0
 	/docommand ${ChatToggle} Rallos Zek Bane mode DISABLED!!
 }	
 /RETURN	
-	
 
 
 |-----------------Macro Shared Events-------By Bazillions & Muergan--------|
@@ -2159,7 +2288,8 @@ Sub Event_HoHCruthz(string line)
 
 Sub Event_TestCode
 
-
+/bc	${RallosZek} && ${BlueRodTimer} == 0 ${Assisting}
+/bc ${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG]} && ${FindItem[=Blue Rod of Zek (Tier 3)].ID} && ${RallosZek} == 0)
 	
 /Return	
 
@@ -2206,8 +2336,7 @@ Sub Thf_Background_Events
 /doevents attendance
 /doevents cohme
 /doevents cohall
-/doevents RallosZekOn
-/doevents RallosZekOff	
+/doevents RallosZek
 /doevents ReaperOfMortalityDuck
 /doevents ReaperOfMortalityUnduck
 /doevents ReaperOfMortalityMoveClose
@@ -2249,7 +2378,10 @@ Sub Thf_Background_Events
 /doevents ContractedDoom 
 /doevents ZenurixRunAway 
 /doevents ZenurixSafe 
+/doevents CreepDoomCureMe
 /doevents AutoForage
+/doevents CheckEmptyAugType
+/doevents CheckEmptyAugSlot
 
 /if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
 
@@ -2269,12 +2401,14 @@ Sub thf_Aliases
 	/squelch /alias /hohgate /bc hohgate
 	/squelch /alias /xeru /bc Xeru deathtouch
 	/squelch /alias /attendance /bc attendance
-	/squelch /alias /ralloson /bc ralloszek on
-	/squelch /alias /rallosoff /bc ralloszek off
+	/squelch /alias /ralloszek /bc ralloszek toggle
 	/squelch /alias /newchar /bc New Character Setup
 	/noparse /squelch /alias /mezit /bc Mez on ${Target.ID}
 	/squelch /alias /testcode /bc TestCode
 	/squelch /alias /autoforage /bc AutoForageToggle
+	/squelch /alias /aug /bc Find Empty Aug Type
+	/squelch /alias /augtype /bc Find Empty Aug Type
+	/squelch /alias /augslot /bc Find Empty Aug In Slot
 
 /if (${Debug} || ${Debug_Thf}) /echo <== thf_Aliases -|
 /return
