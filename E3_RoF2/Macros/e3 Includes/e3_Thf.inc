@@ -7,13 +7,9 @@
 
 |---------------------------------------THF Utility Items ---------------------------------|
 
-<<<<<<< HEAD
 
 
 |--------------------Check Empty Augs by Aug Type-----By Tibbs------------|
-=======
-|--------------------Check Empty Augs by Aug Type-----------------|
->>>>>>> 3fc761a3f80716283c8ccb5a4ed89910a17b6a58
 #EVENT CheckEmptyAugType "<#1#> Find Empty Aug Type #2#"
 SUB EVENT_CheckEmptyAugType(line, ChatSender, augType)
 	/if (!${checkEventArgs[${ChatSender},${line},U,${augType}]}) /return
@@ -148,10 +144,7 @@ SUB EVENT_CheckEmptyAugSlot(line, ChatSender, augSlot)
 	}
 /RETURN
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 3fc761a3f80716283c8ccb5a4ed89910a17b6a58
 |--------------------AutoForage-----------------|
 #Event AutoForage "<#*#> AutoForageToggle"
 
@@ -2385,10 +2378,7 @@ Sub Thf_Background_Events
 /doevents ContractedDoom 
 /doevents ZenurixRunAway 
 /doevents ZenurixSafe 
-<<<<<<< HEAD
 /doevents CreepDoomCureMe
-=======
->>>>>>> 3fc761a3f80716283c8ccb5a4ed89910a17b6a58
 /doevents AutoForage
 /doevents CheckEmptyAugType
 /doevents CheckEmptyAugSlot
