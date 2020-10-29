@@ -120,7 +120,7 @@ Sub SHM_Setup
 /if (${Debug}) /echo |- SHM_Setup ==>
 	/call iniToVarV "${Character_Ini},Shaman,Auto-Canni (On/Off)" AutoCanni bool outer
 	/call IniToArrayV "${Character_Ini},Shaman,Canni#" canniSpells
-	/call IniToArrayV "${Character_Ini},Shaman,Canni Start (Pct)" StartCanni int outer
+	/call IniToVarV "${Character_Ini},Shaman,Canni Start (Pct)" StartCanni int outer
   /if (${canniSpells.Size}) /call BuildSpellArray "canniSpells"	"canniSpells2D"
   /declare canRez int outer 0
 /if (${Debug}) /echo <== SHM_Setup -|
