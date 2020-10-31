@@ -365,9 +365,9 @@ SUB check_HotTankStack(targetName, spellID)
 	/varset c_SubToRun TRUE
 	/declare i int local
 	/if (!${Defined[targetName]}) {
-		/declare targShortBuff string local ${NetBots[${Target.CleanName}].ShortBuff.Replace[ ,,]}
+		/declare targShortBuff string local ${NetBots[${Target.CleanName}].Buff.Replace[ ,,]}
 	} else {
-		/declare targShortBuff string local ${NetBots[${targetName}].ShortBuff.Replace[ ,,]}
+		/declare targShortBuff string local ${NetBots[${targetName}].Buff.Replace[ ,,]}
 	}
 	/if (${targShortBuff.Find[${spellID},]}) {
 	  /varset c_SubToRun FALSE
@@ -385,9 +385,9 @@ SUB check_HotImportantBotStack(targetName, spellID)
 	/varset c_SubToRun TRUE
 	/declare i int local
 	/if (!${Defined[targetName]}) {
-		/declare targShortBuff string local ${NetBots[${Target.CleanName}].ShortBuff.Replace[ ,,]}
+		/declare targShortBuff string local ${NetBots[${Target.CleanName}].Buff.Replace[ ,,]}
 	} else {
-		/declare targShortBuff string local ${NetBots[${targetName}].ShortBuff.Replace[ ,,]}
+		/declare targShortBuff string local ${NetBots[${targetName}].Buff.Replace[ ,,]}
 	}
   /if (${Bool[${spellID}]} && ${targShortBuff.Find[${spellID},]}) {
     /varset c_SubToRun FALSE
@@ -405,9 +405,9 @@ SUB check_HotAllStack(targetName, spellID)
 	/varset c_SubToRun TRUE
 	/declare i int local
 	/if (!${Defined[targetName]}) {
-		/declare targShortBuff string local ${NetBots[${Target.CleanName}].ShortBuff.Replace[ ,,]}
+		/declare targShortBuff string local ${NetBots[${Target.CleanName}].Buff.Replace[ ,,]}
 	} else {
-		/declare targShortBuff string local ${NetBots[${targetName}].ShortBuff.Replace[ ,,]}
+		/declare targShortBuff string local ${NetBots[${targetName}].Buff.Replace[ ,,]}
 	}
   /if (${Bool[${spellID}]} && ${targShortBuff.Find[${spellID},]}) {
     /varset c_SubToRun FALSE
