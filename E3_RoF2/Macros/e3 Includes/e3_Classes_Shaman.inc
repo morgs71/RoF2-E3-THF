@@ -44,7 +44,7 @@ sub Event_ShmRez(line, ChatSender)
     /call check_CorpseRezzable
     /if (${canRez}==1) {
       /call check_Ready "ShmrezArray2D" 1
-      /if ((!${c_Ready}) {
+      /if (!${c_Ready}) {
 			/return
       }
       /tell ${ChatSender} Wait4Rez
