@@ -539,6 +539,12 @@ SUB BuildSpellArray(ArrayName, NewArrayName)
       }
       /if (${printAll}) /echo SpellID ${${NewArrayName}[${i},${iSpellID}]}
 		
+		| get CombatCast
+		/if (${${ArrayName}[${i}].Find[/CombatCast]}) {
+			/varset ${NewArrayName}[${i},${iCombatCast}] 1
+		}
+		/if (${printAll}) /echo CombatCast ${${NewArrayName}[${i},${iCombatCast}]}
+		
 		| get NoBurn
 		/if (${${ArrayName}[${i}].Find[/NoBurn]}) {
 			/varset ${NewArrayName}[${i},${iNoBurn}] 1

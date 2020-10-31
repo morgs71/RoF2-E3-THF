@@ -2,20 +2,25 @@
 |- Calls buff functions, returning to the mainloop whenever a spell is cast.		-|
 |--------------------------------------------------------------------------------|
 SUB check_Buffs
-	/if (${Debug} || ${Debug_BuffCheck}) /echo |- buffCheck ==>
-	/if (${BuffCheck} && !${ActionTaken} && !${activeTimer} && !${rebuffTimer}) {
+
+/if (${Debug} || ${Debug_BuffCheck}) /echo |- buffCheck ==>
+/if (${BuffCheck} && !${ActionTaken} && !${activeTimer} && !${rebuffTimer}) {
 	
-		/if (!${medBreak} && !${idle} && ${BuffCombatCheck} && !${Me.Moving} && ${Assisting})	/call buffBots "CombatBuffs2D"
-		/if (!${medBreak} && ${procBuff} && !${idle} && ${BuffCombatCheck} && !${Me.Moving}) /call buffProcs
-		|/if (${Defined[auraSpells2D]} && (${auraCombat} || ${Me.CombatState.NotEqual[COMBAT]}) && !${Me.Moving}) /call checkAuras
-		/if (${Defined[InstantBuffs2D]})		/call buffBots "InstantBuffs2D"
-		/if (!${combatTimer} && ${Me.CombatState.NotEqual[COMBAT]} && !${Assisting} && !${Me.Moving} && ${BuffCheck}) {
-			/if (${Defined[SelfBuffs2D]}) /call buffBots "SelfBuffs2D"
-			/if (${Defined[BotBuffs2D]})	/call buffBots "BotBuffs2D"
-      |/if (${Defined[auraSpells2D]}) /call checkAuras
-		}
+	/if (!${medBreak} && !${idle} && !${Me.Moving} && ${Assisting}) {
+		/if (${Defined[BotBuffs2D]}) /call buffBots "BotBuffs2D"
+		/if (${Defined[CombatBuffs2D]}) /call buffBots "CombatBuffs2D" 
+		/if (${Defined[SelfBuffs2D]}) /call buffBots "SelfBuffs2D" 
 	}
-	/if (${Debug} || ${Debug_BuffCheck}) /echo <== buffCheck -|
+	/if (!${medBreak} && ${procBuff} && !${idle} && !${Me.Moving}) /call buffProcs
+	/if (${Defined[auraSpells2D]} && (${auraCombat} || ${Me.CombatState.NotEqual[COMBAT]}) && !${Me.Moving}) /call checkAuras
+	/if (${Defined[InstantBuffs2D]}) /call buffBots "InstantBuffs2D"
+	/if (!${combatTimer} && ${Me.CombatState.NotEqual[COMBAT]} && !${Assisting} && !${Me.Moving} && ${BuffCheck}) {
+		/if (${Defined[SelfBuffs2D]}) /call buffBots "SelfBuffs2D"
+		/if (${Defined[BotBuffs2D]}) /call buffBots "BotBuffs2D"
+		|/if (${Defined[auraSpells2D]}) /call checkAuras
+	}
+}
+/if (${Debug} || ${Debug_BuffCheck}) /echo <== buffCheck -|
 /RETURN
 
 |----------------------------------------|
@@ -56,6 +61,9 @@ SUB buffBots(ArrayName)
     /call meleeCombatBuffs "${ArrayName}" ${s}
     /goto :skipBuff
   }
+  
+  |-----------CombatCast Check-------------------|
+ /if (${Select[${ArrayName},SelfBuffs2D,BotBuffs2D]} && ${Assisting} && !${${ArrayName}[${s},${iCombatCast}]}) /goto :skipBuff
   |------- Self ------|
   /if (${Select[${ArrayName},SelfBuffs2D,InstantBuffs2D]}) {
 
@@ -356,24 +364,6 @@ SUB EVENT_toggleBuffs(line, ChatSender, parms)
   /if (${Debug} || ${Debug_BuffCheck}) /echo <== EVENT_toggleBuffs -|
 /RETURN
 
-|----------------------------------------------------|
-|- Tell a character to turn on/off combat buffing	  -|
-|----------------------------------------------------|
-#EVENT toggleCombatBuffs "<#1#> Toggle Combat Buffs #2#"
-#EVENT toggleCombatBuffs "#1# tells you, 'Toggle Combat Buffs #2#'"
-SUB EVENT_toggleCombatBuffs(line, ChatSender, buffSetting)
-/if (${Debug} || ${Debug_BuffCheck}) /echo |- EVENT_toggleBuffs ==>
-  /if (!${checkEventArgs[${ChatSender},${line},UZR,${buffSetting}]}) /return
-  /varset buffSetting ${c_eventArgData}
-  /if (${buffSetting.Equal[on]}) {
-		/varset buffSetting TRUE
-	} else /if (${buffSetting.Equal[off]}) {
-		/varset buffSetting FALSE
-	}	
-	/varset BuffCombatCheck ${buffSetting}	
-	/docommand ${ChatToggle} BuffCombatCheck [${If[${BuffCombatCheck},ON,OFF]}]
-/if (${Debug} || ${Debug_BuffCheck}) /echo <== EVENT_toggleBuffs -|
-/RETURN
 
 |----------------------------------------------------|
 Sub buffCheck_Setup
@@ -484,7 +474,7 @@ SUB buffCheck_CharacterSettings
     /call WriteToIni "${Character_Ini},Buffs,Proc Buff (On/Off)" Off
     /call WriteToIni "${Character_Ini},Buffs,Proc Buff"
     /if (${Me.Class.ShortName.Equal[SHM]}) {
-      /call WriteToIni "${Character_Ini},Buffs,Proc Buff Class" "WAR/BRD/ROG/MNK/BER/RNG"
+      /call WriteToIni "${Character_Ini},Buffs,Proc Buff Class" "WAR/BRD/ROG/MNK/BER/RNG/PAL/SHD"
     } else {
       /call WriteToIni "${Character_Ini},Buffs,Proc Buff Class" "WIZ/MAG
     }
@@ -507,7 +497,6 @@ Sub buffCheck_Aliases
 
 Sub buffCheck_Background_Events
 	/doevents toggleBuffs
-	/doevents toggleCombatBuffs
 	/doevents BuffAll
 	/doevents castGroupBuffs
 	/doevents castGroupBuffsL1
