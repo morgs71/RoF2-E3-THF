@@ -214,7 +214,7 @@ SUB BuildSpellArray(ArrayName, NewArrayName)
 		/varset SpellProp[21] SpellName
 		/varset SpellProp[22] NoBurn
 		/varset SpellProp[23] NoAggro
-		/varset SpellProp[24] Mode
+		/varset SpellProp[24] CombatCast
 		/varset SpellProp[25] Rotate
 		/varset SpellProp[26] Delay
 		/varset SpellProp[27] CastID
@@ -222,13 +222,13 @@ SUB BuildSpellArray(ArrayName, NewArrayName)
 		/varset SpellProp[29] CastInvis
 		/varset SpellProp[30] SpellType
 		/varset SpellProp[31] CastTarget
-    /varset SpellProp[32] GiftOfMana
-    /varset SpellProp[33] CheckForID
-    /varset SpellProp[34] SpellID
+		/varset SpellProp[32] GiftOfMana
+		/varset SpellProp[33] CheckForID
+		/varset SpellProp[34] SpellID
 		/varset SpellProp[35] PctAggro
 		/varset SpellProp[36] Zone
-    /varset SpellProp[37] MinSick
-    /varset SpellProp[38] Ifs
+		/varset SpellProp[37] MinSick
+		/varset SpellProp[38] Ifs
 	}
 
   /if (${Defined[${NewArrayName}]}) /deletevar ${NewArrayName}
@@ -259,21 +259,21 @@ SUB BuildSpellArray(ArrayName, NewArrayName)
 	/if (!${Defined[iSpellName]})		/declare iSpellName int outer 21
 	/if (!${Defined[iNoBurn]})			/declare iNoBurn int outer 22
 	/if (!${Defined[iNoAggro]})			/declare iNoAggro int outer 23
-	/if (!${Defined[iMode]})			/declare iMode int outer 24
-	/if (!${Defined[iRotate]})		/declare iRotate int outer 25
+	/if (!${Defined[iCombatCast]})		/declare iCombatCast int outer 24
+	/if (!${Defined[iRotate]})			/declare iRotate int outer 25
 	/if (!${Defined[iDelay]})			/declare iDelay int outer 26	
 	/if (!${Defined[iCastID]})			/declare iCastID int outer 27
 	/if (!${Defined[iMinEnd]})			/declare iMinEnd int outer 28
 	/if (!${Defined[iCastInvis]})		/declare iCastInvis int outer 29
 	/if (!${Defined[iSpellType]})		/declare iSpellType int outer 30
 	/if (!${Defined[iCastTarget]})		/declare iCastTarget int outer 31
-  /if (!${Defined[iGiftOfMana]})		/declare iGiftOfMana int outer 32
-  /if (!${Defined[iCheckForID]})		/declare iCheckForID int outer 33
-  /if (!${Defined[iSpellID]})		/declare iSpellID int outer 34
-  /if (!${Defined[iPctAggro]})		/declare iPctAggro int outer 35
-	/if (!${Defined[iZone]})		/declare iZone int outer 36
-  /if (!${Defined[iMinSick]})		/declare iMinSick int outer 37
-  /if (!${Defined[iIfs]})		/declare iIfs int outer 38
+	/if (!${Defined[iGiftOfMana]})		/declare iGiftOfMana int outer 32
+	/if (!${Defined[iCheckForID]})		/declare iCheckForID int outer 33
+	/if (!${Defined[iSpellID]})			/declare iSpellID int outer 34
+	/if (!${Defined[iPctAggro]})			/declare iPctAggro int outer 35
+	/if (!${Defined[iZone]})			/declare iZone int outer 36
+	/if (!${Defined[iMinSick]})			/declare iMinSick int outer 37
+	/if (!${Defined[iIfs]})				/declare iIfs int outer 38
 
 	/declare i int local
 	/declare printAll bool local FALSE
@@ -539,12 +539,6 @@ SUB BuildSpellArray(ArrayName, NewArrayName)
       }
       /if (${printAll}) /echo SpellID ${${NewArrayName}[${i},${iSpellID}]}
 		
-		| get CombatCast
-		/if (${${ArrayName}[${i}].Find[/CombatCast]}) {
-			/varset ${NewArrayName}[${i},${iCombatCast}] 1
-		}
-		/if (${printAll}) /echo CombatCast ${${NewArrayName}[${i},${iCombatCast}]}
-		
 		| get NoBurn
 		/if (${${ArrayName}[${i}].Find[/NoBurn]}) {
 			/varset ${NewArrayName}[${i},${iNoBurn}] 1
@@ -557,13 +551,12 @@ SUB BuildSpellArray(ArrayName, NewArrayName)
 		}
 		/if (${printAll}) /echo NoAggro ${${NewArrayName}[${i},${iNoAggro}]}		
 
-		| get Mode
-		/if (${${ArrayName}[${i}].Find[/Mode|]}) {
-			/call argueString Mode "${${ArrayName}[${i}]}"
-			/varset ${NewArrayName}[${i},${iMode}] ${c_argueString}
+		| get CombatCast
+		/if (${${ArrayName}[${i}].Find[/CombatCast]}) {
+			/varset ${NewArrayName}[${i},${iCombatCast}] 1
 		}
-		/if (${printAll}) /echo Mode ${${NewArrayName}[${i},${iMode}]}
-
+		/if (${printAll}) /echo CombatCast ${${NewArrayName}[${i},${iCombatCast}]}
+		
 		| get Rotate
 		/if (${${ArrayName}[${i}].Find[/Rotate]}) /varset ${NewArrayName}[${i},${iRotate}] 1
 		/if (${printAll}) /echo Rotate ${${NewArrayName}[${i},${iRotate}]}
