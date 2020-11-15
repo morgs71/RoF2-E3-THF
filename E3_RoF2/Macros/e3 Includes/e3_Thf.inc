@@ -7,7 +7,28 @@
 
 |---------------------------------------THF Utility Items ---------------------------------|
 
+|--------------Caster HP-->Mana Conversion-----------------------------|
+SUB check_Conversion
+/if (${Debug}) /echo |- autoConversion ==>
+	/if (${Me.CombatState.NotEqual[COMBAT]} && ${Me.PctMana} < ${StartConversion}) {
+		/declare s int local
+		/for s 1 to ${ConversionArray2D.Size[1]}
+		/call check_Ready ConversionArray2D" ${s}
+		/if (${c_Ready}) {
+			/if (${check_Mana["ConversionArray2D",${s}]}) {
+				/if (${ConversionArray2D[${s},${iMinHP}]} <= ${Me.PctHPs}) {
+					/call e3_Cast ${Me.ID} "ConversionArray2D" ${s}
+				}
+			}
+			/if (!${ActionTaken}) /next s
+		}
+	}
+/if (${Debug}) /echo <== autoConversion -|
+/RETURN
 
+
+
+|----------------------------------------------------------------------------|
 
 |--------------------Check Empty Augs by Aug Type-----By Tibbs------------|
 #EVENT CheckEmptyAugType "<#1#> Find Empty Aug Type #2#"
@@ -143,6 +164,7 @@ SUB EVENT_CheckEmptyAugSlot(line, ChatSender, augSlot)
 	}
 	}
 /RETURN
+
 
 
 |--------------------AutoForage-----------------|
@@ -2316,8 +2338,18 @@ Sub Thf_Setup
 /declare buyParams string outer
 /declare ZenurixWait int outer 0
 /declare AutoForageCheck int outer 0
+/declare NoConversion int outer 0
 
-
+/if (${Select[${Me.Class.ShortName},WIZ,NEC,ENC,MAG]})  {
+	/if (${Ini[${Character_Ini},Misc,Conversion(HP>Mana) (On/Off)].Length})  /call iniToVarV "${Character_Ini},Misc,Conversion(HP>Mana) (On/Off)" AutoConversion bool outer
+	/if (${Ini[${Character_Ini},Misc,Conversion Item].Length})  /call IniToArrayV "${Character_Ini},Misc,Conversion Item" ConversionItem
+	/if (${Ini[${Character_Ini},Misc,Conversion Start (Pct)].Length})  /call IniToVarV "${Character_Ini},Misc,Conversion Start (Pct)" StartConversion int outer
+	/if (${ConversionItem.Size}) {
+		/call BuildSpellArray "ConversionArray2D"	"ConversionArray2D"
+	} else {
+		/varset NoConversion 1
+	}
+}
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
 /if (${Ini[${Character_Ini},Misc,Gather Mana (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Gather Mana (On/Off)" GatherManaCheck bool outer
 /if (${Ini[${Character_Ini},Misc,Self Shrink (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Self Shrink (On/Off)" SelfShrink bool outer
@@ -2385,6 +2417,9 @@ Sub Thf_Background_Events
 
 /if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
 
+/if (${AutoConversion} && ${NoConversion} == 0 && ${Me.PctMana} < ${StartConversion})  /call check_Conversion
+
+
 
 /if (${GatherManaCheck} && ${Me.PctMana} < 30)  /call check_GatherMana
 
@@ -2410,6 +2445,7 @@ Sub thf_Aliases
 	/squelch /alias /augtype /bc Find Empty Aug Type
 	/squelch /alias /augslot /bc Find Empty Aug In Slot
 
+
 /if (${Debug} || ${Debug_Thf}) /echo <== thf_Aliases -|
 /return
 
@@ -2427,7 +2463,11 @@ SUB Thf_CharacterSettings
 /call WriteToIni "${Character_Ini},Misc,Self Shrink (On/Off)" On
 /call WriteToIni "${Character_Ini},Misc,Duck Key Assignment" X	
 
-
+/if (${Select[${Me.Class.ShortName},WIZ,NEC,ENC,MAG]})  {
+	/call WriteToIni "${Character_Ini},Misc,Conversion(HP>Mana) (On/Off)" Off
+	/call WriteToIni "${Character_Ini},Misc,Conversion Item"
+	/call WriteToIni "${Character_Ini},Misc,Conversion Start (Pct)" 80
+}
 
 /if (${Debug}) /echo <== THF_CharacterSettings -|
 /RETURN
