@@ -427,28 +427,28 @@ Sub defineLargeGather
 
 Sub check_GatherMana
 
-
+	
 	/if (${Me.Combat} && ${Select[${Me.Class.ShortName},BST,PAL,RNG,SHD]})  {
 		/return	
-	} else /if (${Me.Combat} && ${SmallGatheritemCapable} && ${Me.PctMana} < 30)  {
+	} else /if (${Assisting} && ${SmallGatheritemCapable} && ${Me.PctMana} < ${SmallGatherPCT} && ${Me.PctMana} > ${LargeGatherPCT})  {
 		/call defineSmallGather
 		/call check_Ready "SmallGatherArray2D" 1
 		/if (${c_Ready})  {
 			/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
 		}
-	} else /if (${Me.Combat} && ${LargeGatheritemCapable} && ${Me.PctMana} < 10)  {
+	} else /if (${Assisting} && ${LargeGatheritemCapable} && ${Me.PctMana} < ${LargeGatherPCT})  {
 		/call defineLargeGather
 		/call check_Ready "LargeGatherArray2D" 1
 		/if (${c_Ready})  {
 			/call e3_cast ${Me.ID} "LargeGatherArray2D" 1
 		}
-	} else /if (!${Me.Combat} && ${SmallGatheritemCapable} && !${Me.Moving} && ${Me.PctMana} < 30)  {
+	} else /if (!${Assisting} && ${SmallGatheritemCapable} && !${Me.Moving} && ${Me.PctMana} < ${SmallGatherPCT} && ${Me.PctMana} > ${LargeGatherPCT})  {
 		/call defineSmallGather
 		/call check_Ready "SmallGatherArray2D" 1
 		/if (${c_Ready})  {
 			/call e3_cast ${Me.ID} "SmallGatherArray2D" 1
 		}
-	} else /if (!${Me.Combat} && ${LargeGatheritemCapable} && !${Me.Moving} && ${Me.PctMana} < 10)  {
+	} else /if (!${Assisting} && ${LargeGatheritemCapable} && !${Me.Moving} && ${Me.PctMana} < ${LargeGatherPCT})  {
 		/call defineLargeGather
 		/call check_Ready "LargeGatherArray2D" 1
 		/if (${c_Ready})  {
@@ -2309,8 +2309,7 @@ Sub Event_HoHCruthz(string line)
 
 Sub Event_TestCode
 
-/bc	${RallosZek} && ${BlueRodTimer} == 0 ${Assisting}
-/bc ${Select[${Me.Class.ShortName},CLR,DRU,SHM,WIZ,NEC,ENC,MAG]} && ${FindItem[=Blue Rod of Zek (Tier 3)].ID} && ${RallosZek} == 0)
+
 	
 /Return	
 
@@ -2332,12 +2331,18 @@ Sub Thf_Setup
 /declare TankName string outer NULL
 /declare NoShrinkItem bool outer TRUE
 /declare LargeGatheritemCapable bool outer TRUE
-/declare SmallGatheritemCapable bool outer  TRUE
+/declare SmallGatheritemCapable bool outer TRUE
 /declare ArmorMerch int outer
 /declare buyParams string outer
 /declare ZenurixWait int outer 0
 /declare AutoForageCheck int outer 0
 /declare NoConversion int outer 0
+
+/if (${Select[${Me.Class.ShortName},WIZ,NEC,ENC,MAG,CLR,DRU,SHM,BST,RNG,PAL,SHD]})  {
+	/if (${Ini[${Character_Ini},Mana Recovery,Gather Mana (On/Off)].Length})  /call IniToVarV "${Character_Ini},Mana Recovery,Gather Mana (On/Off)" GatherManaCheck bool outer
+	/if (${Ini[${Character_Ini},Mana Recovery,Small Gather Mana (Pct)].Length})  /call IniToVarV "${Character_Ini},Mana Recovery,Small Gather Mana (Pct)" SmallGatherPCT int outer
+	/if (${Ini[${Character_Ini},Mana Recovery,Large Gather Mana (Pct)].Length})  /call IniToVarV "${Character_Ini},Mana Recovery,Large Gather Mana (Pct)" LargeGatherPCT int outer
+} 
 
 /if (${Select[${Me.Class.ShortName},WIZ,NEC,ENC,MAG]})  {
 	/if (${Ini[${Character_Ini},Mana Recovery,Conversion(HP>Mana) (On/Off)].Length})  /call iniToVarV "${Character_Ini},Mana Recovery,Conversion(HP>Mana) (On/Off)" AutoConversion bool outer
@@ -2352,7 +2357,6 @@ Sub Thf_Setup
 	}
 }
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
-/if (${Ini[${Character_Ini},Misc,Gather Mana (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Gather Mana (On/Off)" GatherManaCheck bool outer
 /if (${Ini[${Character_Ini},Misc,Self Shrink (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Self Shrink (On/Off)" SelfShrink bool outer
 /if (${Ini[${Character_Ini},Misc,Duck Key Assignment].Length})  /call IniToVarV "${Character_Ini},Misc,Duck Key Assignment" DuckKey string outer
 	
@@ -2426,7 +2430,7 @@ Sub Thf_Background_Events
 
 
 
-/if (${GatherManaCheck} && ${Me.PctMana} < 30)  /call check_GatherMana
+/if (${GatherManaCheck} && ${Me.PctMana} < ${SmallGatherPCT} || ${Me.PctMana} < ${LargeGatherPCT})  /call check_GatherMana
 
 /if (${Me.AbilityReady[Forage]} && ${AutoForageCheck} == 1)  /call DoForage
 
@@ -2463,10 +2467,14 @@ SUB Thf_MacroSettings
 SUB Thf_CharacterSettings
 /if (${Debug}) /echo |- THF_CharacterSettings ==>
 
-
-/if (${Select[${Me.Class.ShortName},CLR,PAL,RNG,SHD,ENC,MAG,NEC,BST,WIZ,DRU,SHM]})  /call WriteToIni "${Character_Ini},Misc,Gather Mana (On/Off)" On
 /call WriteToIni "${Character_Ini},Misc,Self Shrink (On/Off)" On
 /call WriteToIni "${Character_Ini},Misc,Duck Key Assignment" X	
+
+/if (${Select[${Me.Class.ShortName},CLR,PAL,RNG,SHD,ENC,MAG,NEC,BST,WIZ,DRU,SHM]})  {
+	/call WriteToIni "${Character_Ini},Mana Recovery,Gather Mana (On/Off)" On
+	/call WriteToIni "${Character_Ini},Mana Recovery,Small Gather Mana (Pct)" 60
+	/call WriteToIni "${Character_Ini},Mana Recovery,Large Gather Mana (Pct)" 35
+}
 
 /if (${Select[${Me.Class.ShortName},WIZ,NEC,ENC,MAG]})  {
 	/call WriteToIni "${Character_Ini},Mana Recovery,Conversion(HP>Mana) (On/Off)" Off
