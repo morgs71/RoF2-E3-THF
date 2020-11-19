@@ -10,19 +10,18 @@
 |--------------Caster HP-->Mana Conversion-----------------------------|
 SUB check_Conversion
 /if (${Debug}) /echo |- autoConversion ==>
-	/if (${Me.CombatState.NotEqual[COMBAT]} && ${Me.PctMana} < ${StartConversion}) {
-		/declare s int local
-		/for s 1 to ${ConversionArray2D.Size[1]}
-		/call check_Ready ConversionArray2D" ${s}
-		/if (${c_Ready}) {
-			/if (${check_Mana["ConversionArray2D",${s}]}) {
-				/if (${ConversionArray2D[${s},${iMinHP}]} <= ${Me.PctHPs}) {
-					/call e3_Cast ${Me.ID} "ConversionArray2D" ${s}
-				}
-			}
-			/if (!${ActionTaken}) /next s
-		}
+
+/declare s int local
+/for s 1 to ${ConversionItem2D.Size[1]}
+/call check_Ready "ConversionItem2D" ${s}
+/if (${c_Ready}) {
+	/if (${check_Mana["ConversionItem2D",${s}]}) {
+		/call e3_Cast ${Me.ID} "ConversionItem2D" ${s}
 	}
+}
+/if (!${ActionTaken}) /next s
+
+	
 /if (${Debug}) /echo <== autoConversion -|
 /RETURN
 
@@ -2341,11 +2340,13 @@ Sub Thf_Setup
 /declare NoConversion int outer 0
 
 /if (${Select[${Me.Class.ShortName},WIZ,NEC,ENC,MAG]})  {
-	/if (${Ini[${Character_Ini},Misc,Conversion(HP>Mana) (On/Off)].Length})  /call iniToVarV "${Character_Ini},Misc,Conversion(HP>Mana) (On/Off)" AutoConversion bool outer
-	/if (${Ini[${Character_Ini},Misc,Conversion Item].Length})  /call IniToArrayV "${Character_Ini},Misc,Conversion Item" ConversionItem
-	/if (${Ini[${Character_Ini},Misc,Conversion Start (Pct)].Length})  /call IniToVarV "${Character_Ini},Misc,Conversion Start (Pct)" StartConversion int outer
+	/if (${Ini[${Character_Ini},Mana Recovery,Conversion(HP>Mana) (On/Off)].Length})  /call iniToVarV "${Character_Ini},Mana Recovery,Conversion(HP>Mana) (On/Off)" AutoConversion bool outer
+	/if (${Ini[${Character_Ini},Mana Recovery,Conversion Item].Length})  /call IniToArrayV "${Character_Ini},Mana Recovery,Conversion Item" ConversionItem
+	/if (${Ini[${Character_Ini},Mana Recovery,Conversion Min HP (Pct)].Length})  /call IniToVarV "${Character_Ini},Mana Recovery,Conversion Min HP (Pct)" ConversionMinHP int outer
+	/if (${Ini[${Character_Ini},Mana Recovery,Conversion Start (Pct)].Length})  /call IniToVarV "${Character_Ini},Mana Recovery,Conversion Start (Pct)" StartConversion int outer
+	/if (${Ini[${Character_Ini},Mana Recovery,Conversion Start Combat (Pct)].Length})  /call IniToVarV "${Character_Ini},Mana Recovery,Conversion Start Combat (Pct)" StartConversionCombat int outer
 	/if (${ConversionItem.Size}) {
-		/call BuildSpellArray "ConversionArray2D"	"ConversionArray2D"
+		/call BuildSpellArray "ConversionItem" "ConversionItem2D"
 	} else {
 		/varset NoConversion 1
 	}
@@ -2417,7 +2418,11 @@ Sub Thf_Background_Events
 
 /if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
 
-/if (${AutoConversion} && ${NoConversion} == 0 && ${Me.PctMana} < ${StartConversion})  /call check_Conversion
+/if (${AutoConversion} && ${NoConversion} == 0 && !${Me.Moving} && !${Assisting} && ${Me.PctMana} <= ${StartConversion} && ${Me.PctHPs} > ${ConversionMinHP})  {
+	/call check_Conversion
+} else /if (${AutoConversion} && ${NoConversion} == 0 && !${Me.Moving} && ${Assisting} && ${Me.PctMana} <= ${StartConversionCombat} && ${Me.PctHPs} > ${ConversionMinHP})  {
+	/call check_Conversion
+}
 
 
 
@@ -2464,9 +2469,11 @@ SUB Thf_CharacterSettings
 /call WriteToIni "${Character_Ini},Misc,Duck Key Assignment" X	
 
 /if (${Select[${Me.Class.ShortName},WIZ,NEC,ENC,MAG]})  {
-	/call WriteToIni "${Character_Ini},Misc,Conversion(HP>Mana) (On/Off)" Off
-	/call WriteToIni "${Character_Ini},Misc,Conversion Item"
-	/call WriteToIni "${Character_Ini},Misc,Conversion Start (Pct)" 80
+	/call WriteToIni "${Character_Ini},Mana Recovery,Conversion(HP>Mana) (On/Off)" Off
+	/call WriteToIni "${Character_Ini},Mana Recovery,Conversion Item"
+	/call WriteToIni "${Character_Ini},Mana Recovery,Conversion Min HP (Pct)" 60
+	/call WriteToIni "${Character_Ini},Mana Recovery,Conversion Start (Pct)" 80
+	/call WriteToIni "${Character_Ini},Mana Recovery,Conversion Start Combat (Pct)" 30
 }
 
 /if (${Debug}) /echo <== THF_CharacterSettings -|
