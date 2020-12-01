@@ -742,14 +742,16 @@ Sub Event_NewTHFChar
 /echo New Character Setup is Starting ***Please do NOT Interfere with the Process*** !!!
 /popup New Character Setup is Starting ***Please do NOT Interfere with the Process*** !!!
 
+/if (${Select[${Me.Class.ShortName},ROG]}) {  
+	/if (${Me.Sneaking}) /doability sneak
+	/if (${Me.Invis})  /makemevisible
+}
 /moveto loc 29.46 19.89
 /call WaitUntilNotMoving
 /call QueenAdrianne
 /call Curious
-/moveto loc -13.01 -11.08
-/call WaitUntilNotMoving
-/call Herald
-/moveto loc -12.44 -109.82
+/call Azakir
+/moveto loc 19.35 -95.87
 /call WaitUntilNotMoving
 /call Gorgoza
 /moveto loc -12.44 -109.82
@@ -842,11 +844,11 @@ Sub Curious
 	
 /Return
 
-Sub Herald
+Sub Azakir
 
-/moveto id ${Spawn[NPC =Herald of Diamond Crusade].ID}
+/moveto id ${Spawn[NPC =Azakir the Storyteller].ID}
 /call WaitUntilNotMoving
-/target npc id ${Spawn[NPC =Herald of Diamond Crusade].ID}
+/target npc id ${Spawn[NPC =Azakir the Storyteller].ID}
 /delay 1s
 /hail
 /delay 1s
