@@ -319,10 +319,10 @@ SUB BuildSpellArray(ArrayName, NewArrayName)
 		/if (${printAll}) /echo CastName ${${NewArrayName}[${i},${iCastName}]}
 
 		| get CastType
-		/if (${Bool[${Me.AltAbility[${${NewArrayName}[${i},${iCastName}]}].Spell}]}) {
-			/varset ${NewArrayName}[${i},${iCastType}] AA
-		} else /if (${Me.Book[${${NewArrayName}[${i},${iCastName}]}]}) {
+		/if (${Me.Book[${${NewArrayName}[${i},${iCastName}]}]}) {
 			/varset ${NewArrayName}[${i},${iCastType}] Spell
+		} else /if (${Bool[${Me.AltAbility[${${NewArrayName}[${i},${iCastName}]}].Spell}]}) {
+			/varset ${NewArrayName}[${i},${iCastType}] AA
 		} else /if (${Me.CombatAbility[${${NewArrayName}[${i},${iCastName}]}]}) {
 			/varset ${NewArrayName}[${i},${iCastType}] Disc
 		} else /if (${Me.Ability[${${NewArrayName}[${i},${iCastName}]}]}) {
@@ -523,15 +523,15 @@ SUB BuildSpellArray(ArrayName, NewArrayName)
 			/varset	${NewArrayName}[${i},${iSpellName}] ${Me.AltAbility[${${NewArrayName}[${i},${iCastName}]}].Spell}
 		} else /if (${${NewArrayName}[${i},${iCastType}].Equal[Spell]}) {
 			/varset	${NewArrayName}[${i},${iSpellName}] ${Spell[${${NewArrayName}[${i},${iCastName}]}]}
-    } else /if (${${NewArrayName}[${i},${iCastType}].Equal[Disc]}) {
-      /varset	${NewArrayName}[${i},${iSpellName}] ${Spell[${${NewArrayName}[${i},${iCastName}]}]}
-    }
+		} else /if (${${NewArrayName}[${i},${iCastType}].Equal[Disc]}) {
+			/varset	${NewArrayName}[${i},${iSpellName}] ${Spell[${${NewArrayName}[${i},${iCastName}]}]}
+		}
 		/if (${printAll}) /echo SpellName ${${NewArrayName}[${i},${iSpellName}]}
     | get SpellID
       /if (${${NewArrayName}[${i},${iCastType}].Equal[Item]}) {
         /varset	${NewArrayName}[${i},${iSpellID}] ${FindItem[=${${NewArrayName}[${i},${iCastName}]}].Spell.ID}
       } else /if (${${NewArrayName}[${i},${iCastType}].Equal[AA]}) {
-        /varset	${NewArrayName}[${i},${iSpellID}] ${Me.AltAbility[${${NewArrayName}[${i},${iCastName}]}].Spell.ID}
+			/varset ${NewArrayName}[${i},${iSpellID}] ${Me.AltAbility[${${NewArrayName}[${i},${iCastName}]}].Spell.ID}
       } else /if (${${NewArrayName}[${i},${iCastType}].Equal[Spell]}) {
         /varset	${NewArrayName}[${i},${iSpellID}] ${Spell[${${NewArrayName}[${i},${iCastName}]}].ID}
       } else /if (${${NewArrayName}[${i},${iCastType}].Equal[Disc]}) {
