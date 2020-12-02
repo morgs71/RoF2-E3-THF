@@ -1558,7 +1558,6 @@ Sub KillSeravince
 Sub Event_ContractedDoom(string line, string Player)
 
 /if (${Player.Equal[${Me}]}) {
-	 && ${Twist.Twisting}) /twist stop
 	/rs Creeping Doom on ${Me}
 	:CureLoop
 	/if (${Me.Buff[Creeping Doom].ID}) {
