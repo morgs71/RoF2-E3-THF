@@ -49,6 +49,7 @@ SUB summonPet
   /if (${Me.Pet.ID}) {
     /squelch /pet ghold on
   }  
+ 
 	/if (${Debug} || ${Debug_Pets}) /echo <== summonPet -|
 /RETURN
 

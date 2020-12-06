@@ -128,6 +128,10 @@ SUB give_PetsWeapons(autoWeap)
     /next w
     /if (${autoWeap} && ${allWeapSuccess}) {
         /call WriteToIni "${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Auto-Pet Weapons-${Spawn[id ${petIDArray[${p}]}].Master}" "${Spawn[id ${petIDArray[${p}]}].CleanName}" 1
+		/if (${Spawn[pc ${Spawn[id ${petIDArray[${p}]}].Master}].Class.ShortName.Equal[BST]}) {
+			/varset ${Spawn[id ${petIDArray[${p}]}].Master}BstPet ${Spawn[${petIDArray[${p}]}].ID} 
+			/echo ${Spawn[id ${petIDArray[${p}]}].Master}BstPet is now ${Spawn[${petIDArray[${p}]}].ID}
+		}
     }
 }
 /next p
@@ -169,9 +173,17 @@ SUB check_SummonItems
 			/if (${NetBots[${masterName}].ID}) {
 				/if (${Spawn[id ${petID}].LineOfSight}) {
 					/if (${petName.Equal[${Ini[${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Auto-Pet Weapons-${masterName}]}]}) {
+						/if (${Spawn[pc ${masterName}].Class.ShortName.Equal[BST]}) /goto :BstCheck
 						/if (${Debug} || ${Debug_MAG}) /echo check_SummonItems: I have already given weapons to ${petName}
 					} else {
-						/call BuildArray petIDArray ${NearestSpawn[${p},pcpet].ID}
+						:BstCheck
+						/if (${Spawn[pc ${masterName}].Class.ShortName.Equal[BST]}) {
+							/if (${petID} != ${${masterName}BstPet})  {
+								/call BuildArray petIDArray ${NearestSpawn[${p},pcpet].ID}
+							}	
+						} else { 
+							/call BuildArray petIDArray ${NearestSpawn[${p},pcpet].ID}
+						}
 					}
 				}
 			}
@@ -194,7 +206,7 @@ SUB MAG_Setup
 	/declare mageRangedSwap bool outer FALSE
 	/if (${Defined[petItems]}) /call BuildSpellArray "petItems"	"petItems2D"
 
-  
+
 
   /if (${Bool[${Me.Book[Summon: Molten Orb]}]}) {
     /declare moltenOrb[1] string outer Summon: Molten Orb

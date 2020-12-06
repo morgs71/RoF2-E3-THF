@@ -3,6 +3,8 @@
 |----------------------------------------------------------------------------|
 Sub BST_Setup
 	/call IniToVarV "${Character_Ini},Beastlord,Band of the Gargoyle-Wild Cat IV (On/Off)" BeastGargoyle bool outer
+	/if (${Defined[${Me.Name}BstPet]}) /deletevar ${Me.Name}BstPet
+	/declare ${Me.Name}BstPet string global ${Me.Pet.ID}
 /return
 |----------------------------------------------------------------------------|
 SUB BST_MacroSettings
