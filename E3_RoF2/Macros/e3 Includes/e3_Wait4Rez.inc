@@ -89,6 +89,9 @@ SUB Wait4Rez(functionCall)
 	/next i
 	|Load Spells.
 	/if (${Me.Class.CanCast}) /call check_Gems
+	|Summon Pet
+	 /if (!${Me.Pet.ID} && ${Defined[petSpell2D]} && ${SpawnCount[pc ${Me}]}) /call summonPet
+	 
   |Wait for Rez------------------------------------------------------|
 	:rezmeffs
 	/if (${Debug} || ${Debug_Wait4Rez}) /echo |- Wait4Rez -| Waiting to accept rez.
