@@ -1,6 +1,40 @@
 |----------------------------------------------------------------------------|
 | Shaman Functions
 |----------------------------------------------------------------------------|
+
+|-----------Auto Totem-------By Muergan & Roxenrox-----------|
+
+Sub Auto_Totem
+
+
+/if (${Defined[${TotemType}TotemSpells2D]})  {
+	/call check_Ready "${TotemType}TotemSpells2D" 1
+	/if (${c_Ready}) {
+		/if (${check_Mana["${TotemType}TotemSpells2D",1]}) {
+			/call e3_Cast ${Me.ID} "${TotemType}TotemSpells2D" 1
+		}
+	}
+} else {
+	/echo No <${TotemType}> Totems Available !
+	/varset NoTotem 1
+}
+
+/Return	
+
+#Event TotemChangeType "<#*#> Totem #1#" 
+
+Sub Event_TotemChangeType(line, string TotemChange)
+
+/varset TotemType ${TotemChange}
+/echo <${TotemType}> Totems now Engaged!
+/varset NoTotem 0
+
+/Return
+			
+|----------------------------------------------------------------------------|
+
+|--------------Auto Cannibalization ---------------|
+
 SUB check_Canni
 /if (${Debug}) /echo |- autoCanni ==>
 	/if (${AutoCanni}) {
@@ -119,10 +153,19 @@ Sub defineShmRezSpell
 Sub SHM_Setup
 /if (${Debug}) /echo |- SHM_Setup ==>
 	/call iniToVarV "${Character_Ini},Shaman,Auto-Canni (On/Off)" AutoCanni bool outer
-	/call IniToArrayV "${Character_Ini},Shaman,Canni#" canniSpells
+	/call IniToArrayV "${Character_Ini},Shaman,Canni" canniSpells
 	/call IniToVarV "${Character_Ini},Shaman,Canni Start (Pct)" StartCanni int outer
-  /if (${canniSpells.Size}) /call BuildSpellArray "canniSpells"	"canniSpells2D"
+	/call iniToVarV "${Character_Ini},Shaman,Auto Totem (On/Off)" AutoTotem bool outer
+	/call iniToVarV "${Character_Ini},Shaman,Totem Type" TotemType string outer
+	/call IniToArrayV "${Character_Ini},Shaman,Healing Totem Spell" HealingTotemSpells
+	/call IniToArrayV "${Character_Ini},Shaman,Frost Totem Spell" FrostTotemSpells
+	/call IniToArrayV "${Character_Ini},Shaman,Poison Totem Spell" PoisonTotemSpells
+	/if (${canniSpells.Size}) /call BuildSpellArray "canniSpells"	"canniSpells2D"
+	/if (${HealingTotemSpells.Size}) /call BuildSpellArray "HealingTotemSpells"	"HealingTotemSpells2D"
+	/if (${FrostTotemSpells.Size}) /call BuildSpellArray "FrostTotemSpells"	"FrostTotemSpells2D"
+	/if (${PoisonTotemSpells.Size}) /call BuildSpellArray "PoisonTotemSpells"	"PoisonTotemSpells2D"
   /declare canRez int outer 0
+  /declare NoTotem int outer 0
 /if (${Debug}) /echo <== SHM_Setup -|
 /return
 |----------------------------------------------------------------------------|
@@ -146,10 +189,18 @@ SUB SHM_CharacterSettings
 	/call WriteToIni "${Character_Ini},Shaman,Auto-Canni (On/Off)"
 	/call WriteToIni "${Character_Ini},Shaman,Canni"
 	/call WriteToIni "${Character_Ini},Shaman,Canni Start (Pct)" 80
+	/call WriteToIni "${Character_Ini},Shaman,Auto Totem (On/Off)"
+	/call WriteToIni "${Character_Ini},Shaman,Totem Type" Healing
+	/call WriteToIni "${Character_Ini},Shaman,Healing Totem Spell"
+	/call WriteToIni "${Character_Ini},Shaman,Frost Totem Spell"
+	/call WriteToIni "${Character_Ini},Shaman,Poison Totem Spell"
 /if (${Debug}) /echo <== SHM_CharacterSettings -|
 /RETURN
 |----------------------------------------------------------------------------|
 Sub SHM_Aliases
+/squelch /alias /healingtotem  /bc Totem Healing
+/squelch /alias /frosttotem  /bc Totem Frost
+/squelch /alias /poisontotem  /bc Totem Poison
 /return
 |----------------------------------------------------------------------------|
 #event AE_AA "#*# tells you, 'AEAA'"
@@ -171,6 +222,11 @@ sub Event_AE_AA(string line)
 /return
 |----------------------------------------------------------------------------|
 Sub SHM_Background_Events
-	/doevents AE_AA
-	/doevents ShmRez
+
+/doevents AE_AA
+/doevents ShmRez
+/doevents TotemChangeType
+	
+/if (${AutoTotem}&& ${Assisting} && ${NoTotem} == 0 && !${Spawn[radius 100 totem].Name.NotEqual[NULL]} && ${Target.Named})  /call Auto_Totem
+
 /return
