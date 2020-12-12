@@ -129,6 +129,7 @@ SUB give_PetsWeapons(autoWeap)
     /if (${autoWeap} && ${allWeapSuccess}) {
         /call WriteToIni "${MacroData_Ini},${Me.CleanName}-${MacroQuest.Server},Auto-Pet Weapons-${Spawn[id ${petIDArray[${p}]}].Master}" "${Spawn[id ${petIDArray[${p}]}].CleanName}" 1
 		/if (${Spawn[pc ${Spawn[id ${petIDArray[${p}]}].Master}].Class.ShortName.Equal[BST]}) {
+			/if (!${Defined[${Spawn[id ${petIDArray[${p}]}].Master}BstPet]})  /declare ${Spawn[id ${petIDArray[${p}]}].Master}BstPet int outer  
 			/varset ${Spawn[id ${petIDArray[${p}]}].Master}BstPet ${Spawn[${petIDArray[${p}]}].ID} 
 			/echo ${Spawn[id ${petIDArray[${p}]}].Master}BstPet is now ${Spawn[${petIDArray[${p}]}].ID}
 		}
@@ -178,6 +179,7 @@ SUB check_SummonItems
 					} else {
 						:BstCheck
 						/if (${Spawn[pc ${masterName}].Class.ShortName.Equal[BST]}) {
+							/if (!${Defined[${masterName}BstPet]})  /declare ${masterName}BstPet int outer  
 							/if (${petID} != ${${masterName}BstPet})  {
 								/call BuildArray petIDArray ${NearestSpawn[${p},pcpet].ID}
 							}	
@@ -196,6 +198,7 @@ SUB check_SummonItems
 }
 /if (${Debug} || ${Debug_MAG}) /echo <== check_SummonItems -|
 /RETURN
+
 |----------------------------------------------------------------------------|
 SUB MAG_Setup
 /declare Debug_MAG bool outer FALSE
