@@ -2176,7 +2176,7 @@ Sub Check_AntithesisItem
 /declare AntithesisItem string local
  /declare i int local
 
-/if (${FindItem[Stone of Absolute Antithesis].ID}) {
+/if (${FindItem[=Stone of Absolute Antithesis].ID}) {
     /varset AntithesisItem Stone of Absolute Antithesis 
 } else /if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Dragorn]})  {
 	/if (${FindItem[=Imbued Dragorn Bone].ID}) {

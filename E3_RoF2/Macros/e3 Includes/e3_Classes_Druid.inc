@@ -43,7 +43,7 @@ sub Event_DruRez(line, ChatSender)
     /call check_CorpseRezzable
     /if (${canRez}==1) {
         /call check_Ready "DrurezArray2D" 1
-        /if ((!${c_Ready}) {
+        /if (!${c_Ready}) {
 			/return
       }
       /tell ${ChatSender} Wait4Rez
