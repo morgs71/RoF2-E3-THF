@@ -2222,6 +2222,17 @@ Sub Check_AntithesisItem
 /Return
 
 
+|--------------------------FrostCrypt-------------------------|
+
+Sub GiantControl
+
+/if (${Spawn[${AntithesisTarget}].Distance} <= 200)  {
+	/casting "Icy Wand of Beltron|item" "-targetid|${AntithesisTarget}"
+}
+
+/Return
+
+
 
 
 
@@ -2434,6 +2445,7 @@ Sub Thf_Background_Events
 /if (${GatherManaCheck} && ${Me.PctMana} < ${SmallGatherPCT} || ${Me.PctMana} < ${LargeGatherPCT})  /call check_GatherMana
 
 /if (${Me.AbilityReady[Forage]} && ${AutoForageCheck} == 1)  /call DoForage
+
 
 
 /Return 

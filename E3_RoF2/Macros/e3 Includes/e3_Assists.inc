@@ -398,9 +398,11 @@ SUB check_Nukes
 	/varset AntithesisTimer 10s
 	/call Apply_Antithesis
   }
+/if (${Assisting} && ${Zone.ShortName.Equal[frostcrypt]} && ${FindItem[=Icy Wand of Beltron].ID} && ${FindItem[Icy Wand of Beltron].Timer}==0)  /call GiantControl
+	
 	/if	(${RallosZek} == 1 && ${BlueRodTimer} == 0 && ${Assisting})  {
 		/bc testing
-		/casting "Blue Rod of Zek (Tier 3)" "-targetid|${AssistTarget}"
+		/casting "Blue Rod of Zek (Tier 3)|item" "-targetid|${AssistTarget}"
 		/varset BlueRodTimer 5s
 		/popup Rallos Zek Bane Damage is Engaged!
 	} else /if (${Defined[Nukes2D]} && ${Assisting} && ${use_Nukes}) {
@@ -1255,18 +1257,19 @@ Sub assist_Setup
 	/declare use_PBAE bool outer FALSE
 	/declare use_AssistDots bool outer TRUE
   /declare use_CommandDots bool outer TRUE
-	/declare AntithesisTarget int outer
+  /declare AntithesisTarget int outer
   /declare use_FULLBurns bool outer FALSE
   /declare use_LONGBurns bool outer FALSE
   /declare use_QUICKBurns bool outer FALSE
   /declare use_EPICBurns bool outer FALSE
-	/declare BurnsOn bool outer False
+/declare BurnsOn bool outer False
   /declare resistCount string outer
-	/declare isEnraged bool outer FALSE
+  /declare isEnraged bool outer FALSE
 	/declare revertRngToMelee bool outer FALSE
 	/declare pauseRanged bool outer FALSE
   /declare aeTarget int outer
   /declare AntithesisTimer timer outer 0
+  /declare BeltronTimer timer outer 0
   /declare BlueRodTimer timer outer 0
   /if (!${Defined[spellsToUse]})   /declare spellsToUse string global Main
 
