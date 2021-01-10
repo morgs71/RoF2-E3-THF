@@ -1279,6 +1279,15 @@ Sub ValikWait
 		/goto :ValikWaitLoop
 	}
 /return
+
+Sub EnjiWait
+	:EnjiWaitLoop
+		/delay 4
+		/doevents
+	/if (${EnjiWait}==1)  {
+		/goto :EnjiWaitLoop
+	}
+/return
 	
 
 |---------------Reaper of Mortality-----------------------Original by Bazillions--Editited for E3 by Muergan------|
@@ -1296,14 +1305,19 @@ Sub Event_ReaperOfMortalityDuck(string line)
 	/popup Duck!!!
 	/if (${IsTank}) /goto :SkipDuck
 	/call AssistOff
-	/keypress ${DuckKey}
-	/delay 10s
+	/keypress duck
+	/if (!${Me.Ducking})  /keypress duck
+	/delay 6s
+	:Standloop
 	/stand
+	/if (${Me.Ducking}) /goto :Standloop
 	:SkipDuck
 	/if (${IsTank})  {
+		/delay 6s
 		/call KillReaper
 	} else /if (!${IsTank})  {	
 		/if (${MainAssist.Equal[${Me.CleanName}]})  {
+			/delay 6s
 			/call KillReaper
 		}
 	}
@@ -1318,13 +1332,14 @@ Sub Event_ReaperOfMortalityMove(string line)
 	/if (${IsTank})  {
 		/rsay Move away from reaper !
 		} 
-	/call AssistOff
-	/if (${Select[${Me.Class.ShortName},PAL,SHD,WAR,RNG,BST,BER,ROG,MNK]})  {
-		/moveto loc -59.60 -167.54
+	/if (${Assisting} && ${Spawn[NPC =The Reaper of Mortality].Distance} < 26)  {
+		/squelch /stick hold moveback 65
 		/call WaitUntilNotMoving
 		/delay 5s
+		/call MoveToReaper
+	} else /if (${Assisting} && ${Spawn[NPC =The Reaper of Mortality].Distance} > 25)  {
+		/call MoveToReaper
 	}
-	/call MoveToReaper
 	
 /return
 
@@ -1332,16 +1347,14 @@ Sub Event_ReaperOfMortalityMove(string line)
 
 Sub MoveToReaper
 
- /bc [Event] - Returning to The Reaper of Mortality
 	/call IsTank
 	/if (${IsTank})  {
 		/delay 5s
 		/goto :KillReaper
 	}
-	/if (${Spawn[NPC =The Reaper of Mortality].Distance} >= ${Math.Calc[${Spawn[${Spawn[NPC =The Reaper of Mortality].ID}].MaxRangeTo}*.75].Int}12)  {
-		/moveto id ${Spawn[NPC =The Reaper of Mortality].ID}
+	/if (${Spawn[NPC =The Reaper of Mortality].Distance} >= 25)  {
+		/moveto id ${Spawn[NPC =The Reaper of Mortality].ID} dist 10
 		/call WaitUntilNotMoving
-		/delay 2s
 	}
 	:KillReaper
 	/if (${IsTank})  {
@@ -1361,7 +1374,7 @@ Sub KillReaper
 
 /return
 		
-	
+|----------------------------------Halls of Honor----------------------------------------|	
 	
 |----------------------------Draekon HoH---------------Originals by Bazillions & Rafe--Editited for E3 by Muergan------|
 
@@ -1437,7 +1450,7 @@ Sub Event_MoveToDraekon
 	}
 	:MoveToDraekon
 	/if (${Spawn[NPC =Lord Draekon].ID} && ${Spawn[NPC =Lord Draekon].Distance} > 20)  {
-		/moveto id ${Spawn[NPC =Lord Draekon].ID}
+		/moveto id ${Spawn[NPC =Lord Draekon].ID} dist 10
 		/delay 5
 	}
     /if (${Spawn[NPC =Lord Draekon].ID}!=NULL && ${Spawn[NPC =Lord Draekon].Distance} > 20) /goto :MoveToDraekon
@@ -1662,11 +1675,30 @@ Sub defineCreepDoomCure
 
 
 
+|-------------------------Enji Vismen-----By Muergan & Higgs----------------|
 
+#Event EnjiKick "Enji Vismen's legs begins to shake violently."
+#Event EnjiKickReturn "You feel your body lurch forward as Enji's legs kick you with immense pressure."
 
+Sub Event_EnjiKick
+/call IsTank
+/if (${IsTank})  {
+	/rsay Move out of Melee!
+	/return
+} else /if (${Assisting} && ${Spawn[NPC =Enji Vismen].Distance} <= 25)  {
+	/varset EnjiWait 1
+	/squelch /stick hold moveback 65
+	/call WaitUntilNotMoving
+	/call EnjiWait
+}
 
+/Return
 
+Sub Event_EnjiKickReturn
 
+/varset EnjiWait 0
+		
+/return
 	
 	
 |--------------------------Vistrinda-------By Muergan--------------------|
@@ -2337,8 +2369,6 @@ Sub Thf_Setup
 	
 /declare DraekonCall int outer 0
 /declare DraekonGrass int outer 0
-/declare ReaperDucking int outer 0
-/declare ReaperFar int outer 0
 /declare SeravinceStun int outer 0
 /declare VistrindaAddATimer int outer 0
 /declare VistrindaAddBTimer int outer 0
@@ -2351,6 +2381,7 @@ Sub Thf_Setup
 /declare ArmorMerch int outer
 /declare buyParams string outer
 /declare ZenurixWait int outer 0
+/declare EnjiWait int outer 0
 /declare AutoForageCheck int outer 0
 /declare NoConversion int outer 0
 
@@ -2374,7 +2405,7 @@ Sub Thf_Setup
 }
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
 /if (${Ini[${Character_Ini},Misc,Self Shrink (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Self Shrink (On/Off)" SelfShrink bool outer
-/if (${Ini[${Character_Ini},Misc,Duck Key Assignment].Length})  /call IniToVarV "${Character_Ini},Misc,Duck Key Assignment" DuckKey string outer
+
 	
 /if (${Debug}) /echo <== Thf_Setup -|
 /return
@@ -2391,7 +2422,6 @@ Sub Thf_Background_Events
 /doevents cohall
 /doevents RallosZek
 /doevents ReaperOfMortalityDuck
-/doevents ReaperOfMortalityUnduck
 /doevents ReaperOfMortalityMoveClose
 /doevents ReaperOfMortalityUnmoveClose
 /doevents ReaperOfMortalityMoveFar
@@ -2435,6 +2465,8 @@ Sub Thf_Background_Events
 /doevents AutoForage
 /doevents CheckEmptyAugType
 /doevents CheckEmptyAugSlot
+/doevents EnjiKick
+/doevents EnjiKickReturn
 
 /if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
 
@@ -2485,7 +2517,7 @@ SUB Thf_CharacterSettings
 /if (${Debug}) /echo |- THF_CharacterSettings ==>
 
 /call WriteToIni "${Character_Ini},Misc,Self Shrink (On/Off)" On
-/call WriteToIni "${Character_Ini},Misc,Duck Key Assignment" X	
+
 
 /if (${Select[${Me.Class.ShortName},CLR,PAL,RNG,SHD,ENC,MAG,NEC,BST,WIZ,DRU,SHM]})  {
 	/call WriteToIni "${Character_Ini},Mana Recovery,Gather Mana (On/Off)" On
