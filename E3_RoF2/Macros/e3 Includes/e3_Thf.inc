@@ -492,6 +492,9 @@ SUB SelfShrink_Spell
   } else /if (${FindItem[=Vial of Shrieker Essence].ID}) {
     /varset SelfShrinkSpell "Vial of Shrieker Essence"
 	/varset NoShrinkItem TRUE
+  } else /if (${Me.Book[Tiny Terror]}) {
+    /varset SelfShrinkSpell "Tiny Terror"
+    /varset NoShrinkItem TRUE
   } else /if (${Me.Book[Shrink]}) {
     /varset SelfShrinkSpell Shrink
 	/varset NoShrinkItem TRUE
@@ -2140,6 +2143,7 @@ Sub Event_XeruForm
 #Event VampStake "Ravaged Vampire staggers and collapses."
 #Event VampStake "Vampire Researcher staggers and collapses."
 #Event VampStake "Xurith The Bloody staggers and collapses."
+#Event VampStake "Reborn Vampire staggers and collapses."
 
 SUB Event_VampStake(string line) 
 
