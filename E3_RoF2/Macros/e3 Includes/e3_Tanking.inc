@@ -167,16 +167,180 @@ SUB event_TogglePeelTank(line, ChatSender, toggle)
   }
 /return
 
+
+
+|--------------------OffTanking---------By Muergan----|
+
+
+|------------OffTank Mode---------------|
+|--Allows Manual Movement Control over--|
+|--OT when Assist is called	          --|
+#Event ToggleOffTankMode "#*# tells you, 'offtankmode #1#'"
+SUB event_ToggleOffTankMode(line, toggleOT)
+
+/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${toggleOT.Equal[On]}) {
+		/varset OffTank 1
+		/bc [+y+] OffTank Mode enabled!
+	} else /if (${toggleOT.Equal[Off]}) {
+		/varset OffTank 0
+		/bc [+y+] OffTank Mode disabled!
+	}
+}
+/return
+
+|------OffTank Target--------------------|
+|-- Desinated OffTank #1-4 will OT  -----|
+|-- Target until dead or called off.-----|
+
+
+#Event offtank1 "<#1#> offtank1 #2#"
+
+
+Sub Event_offtank1(line, ChatSender, int MobID)
+
+/varset OTtarget ${MobID}
+/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OffTankNum} == 1)  {
+		/call OffTankTarget
+	}
+}
+/Return
+
+
+#Event offtank2 "<#1#> offtank2 #2#"
+
+
+Sub Event_offtank2(line, ChatSender, int MobID)
+
+/varset OTtarget ${MobID}
+/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OffTankNum} == 2)  {		
+		/call OffTankTarget
+	}
+}
+/Return
+
+
+#Event offtank3 "<#1#> offtank3 #2#"
+
+
+Sub Event_offtank3(line, ChatSender, int MobID)
+
+/varset OTtarget ${MobID}
+/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OffTankNum} == 3)  {
+		/call OffTankTarget
+	}
+}
+/Return
+
+
+#Event offtank4 "<#1#> offtank4 #2#"
+
+
+Sub Event_offtank4(line, ChatSender, int MobID)
+
+/varset OTtarget ${MobID}
+/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OffTankNum} == 4)  {		
+		/call OffTankTarget
+	}
+}
+/Return
+
+
+SUB OffTankTarget
+
+/bc [+y+] OffTanking ${Spawn[id ${OTtarget}].CleanName}
+/varset AssistTarget ${OTtarget}
+/varset Assisting TRUE
+/varset AllowControl TRUE
+/varset AssistStickDistance 10
+/varset OffTankSkipAssist 1
+/call StickToAssistTarget
+/attack on
+
+
+/Return
+
+|------OffTank # Backoff-----------------|
+|-- Desinated OffTank # will        -----|
+|-- Backoff & disengage.               --|
+
+#Event OffTankBackoff "<#*#> otbackoff #1#"
+
+SUB event_OffTankBackoff(line, int OTNumber)
+
+/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OTNumber} == ${OffTankNum})  /call OTBackoff
+}
+/Return
+
+|------OffTank All Backoff----|
+|-- all OffTanks will    -----|
+|-- Backoff & disengage.    --|
+
+#Event OffTankBackoffAll "#*# tells you, 'otbackoffall'"
+#Event OffTankBackoffAll "<#*#> tells the group, 'otbackoffall'"
+#Event OffTankBackoffAll "<#*#> tells the raid, 'otbackoffall'"
+#Event OffTankBackoffAll "<#*#> otbackoffall"
+
+SUB event_OffTankBackoffAll
+
+/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OffTankSkipAssist} == 1)  /call OTBackoff
+}
+
+/Return
+
+Sub OTBackoff
+
+/varset OffTankSkipAssist 0
+/varset OTtarget 0
+/bc [+y+] OffTank Disabled...Backing Off !
+/call Assistoff
+	
+
+/Return
+
+
+
+
+
+
+
 Sub tanking_Background_Events
   /doevents SetTank
   /doevents TogglePeelTank
+  /doevents ToggleOffTankMode
+  /doevents offtank1
+  /doevents offtank2
+  /doevents offtank3
+  /doevents offtank4
+  /doevents OffTankBackoffAll
+  /doevents OffTankBackoff
+  
+  /if (${OffTankSkipAssist} == 1 && !${Target.ID} )  /call OTBackoff
+  
 /return
 
 Sub tanking_CharacterSettings
+  /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]}) /call WriteToIni "${Character_Ini},Assist Settings,OffTank#" 
 /return
 
 Sub tanking_Aliases
+/squelch /alias /offtank1 /bc offtank1 ${Target.ID}
+/squelch /alias /offtank2 /bc offtank2 ${Target.ID}
+/squelch /alias /offtank3 /bc offtank3 ${Target.ID}
+/squelch /alias /offtank4 /bc offtank4 ${Target.ID}
+/squelch /alias /otbackoffall /bc otbackoffall
+/squelch /alias /otbackoff1 /bc otbackoff 1
+/squelch /alias /otbackoff2 /bc otbackoff 2
+/squelch /alias /otbackoff3 /bc otbackoff 3
+/squelch /alias /otbackoff4 /bc otbackoff 4
 /return
+
 Sub tanking_MacroSettings
 /return
 
@@ -188,4 +352,11 @@ Sub tanking_Setup
   /declare killTarget int outer 0
   /declare peelTarget int outer 0
   /declare peelTankOriginalAssistTarget int outer 0
+  /declare OffTank int outer 0
+  /declare OffTankSkipAssist int outer 0
+  /declare OTtarget int outer 0
+
+  /if (${Ini[${Character_Ini},Assist Settings,OffTank#].Length}) /call IniToVarV "${Character_Ini},Assist Settings,OffTank#" OffTankNum int outer
+  
+
 /return

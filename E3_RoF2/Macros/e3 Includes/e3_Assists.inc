@@ -10,6 +10,7 @@
 SUB event_Assist(line, ChatSender, int MobID)
 /if (${Debug} || ${Debug_Assists}) /echo |- event_Assist ==>
   /if (!${checkEventArgs[${ChatSender},${line},UZR,${MobID}]}) /return
+  /if (${OffTankSkipAssist} == 1)  /goto :OTSkip
   /varset MobID ${c_eventArgData}
   | Check that you're not assisting on a corpse, pet or pc
   /if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
@@ -49,9 +50,10 @@ SUB event_Assist(line, ChatSender, int MobID)
       /varset isEnraged FALSE
       | If I am the assist caller, or I am feigning, don't allow macro control.
 	  /call IsTank
-      /if (${ChatSender.NotEqual[${Me.CleanName}]}) {
+      /if (${ChatSender.NotEqual[${Me.CleanName}]} && ${OffTank} == 0) {
         /varset AllowControl TRUE
         |/docommand ${ChatToggle} Attacking - ${AssistTarget} - ${Spawn[${AssistTarget}].CleanName}
+		:OTSkip
         /if (${Target.ID} != ${AssistTarget} && (!${Bool[${Me.Casting}]} || ${Me.Class.ShortName.Equal[BRD]}) && (${AssistType.Equal[melee]} || ${AssistType.Equal[ranged]})) /call TrueTarget ${AssistTarget}
         /if (${Me.Pet.ID}) {
           /if (${Debug} || ${Debug_Assists}) /echo Pet Check: Sending pet in
@@ -102,6 +104,7 @@ SUB event_Assist(line, ChatSender, int MobID)
 #event BackOff "<#1#> Back Off#*#"
 SUB Event_BackOff(line, ChatSender)
 /if (${Debug} || ${Debug_Assists}) /echo |- Event_BackOff ==>
+/if (${OffTankSkipAssist} == 1)  /return
   /if (!${checkEventArgs[${ChatSender},${line},UZR,""]}) /return
 |#event BackOff "<#1#> Back Off#2#"
 |SUB Event_BackOff(line, ChatSender, args)
@@ -120,6 +123,7 @@ SUB Event_BackOff(line, ChatSender)
 |----------------------------------------------------------------|
 SUB AssistOff
 /if (${Debug} || ${Debug_Assists}) /echo |- AssistOff -| ==>
+/if (${OffTankSkipAssist} == 1)  /return
   /if (${Me.Casting.ID} && !${Spell[${Me.Casting}].SpellType.Find[beneficial]} && ${Me.Class.ShortName.NotEqual[BRD]}) /call interrupt
 	| Only stop attacking if forced by /backoff. If target died attack will have been stopped anyway. Stops player controlled char from stopping attacking even when target is switched.
 	/if (${AllowControl}) {
@@ -161,6 +165,7 @@ SUB StickToAssistTarget
 			/squelch /stick hold moveback behind ${AssistStickDistance} uw
     } else /if (${AssistStickPoint.Equal[front]}) {
       /if (${Debug} || ${Debug_Assists}) /echo Attempting to stick front [${AssistStickDistance}].
+	  :OtTankStick
       /squelch /stick hold front ${AssistStickDistance} uw
       /delay 20 ${Stick.Stopped}
 		} else /if (${AssistStickPoint.Equal[behindonce]}) {
