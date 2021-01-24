@@ -10,7 +10,7 @@
 SUB event_Assist(line, ChatSender, int MobID)
 /if (${Debug} || ${Debug_Assists}) /echo |- event_Assist ==>
   /if (!${checkEventArgs[${ChatSender},${line},UZR,${MobID}]}) /return
-  /if (${OffTankSkipAssist} == 1)  /goto :OTSkip
+  /if (${OffTankSkipAssist} == 1)  /return
   /varset MobID ${c_eventArgData}
   | Check that you're not assisting on a corpse, pet or pc
   /if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
@@ -53,7 +53,6 @@ SUB event_Assist(line, ChatSender, int MobID)
       /if (${ChatSender.NotEqual[${Me.CleanName}]} && ${OffTank} == 0) {
         /varset AllowControl TRUE
         |/docommand ${ChatToggle} Attacking - ${AssistTarget} - ${Spawn[${AssistTarget}].CleanName}
-		:OTSkip
         /if (${Target.ID} != ${AssistTarget} && (!${Bool[${Me.Casting}]} || ${Me.Class.ShortName.Equal[BRD]}) && (${AssistType.Equal[melee]} || ${AssistType.Equal[ranged]})) /call TrueTarget ${AssistTarget}
         /if (${Me.Pet.ID}) {
           /if (${Debug} || ${Debug_Assists}) /echo Pet Check: Sending pet in
@@ -422,8 +421,8 @@ SUB check_Nukes
 
     |allows use of druid/mage DS, etc, in nukes based on spellset. casts on assistTargets target
     /if (${Nukes2D[${castIndex},${iSpellType}].Find[Beneficial]}) {
-      /if (${Target.ID} != ${AssistTarget}) /call TrueTarget ${AssistTarget}
-      /if (${Select[${Me.TargetOfTarget.Class.ShortName},WAR,PAL,SHD]}) {
+      /if (${Target.ID} != ${AssistTarget})  /call TrueTarget ${AssistTarget}
+      /if (${Select[${Me.TargetOfTarget.Class.ShortName},WAR,PAL,SHD]) {
         /if (${Spawn[pc ${Me.TargetOfTarget}].ID}) {
           /varset assistToT ${Me.TargetOfTarget.ID}
           /call check_Ready "Nukes2D" ${castIndex}
@@ -496,6 +495,7 @@ SUB check_Nukes
       /call check_Ready "Nukes2D" ${castIndex}
       /if (${c_Ready} && ${Nukes2D[${castIndex},${iIfs}]}) {
         /if (${check_Mana["Nukes2D",${castIndex}]}) {
+		/bc Nuking ${AssistTarget}
           /if (${check_Distance[${AssistTarget},${Nukes2D[${s},${iMyRange}]}]}) {
             /call e3_Cast ${AssistTarget} "Nukes2D" "${castIndex}"
           }

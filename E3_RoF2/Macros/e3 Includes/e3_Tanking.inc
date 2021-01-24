@@ -199,9 +199,12 @@ SUB event_ToggleOffTankMode(line, toggleOT)
 
 Sub Event_offtank1(line, ChatSender, int MobID)
 
-/varset OTtarget ${MobID}
-/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
-	/if (${OffTankNum} == 1)  {
+/if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
+    /bc [${Spawn[id ${MobID}].CleanName}] is not an acceptable TargetType
+	/call OTBackoff
+} else /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OffTankNum} == 1)  {	
+		/varset OTtarget ${MobID}
 		/call OffTankTarget
 	}
 }
@@ -213,9 +216,12 @@ Sub Event_offtank1(line, ChatSender, int MobID)
 
 Sub Event_offtank2(line, ChatSender, int MobID)
 
-/varset OTtarget ${MobID}
-/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
-	/if (${OffTankNum} == 2)  {		
+/if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
+    /bc [${Spawn[id ${MobID}].CleanName}] is not an acceptable TargetType
+	/call OTBackoff
+} else /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OffTankNum} == 2)  {	
+		/varset OTtarget ${MobID}
 		/call OffTankTarget
 	}
 }
@@ -227,9 +233,12 @@ Sub Event_offtank2(line, ChatSender, int MobID)
 
 Sub Event_offtank3(line, ChatSender, int MobID)
 
-/varset OTtarget ${MobID}
-/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
-	/if (${OffTankNum} == 3)  {
+/if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
+    /bc [${Spawn[id ${MobID}].CleanName}] is not an acceptable TargetType
+	/call OTBackoff
+} else /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OffTankNum} == 3)  {	
+		/varset OTtarget ${MobID}
 		/call OffTankTarget
 	}
 }
@@ -241,9 +250,12 @@ Sub Event_offtank3(line, ChatSender, int MobID)
 
 Sub Event_offtank4(line, ChatSender, int MobID)
 
-/varset OTtarget ${MobID}
-/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
-	/if (${OffTankNum} == 4)  {		
+/if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
+    /bc [${Spawn[id ${MobID}].CleanName}] is not an acceptable TargetType
+	/call OTBackoff
+} else /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OffTankNum} == 4)  {	
+		/varset OTtarget ${MobID}
 		/call OffTankTarget
 	}
 }
@@ -253,11 +265,16 @@ Sub Event_offtank4(line, ChatSender, int MobID)
 SUB OffTankTarget
 
 /bc [+y+] OffTanking ${Spawn[id ${OTtarget}].CleanName}
+/if (${Stick.Active}) /squelch /stick off
+/if (${NetAdvPath.Following}) /squelch /netfollow off
 /varset AssistTarget ${OTtarget}
+/varset AntithesisTarget ${OTtarget}
+/target ${AssistTarget}
 /varset Assisting TRUE
 /varset AllowControl TRUE
 /varset AssistStickDistance 10
 /varset OffTankSkipAssist 1
+/if (${Me.Pet.ID}) /pet attack ${AssistTarget}
 /call StickToAssistTarget
 /attack on
 
@@ -321,7 +338,7 @@ Sub tanking_Background_Events
   /doevents OffTankBackoffAll
   /doevents OffTankBackoff
   
-  /if (${OffTankSkipAssist} == 1 && !${Target.ID} )  /call OTBackoff
+  /if (${OffTankSkipAssist} == 1 && !${SpawnCount[id ${OTtarget}]})  /call OTBackoff
   
 /return
 
