@@ -2176,6 +2176,7 @@ Sub Event_XeruForm
 #Event VampStake "Vampire Researcher staggers and collapses."
 #Event VampStake "Xurith The Bloody staggers and collapses."
 #Event VampStake "Reborn Vampire staggers and collapses."
+#Event VampStake "Enthralled Vampire staggers and collapses."
 
 SUB Event_VampStake(string line) 
 
