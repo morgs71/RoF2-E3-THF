@@ -172,94 +172,83 @@ SUB event_TogglePeelTank(line, ChatSender, toggle)
 |--------------------OffTanking---------By Muergan----|
 
 
-|------------OffTank Mode---------------|
-|--Allows Manual Movement Control over--|
-|--OT when Assist is called	          --|
-#Event ToggleOffTankMode "#*# tells you, 'offtankmode #1#'"
-SUB event_ToggleOffTankMode(line, toggleOT)
+|------------OffTank Manual Mode ( 1 OffTank Only )---------------|         
+#Event ToggleOffTankMode "<#1#> OTmodeToggle #2#"
+SUB event_ToggleOffTankMode(line, ChatSender, int OTnum)
 
 /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
-	/if (${toggleOT.Equal[On]}) {
-		/varset OffTank 1
-		/bc [+y+] OffTank Mode enabled!
-	} else /if (${toggleOT.Equal[Off]}) {
-		/varset OffTank 0
-		/bc [+y+] OffTank Mode disabled!
+	/if (${OffTankNum} == ${OTnum})  {
+		/if (${OffTank} == 0) {
+			/varset OffTank 1
+			/bc [+y+] OffTank Mode enabled!
+		} else /if (${OffTank} == 1) {
+			/varset OffTank 0
+			/bc [+y+] OffTank Mode disabled!
+		}
 	}
 }
 /return
+
+#Event OffTankModeTarget "<#1#> OTarget #2# #3#"
+
+SUB event_OffTankModeTarget(line, ChatSender, int OTnum, int MobID)
+
+/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OffTankNum} == ${OTnum})  {
+		/if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
+			/bc [${Spawn[id ${MobID}].CleanName}] is not an acceptable TargetType
+			/call OTBackoff
+		} else {	
+			/varset OTtarget ${MobID}
+			/call ManualOffTankTarget
+		}
+	}
+}
+
+/Return
+
+SUB ManualOffTankTarget
+
+/bc [+y+] OffTanking ${Spawn[id ${OTtarget}].CleanName}
+/if (${Stick.Active}) /squelch /stick off
+/if (${NetAdvPath.Following}) /squelch /netfollow off
+/varset AssistTarget ${OTtarget}
+/varset AntithesisTarget ${OTtarget}
+/target ${AssistTarget}
+/varset Assisting TRUE
+/varset AllowControl FALSE
+/varset OffTankSkipAssist 1
+/attack on
+/if (${Me.Pet.ID}) /pet attack ${AssistTarget}
+
+
+
+/Return
+
 
 |------OffTank Target--------------------|
 |-- Desinated OffTank #1-4 will OT  -----|
 |-- Target until dead or called off.-----|
 
 
-#Event offtank1 "<#1#> offtank1 #2#"
+#Event OffTank "<#1#> offtank #2# #3#"
 
 
-Sub Event_offtank1(line, ChatSender, int MobID)
+Sub Event_OffTank(line, ChatSender, int OTnum, int MobID)
 
-/if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
-    /bc [${Spawn[id ${MobID}].CleanName}] is not an acceptable TargetType
-	/call OTBackoff
-} else /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
-	/if (${OffTankNum} == 1)  {	
-		/varset OTtarget ${MobID}
-		/call OffTankTarget
+/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
+	/if (${OffTankNum} == ${OTnum})  {
+		/if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
+			/bc [${Spawn[id ${MobID}].CleanName}] is not an acceptable TargetType
+			/call OTBackoff
+		} else {	
+			/varset OTtarget ${MobID}
+			/call OffTankTarget
+		}
 	}
 }
 /Return
 
-
-#Event offtank2 "<#1#> offtank2 #2#"
-
-
-Sub Event_offtank2(line, ChatSender, int MobID)
-
-/if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
-    /bc [${Spawn[id ${MobID}].CleanName}] is not an acceptable TargetType
-	/call OTBackoff
-} else /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
-	/if (${OffTankNum} == 2)  {	
-		/varset OTtarget ${MobID}
-		/call OffTankTarget
-	}
-}
-/Return
-
-
-#Event offtank3 "<#1#> offtank3 #2#"
-
-
-Sub Event_offtank3(line, ChatSender, int MobID)
-
-/if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
-    /bc [${Spawn[id ${MobID}].CleanName}] is not an acceptable TargetType
-	/call OTBackoff
-} else /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
-	/if (${OffTankNum} == 3)  {	
-		/varset OTtarget ${MobID}
-		/call OffTankTarget
-	}
-}
-/Return
-
-
-#Event offtank4 "<#1#> offtank4 #2#"
-
-
-Sub Event_offtank4(line, ChatSender, int MobID)
-
-/if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
-    /bc [${Spawn[id ${MobID}].CleanName}] is not an acceptable TargetType
-	/call OTBackoff
-} else /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
-	/if (${OffTankNum} == 4)  {	
-		/varset OTtarget ${MobID}
-		/call OffTankTarget
-	}
-}
-/Return
 
 
 SUB OffTankTarget
@@ -316,6 +305,8 @@ Sub OTBackoff
 /varset OffTankSkipAssist 0
 /varset OTtarget 0
 /bc [+y+] OffTank Disabled...Backing Off !
+/attack off
+/varset AllowControl TRUE
 /call Assistoff
 	
 
@@ -331,12 +322,10 @@ Sub tanking_Background_Events
   /doevents SetTank
   /doevents TogglePeelTank
   /doevents ToggleOffTankMode
-  /doevents offtank1
-  /doevents offtank2
-  /doevents offtank3
-  /doevents offtank4
+  /doevents OffTank
   /doevents OffTankBackoffAll
   /doevents OffTankBackoff
+  /doevents OffTankModeTarget
   
   /if (${OffTankSkipAssist} == 1 && !${SpawnCount[id ${OTtarget}]})  /call OTBackoff
   
@@ -347,15 +336,24 @@ Sub tanking_CharacterSettings
 /return
 
 Sub tanking_Aliases
-/squelch /alias /offtank1 /bc offtank1 ${Target.ID}
-/squelch /alias /offtank2 /bc offtank2 ${Target.ID}
-/squelch /alias /offtank3 /bc offtank3 ${Target.ID}
-/squelch /alias /offtank4 /bc offtank4 ${Target.ID}
-/squelch /alias /otbackoffall /bc otbackoffall
-/squelch /alias /otbackoff1 /bc otbackoff 1
-/squelch /alias /otbackoff2 /bc otbackoff 2
-/squelch /alias /otbackoff3 /bc otbackoff 3
-/squelch /alias /otbackoff4 /bc otbackoff 4
+/squelch /alias /ot1 /bc offtank 1 ${Target.ID}
+/squelch /alias /ot2 /bc offtank 2 ${Target.ID}
+/squelch /alias /ot3 /bc offtank 3 ${Target.ID}
+/squelch /alias /ot4 /bc offtank 4 ${Target.ID}
+/squelch /alias /otball /bc otbackoffall
+/squelch /alias /otb1 /bc otbackoff 1
+/squelch /alias /otb2 /bc otbackoff 2
+/squelch /alias /otb3 /bc otbackoff 3
+/squelch /alias /otb4 /bc otbackoff 4
+/squelch /alias /otm1 /bc OTmodeToggle 1
+/squelch /alias /otm2 /bc OTmodeToggle 2
+/squelch /alias /otm3 /bc OTmodeToggle 3
+/squelch /alias /otm4 /bc OTmodeToggle 4
+/squelch /alias /ott1 /bc OTarget 1 ${Target.ID}
+/squelch /alias /ott2 /bc OTarget 2 ${Target.ID}
+/squelch /alias /ott3 /bc OTarget 3 ${Target.ID}
+/squelch /alias /ott4 /bc OTarget 4 ${Target.ID}
+
 /return
 
 Sub tanking_MacroSettings

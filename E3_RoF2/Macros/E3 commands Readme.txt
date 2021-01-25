@@ -40,7 +40,7 @@ Groups:
 /Group GROUPNAME - Will auto-invite members and re-form any saved GROUPNAME
 /DisbandAll - All bots disband from their groups and raids
 
-THF Events:
+THF Events
 /ralloszek - Toggles Rallos Zek Bane Nukes (Blue Rod of Zek) will also reset on zone
 /newchar - Use on new character creation when first zoning to forest.  Will automatically do starting quest & get spells/skills/armor
 
@@ -49,6 +49,8 @@ Pets:
 
 Crowd Control:
 /mezit - Enchanter will single target mez with spell defined in bot.ini
-
-Misc:
-/autoforage - Toggles Auto Forage function (Characters with forage with auto use ability and put items in your inventory)
+/otm# (1-4) - Offtank will toggle manual OT mode (/ott1-4 to engage)
+/ott# (1-4) - Set OT target and have them Engage with manual control (To be used with /otm)
+/ot# (1-4) - Ot assisgned to number will engage and OT til mob dead or ordered off.
+/otb# (1-4) - OT assisnged to number will backoff
+/otball - All OT will backoff
