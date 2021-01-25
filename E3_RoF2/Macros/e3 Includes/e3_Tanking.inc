@@ -194,7 +194,7 @@ SUB event_ToggleOffTankMode(line, ChatSender, int OTnum)
 SUB event_OffTankModeTarget(line, ChatSender, int OTnum, int MobID)
 
 /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]})  {
-	/if (${OffTankNum} == ${OTnum})  {
+	/if (${OffTankNum} == ${OTnum} && ${OffTank} == 1)  {
 		/if (!${Bool[${Spawn[id ${MobID}].Type.NotEqual[Corpse]}]} || !${Select[${Spawn[id ${MobID}].Type},${AcceptableTargetTypes}]}) {
 			/bc [${Spawn[id ${MobID}].CleanName}] is not an acceptable TargetType
 			/call OTBackoff
@@ -313,7 +313,40 @@ Sub OTBackoff
 /Return
 
 
+|----------Agro Ability/Spell/Disc/Item-------------------|
 
+SUB AgroAbilities
+
+
+/declare i int local
+
+
+/for i 1 to ${AgroAbilities2D.Size[1]}
+
+
+		|- Discipline, no disc with a duration can go here
+		/if (${AgroAbilities2D[${i},${iCastType}].Equal[Disc]}) {		
+			/if (${Me.CombatAbilityReady[${AgroAbilities2D[${i},${iCastName}]}]}) {
+				/if (${Me.PctEndurance} >= ${AgroAbilities2D[${i},${iMinEnd}]} && ${Spell[${AgroAbilities2D[${i},${iCastName}]}].EnduranceCost} <= ${Me.Endurance}) {
+					/disc ${AgroAbilities2D[${i},${iCastName}]}
+					/delay 3 !${Me.CombatAbilityReady[${AgroAbilities2D[${i},${iCastName}]}]}
+					/varset AgroAbilityTimer 3s
+				}
+			}
+		|-Spells
+		} else {
+			/call check_Ready "AgroAbilities2D" ${i}
+			/if (${c_Ready}) {
+				/if (${check_Mana["AgroAbilities2D",${i}]}) {
+					/call e3_Cast ${AssistTarget} "AgroAbilities2D" ${i}
+					/varset AgroAbilityTimer 3s
+				}
+			}
+		}
+	
+/next i
+
+/Return
 
 
 
@@ -331,8 +364,20 @@ Sub tanking_Background_Events
   
 /return
 
+SUB agro_SpellArrays
+
+/call IniToArrayV "${Character_Ini},Agro Abilities,Ability#" AgroAbilities
+
+  
+/if (${Defined[AgroAbilities]}) /call BuildSpellArray "AgroAbilities" "AgroAbilities2D"
+  
+/Return
+
+
 Sub tanking_CharacterSettings
-  /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]}) /call WriteToIni "${Character_Ini},Assist Settings,OffTank#" 
+/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]}) /call WriteToIni "${Character_Ini},Assist Settings,OffTank#" 
+/if (${Select[${Me.Class.ShortName},PAL,SHD,WAR]}) /call WriteToIni "${Character_Ini},Agro Abilities,Ability"
+
 /return
 
 Sub tanking_Aliases
@@ -370,8 +415,12 @@ Sub tanking_Setup
   /declare OffTank int outer 0
   /declare OffTankSkipAssist int outer 0
   /declare OTtarget int outer 0
+ 
 
   /if (${Ini[${Character_Ini},Assist Settings,OffTank#].Length}) /call IniToVarV "${Character_Ini},Assist Settings,OffTank#" OffTankNum int outer
+
+	
+  /call agro_SpellArrays
   
 
 /return

@@ -405,7 +405,6 @@ SUB check_Nukes
 /if (${Assisting} && ${Zone.ShortName.Equal[frostcrypt]} && ${FindItem[=Icy Wand of Beltron].ID} && ${FindItem[Icy Wand of Beltron].Timer}==0)  /call GiantControl
 	
 	/if	(${RallosZek} == 1 && ${BlueRodTimer} == 0 && ${Assisting})  {
-		/bc testing
 		/casting "Blue Rod of Zek (Tier 3)|item" "-targetid|${AssistTarget}"
 		/varset BlueRodTimer 5s
 		/popup Rallos Zek Bane Damage is Engaged!
@@ -414,7 +413,14 @@ SUB check_Nukes
 	  /declare s int local
     /declare m int local
     /declare assistToT int local
-
+/if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]} && ${OffTankSkipAssist} == 1)  {
+	/if (${AgroAbilityTimer} == 0)  {
+		/call AgroAbilities
+		/return
+	} else /if (${AgroAbilityTimer} > 0)  {
+		/return
+	}
+}
    /for s 1 to ${Nukes2D.Size[1]}
     /varset castIndex ${s}
     /if (${Debug} || ${Debug_Assists}) /echo ${s} ${castIndex} ${Nukes2D[${castIndex},${iCastName}]}
@@ -495,7 +501,6 @@ SUB check_Nukes
       /call check_Ready "Nukes2D" ${castIndex}
       /if (${c_Ready} && ${Nukes2D[${castIndex},${iIfs}]}) {
         /if (${check_Mana["Nukes2D",${castIndex}]}) {
-		/bc Nuking ${AssistTarget}
           /if (${check_Distance[${AssistTarget},${Nukes2D[${s},${iMyRange}]}]}) {
             /call e3_Cast ${AssistTarget} "Nukes2D" "${castIndex}"
           }
@@ -1276,6 +1281,7 @@ Sub assist_Setup
   /declare AntithesisTimer timer outer 0
   /declare BeltronTimer timer outer 0
   /declare BlueRodTimer timer outer 0
+  /declare AgroAbilityTimer timer outer 0
   /if (!${Defined[spellsToUse]})   /declare spellsToUse string global Main
 
 | ------------------------------------- Import Macro_Ini Settings.
