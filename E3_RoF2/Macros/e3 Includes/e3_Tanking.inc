@@ -325,7 +325,7 @@ SUB AgroAbilities
 
 
 		|- Discipline, no disc with a duration can go here
-		/if (${AgroAbilities2D[${i},${iCastType}].Equal[Disc]}) {		
+		/if (${AgroAbilities2D[${i},${iCastType}].Equal[Disc]}) {			
 			/if (${Me.CombatAbilityReady[${AgroAbilities2D[${i},${iCastName}]}]}) {
 				/if (${Me.PctEndurance} >= ${AgroAbilities2D[${i},${iMinEnd}]} && ${Spell[${AgroAbilities2D[${i},${iCastName}]}].EnduranceCost} <= ${Me.Endurance}) {
 					/disc ${AgroAbilities2D[${i},${iCastName}]}

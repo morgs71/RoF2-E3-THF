@@ -403,16 +403,7 @@ SUB check_Nukes
 	/call Apply_Antithesis
   }
 /if (${Assisting} && ${Zone.ShortName.Equal[frostcrypt]} && ${FindItem[=Icy Wand of Beltron].ID} && ${FindItem[Icy Wand of Beltron].Timer}==0)  /call GiantControl
-	
-	/if	(${RallosZek} == 1 && ${BlueRodTimer} == 0 && ${Assisting})  {
-		/casting "Blue Rod of Zek (Tier 3)|item" "-targetid|${AssistTarget}"
-		/varset BlueRodTimer 5s
-		/popup Rallos Zek Bane Damage is Engaged!
-	} else /if (${Defined[Nukes2D]} && ${Assisting} && ${use_Nukes}) {
-	  /declare castIndex int local
-	  /declare s int local
-    /declare m int local
-    /declare assistToT int local
+
 /if (${Select[${Me.Class.ShortName},WAR,PAL,SHD]} && ${OffTankSkipAssist} == 1)  {
 	/if (${AgroAbilityTimer} == 0)  {
 		/call AgroAbilities
@@ -421,6 +412,17 @@ SUB check_Nukes
 		/return
 	}
 }
+	
+/if	(${RallosZek} == 1 && ${BlueRodTimer} == 0 && ${Assisting})  {
+	/casting "Blue Rod of Zek (Tier 3)|item" "-targetid|${AssistTarget}"
+	/varset BlueRodTimer 5s
+	/popup Rallos Zek Bane Damage is Engaged!
+} else /if (${Defined[Nukes2D]} && ${Assisting} && ${use_Nukes}) {
+	/declare castIndex int local
+	/declare s int local
+    /declare m int local
+    /declare assistToT int local
+
    /for s 1 to ${Nukes2D.Size[1]}
     /varset castIndex ${s}
     /if (${Debug} || ${Debug_Assists}) /echo ${s} ${castIndex} ${Nukes2D[${castIndex},${iCastName}]}
@@ -1437,7 +1439,7 @@ SUB assist_CharacterSettings
 		/if (!${Ini[${Character_Ini},Melee Abilities].Length}) /call WriteToIni "${Character_Ini},Melee Abilities,Ability"
 	}
 	| If I'm a casting class, add Nuke entries.
-	/if (${Select[${Me.Class.ShortName},BST,CLR,DRU,ENC,MAG,PAL,NEC,RNG,SHD,SHM,WIZ]}) {
+	/if (${Select[${Me.Class.ShortName},BST,CLR,DRU,ENC,MAG,PAL,NEC,RNG,SHD,SHM,WIZ,BER,MNK,WAR,ROG,BRD]}) {
 		/if (!${Ini[${Character_Ini},Nukes].Length}) {
       /call WriteToIni "${Character_Ini},Nukes,Main"
       /if (${Select[${Me.Class.ShortName},DRU,RNG,MAG,WIZ]}) {
