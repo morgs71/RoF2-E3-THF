@@ -10,7 +10,7 @@
 |----------------Donor Arms / Sune Buffs-------By Muergan & Soandso----|
 #EVENT SuneBuffs "<#*#> CastSuneBuffs"
 #EVENT SuneTargetBuff "<#1#> SuneBuffs on #2#"
-#EVENT SuneTargetBuff "#1# tells you, 'SuneBuff #2#'"
+#EVENT SuneTargetBuff "#1# tells you, 'sunebuff #2#'"
 #EVENT SuneBuffRequest "#1# tells you, 'SuneBuff request'"
 
 
