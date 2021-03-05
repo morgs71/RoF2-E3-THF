@@ -111,13 +111,7 @@ SUB peelTank
           /attack on
           /delay 2s ${Target.Distance} < 12
           /doability Taunt
-          /if (${Me.CombatAbilityReady[Mock]}) {
-            /doability Mock
-            /delay 2
-          }
-          /if (${Me.CombatAbilityReady[Bazu Bellow]}) /doability "Bazu Bellow"
-          /if (${Me.AltAbilityReady[Divine Stun]}) /casting "Divine Stun"
-          /if (${Me.SpellReady[Terror of Discord]}) /casting "Terror of Discord"
+          /call AgroAbilities 
           /return
         } else {
           /varset peelTarget 0
