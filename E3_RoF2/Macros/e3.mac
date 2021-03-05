@@ -8,6 +8,7 @@
 #turbo 100
 #include e3 Includes\e3_Setup.inc
 
+
 SUB Main(modeSelect)
   /declare macroVersion string outer 7.0
   /declare Debug bool outer false
@@ -22,6 +23,7 @@ SUB Main(modeSelect)
 		/delay 5
 	}
   /declare i int local
+  /declare customCommandsTimer timer outer 5
 
 :MainLoop
 /if (${Debug}) /echo |- MainLoop ==>
@@ -59,6 +61,13 @@ SUB Main(modeSelect)
     /squelch /stick imsafe
     /echo GM Safe kicked in, issued /stick imsafe.  you may need to reissue /followme or /assiston
   }
+  
+  /if (${CustomCommands} && ${customCommandsTimer}<=0) {
+	/if (${Me.Combat}) /call customCommands CombatCustomCommands
+	/if (!${Me.Combat}) /call customCommands PeaceCustomCommands
+	/varset customCommandsTimer 10
+  }
+
 /if (${Debug}) {
 	/echo <== MainLoop -|
 	/delay 5
