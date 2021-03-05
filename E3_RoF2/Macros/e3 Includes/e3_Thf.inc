@@ -7,7 +7,73 @@
 
 |---------------------------------------THF Utility Items ---------------------------------|
 
-|--------------Caster HP-->Mana Conversion-----------------------------|
+|----------------Donor Arms / Sune Buffs-------By Muergan & Soandso----|
+#EVENT SuneBuffs "<#*#> CastSuneBuffs"
+#EVENT SuneTargetBuff "<#1#> SuneBuffs on #2#"
+#EVENT SuneTargetBuff "#1# tells you, 'SuneBuff #2#'"
+#EVENT SuneBuffRequest "#1# tells you, 'SuneBuff request'"
+
+
+
+Sub Event_SuneBuffs
+
+/if (!${Me.Moving}  && !${Me.Combat})  {
+	/if (${FindItem[Sune's Vambraces of Eternal Life (Tier 10)].ID}) {
+		/if (${Cast.Ready[Sune's Vambraces of Eternal Life (Tier 10)]}  {
+			/casting "Sune's Vambraces of Eternal Life (Tier 10)|item -maxtries|2 
+			/bc [+g+]Summoning Sune to Buff !
+		}
+		/delay 2
+		/call TargetSune
+	}
+}
+	
+/Return
+
+
+Sub Event_SuneTargetBuff(line, ChatSender, eventParams)
+
+/varset SuneTarget ${c_eventArgData}
+/if (!${Me.Moving}  && !${Me.Combat})  {
+	/if (${FindItem[Sune's Vambraces of Eternal Life (Tier 10)].ID}) {
+		/if (${Cast.Ready[Sune's Vambraces of Eternal Life (Tier 10)]}  {
+			/casting "Sune's Vambraces of Eternal Life (Tier 10)|item -maxtries|2 
+			/bc [+g+]Summoning Sune to Buff !
+		}
+		/delay 2
+		/if (${SpawnCount[npc "The Spirit of Sune"]} == 1) {
+			/tell ${Spawn[id ${SuneTarget}].CleanName} SuneBuff request
+		}
+	}
+}
+/Return
+
+
+
+sub Event_SuneBuffRequest(line, ChatSender)
+
+/bc [+g+] Requesting Sune Buffs
+/call TargetSune
+
+/Return
+
+
+
+Sub TargetSune
+
+/if (${SpawnCount[npc "The Spirit of Sune"]} == 1) {
+	/target ${Spawn[npc radius 15 "The Spirit of Sune"]}
+	/delay 2
+	/say buff
+} else { 
+	/bc [+g+] Sune is Out of Range or Missing
+}
+/Return
+
+
+
+
+|--------------Caster HP-->Mana Conversion-----By Muergan--------------|
 SUB check_Conversion
 /if (${Debug}) /echo |- autoConversion ==>
 
@@ -59,7 +125,7 @@ SUB EVENT_CheckEmptyAugType(line, ChatSender, augType)
 	}
 /RETURN
 
-|--------------------Check Empty Augs by Item Slot-----------------|
+|--------------------Check Empty Augs by Item Slot------By Tibbs----|
 #EVENT CheckEmptyAugSlot "<#1#> Find Empty Aug in Slot #2#"
 SUB EVENT_CheckEmptyAugSlot(line, ChatSender, augSlot)
 	/if (!${checkEventArgs[${ChatSender},${line},U,${augSlot}]}) /return
@@ -166,7 +232,7 @@ SUB EVENT_CheckEmptyAugSlot(line, ChatSender, augSlot)
 
 
 
-|--------------------AutoForage-----------------|
+|--------------------AutoForage-------By Muergan----|
 #Event AutoForage "<#*#> AutoForageToggle"
 
 Sub Event_AutoForage
@@ -198,7 +264,7 @@ Sub DoForage
 
 
 
-|---------------THF Forest Gate-----------------|
+|---------------THF Forest Gate-------By Muergan---|
 
 #EVENT thfgate "<#1#> thfgate"
 #event thfgate "you tell your party, 'thfgate'"
@@ -260,7 +326,7 @@ Sub definethfgate
   }
 /RETURN
 
-|---------------Hidden Vale Gate-----------------|
+|---------------Hidden Vale Gate---------By Muergan----|
 
 #EVENT valegate "<#1#> valegate"
 #event valegate "you tell your party, 'valegate'"
@@ -309,7 +375,7 @@ Sub defineValegate
 
 
 
-|---------------Halls of Honor Gate-----------------|
+|---------------Halls of Honor Gate-------By Muergan-----|
 
 #EVENT hohgate "<#1#> hohgate"
 #event hohgate "you tell your party, 'hohgate'"
@@ -355,7 +421,7 @@ Sub definehohgate
 
 
 
-|-------------- Gather Mana Items -----------------|
+|-------------- Gather Mana Items -------By Muergan---|
 
 
 Sub defineSmallGather
@@ -460,7 +526,7 @@ Sub check_GatherMana
 		
 
 		
-|---------------------------Auto Shrink-------------------------|	
+|---------------------------Auto Shrink--------------By Muergan-------|	
 
 SUB Auto_Shrink
 
@@ -735,7 +801,7 @@ SUB EVENT_attendance(line, ChatSender)
 /return
 
 
-|-----------------------New Character Setup------------------------|
+|-----------------------New Character Setup-----------------By Muergan-------|
 
 #event NewTHFChar "<#1#> New Character Setup"
 
@@ -2503,6 +2569,9 @@ Sub thf_Aliases
 	/squelch /alias /aug /bc Find Empty Aug Type
 	/squelch /alias /augtype /bc Find Empty Aug Type
 	/squelch /alias /augslot /bc Find Empty Aug In Slot
+	/squelch /alias /suneit /bc [+g+]SuneBuffs on ${Target.CleanName}
+	/squelch /alias /sunebuff /bc CastSuneBuffs
+	
 
 
 /if (${Debug} || ${Debug_Thf}) /echo <== thf_Aliases -|
