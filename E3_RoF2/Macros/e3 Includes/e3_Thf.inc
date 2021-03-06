@@ -2472,7 +2472,7 @@ Sub Thf_Setup
 }
 /if (${Ini[${genSettings_Ini},General,CycleNearestTarget-Hotbutton].Length})  /call IniToVarV "${genSettings_Ini},General,CycleNearestTarget-Hotbutton" CycleTarget string outer
 /if (${Ini[${Character_Ini},Misc,Self Shrink (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Self Shrink (On/Off)" SelfShrink bool outer
-
+/if (${Ini[${Character_Ini},Misc,Custom Commands (On/Off)].Length})  /call IniToVarV "${Character_Ini},Misc,Custom Commands (On/Off)" CustomCommands bool outer
 	
 /if (${Debug}) /echo <== Thf_Setup -|
 /return
@@ -2587,6 +2587,7 @@ SUB Thf_CharacterSettings
 /if (${Debug}) /echo |- THF_CharacterSettings ==>
 
 /call WriteToIni "${Character_Ini},Misc,Self Shrink (On/Off)" On
+/call WriteToIni "${Character_Ini},Misc,Custom Commands (On/Off)" Off
 
 
 /if (${Select[${Me.Class.ShortName},CLR,PAL,RNG,SHD,ENC,MAG,NEC,BST,WIZ,DRU,SHM]})  {
