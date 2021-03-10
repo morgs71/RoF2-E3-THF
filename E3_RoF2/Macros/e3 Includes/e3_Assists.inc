@@ -181,7 +181,7 @@ SUB StickToAssistTarget
 			/if (${Debug} || ${Debug_Assists}) /echo Attempting to stick !front [${AssistStickDistance}].
 			/squelch /stick snaproll uw
       /delay 20 ${Stick.Behind} && ${Stick.Stopped}
-			/squelch stick hold moveback !front ${AssistStickDistance} uw
+			/squelch /stick hold moveback !front ${AssistStickDistance} uw
 		} else {
 			/if (${Debug} || ${Debug_Assists}) /echo [${AssistStickPoint}] is not a valid stick point.  Defaulting to stick behind.
 			/squelch /stick snaproll uw
