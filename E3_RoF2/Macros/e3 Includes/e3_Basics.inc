@@ -190,7 +190,7 @@ SUB EVENT_bark(line, ChatSender, msgTarget, barkMsg)
   /varset barkTarget ${Spawn[id ${msgTarget}].CleanName}
   /varset barkReturned FALSE
 
-  /declare retryTimer timer local 15s
+  /declare retryTimer timer local 10s
   /declare startingLoc string local
 
   /if (${Spawn[id ${msgTarget}].Distance}>${MaxResponseDist}) {
@@ -206,6 +206,7 @@ SUB EVENT_bark(line, ChatSender, msgTarget, barkMsg)
 
   :retry_Bark
   /if (${Me.Invis}) /makemevisible
+  /if (${Me.Sneaking})  /doability sneak
   /call TrueTarget ${msgTarget}
   /if (${Target.Distance} > 5) /call MoveToLoc ${Target.Y} ${Target.X} 50 5
   | -Wait a moment, then bark the message.
