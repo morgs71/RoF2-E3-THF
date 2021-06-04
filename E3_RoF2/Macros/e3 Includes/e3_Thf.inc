@@ -17,9 +17,9 @@
 
 Sub Event_SuneBuffs
 
-/if (!${Me.Moving}  && !${Me.Combat})  {
+/if (!${Me.Moving} && !${Me.Combat})  {
 	/if (${FindItem[Sune's Vambraces of Eternal Life (Tier 10)].ID}) {
-		/if (${Cast.Ready[Sune's Vambraces of Eternal Life (Tier 10)]}  {
+		/if (${Me.ItemReady[Sune's Vambraces of Eternal Life (Tier 10)]}  {
 			/casting "Sune's Vambraces of Eternal Life (Tier 10)|item -maxtries|2 
 			/bc [+g+]Summoning Sune to Buff !
 		}
@@ -36,7 +36,7 @@ Sub Event_SuneTargetBuff(line, ChatSender, eventParams)
 /varset SuneTarget ${c_eventArgData}
 /if (!${Me.Moving}  && !${Me.Combat})  {
 	/if (${FindItem[Sune's Vambraces of Eternal Life (Tier 10)].ID}) {
-		/if (${Cast.Ready[Sune's Vambraces of Eternal Life (Tier 10)]}  {
+		/if (${Me.ItemReady[Sune's Vambraces of Eternal Life (Tier 10)]}  {
 			/casting "Sune's Vambraces of Eternal Life (Tier 10)|item -maxtries|2 
 			/bc [+g+]Summoning Sune to Buff !
 		}
@@ -62,8 +62,10 @@ sub Event_SuneBuffRequest(line, ChatSender)
 Sub TargetSune
 
 /if (${SpawnCount[npc "The Spirit of Sune"]} == 1) {
-	/target ${Spawn[npc radius 15 "The Spirit of Sune"]}
+	/target ${Spawn[npc radius 30 "The Spirit of Sune"]}
 	/delay 2
+	/moveto id ${Spawn[NPC =The Spirit of Sune].ID}
+	/call WaitUntilNotMoving
 	/say buff
 } else { 
 	/bc [+g+] Sune is Out of Range or Missing
@@ -2022,9 +2024,13 @@ Sub	Event_ValikEnd
 
 Sub	Event_MaestroGoto
 /popup Run To Maestro !!!!
-/if (${Select[${Me.Class.ShortName},MNK,BER,ROG,RNG,BST,BRD]})  {
+/if (${Select[${Me.Class.ShortName},WIZ,ENC,MAG,NEC,DRU,CLR,SHM]})  {
+	/call AssistOff	
+} else /if (${Select[${Me.Class.ShortName},MNK,BER,ROG,RNG,BST,BRD]})  {
 	/call AssistOff
 	/moveto loc -1.10 -2.68
+	/call WaitUntilNotMoving
+	/moveto loc -55.31 10.25
 	/call WaitUntilNotMoving
 	/moveto loc -108.45 2.44
 	/call WaitUntilNotMoving
@@ -2044,7 +2050,7 @@ Sub	Event_MaestroGoAdds
 	/call WaitUntilNotMoving
 	/moveto loc -55.31 10.25
 	/call WaitUntilNotMoving
-	/moveto loc -1.10 -2.68
+	/moveto loc 6.51 -0.73
 	/call WaitUntilNotMoving
 }
 /RETURN
@@ -2052,7 +2058,7 @@ Sub	Event_MaestroGoAdds
 
 Sub KillMaestro
 
-/delay 4s
+/delay 5s
 /bc Assist ${MainAssist} on ${Spawn[NPC =Maestro Tan`Lor].ID}
 	
 /return
@@ -2140,7 +2146,7 @@ Sub Event_XeruVamp
         /varset XeruVampSpamTimer 0
     }
 
-    /if (${Spawn[NPC =${XeruName}].Distance}<=300 && ${Spawn[NPC =${XeruName}].LineOfSight} && ${Cast.Ready[Chains of Reflection]} && !${XeruVampSpamFilter}) {
+    /if (${Spawn[NPC =${XeruName}].Distance}<=300 && ${Spawn[NPC =${XeruName}].LineOfSight} && ${Me.ItemReady[Chains of Reflection]} && !${XeruVampSpamFilter}) {
         /echo [XeruVamp - ${Time.Time24}] Event Start
         | Set XeruVamp Form
         /varset XeruVamp 1
@@ -2425,7 +2431,8 @@ Sub Event_HoHCruthz(string line)
 Sub Event_TestCode
 
 
-	
+
+
 /Return	
 
 
@@ -2534,6 +2541,9 @@ Sub Thf_Background_Events
 /doevents CheckEmptyAugSlot
 /doevents EnjiKick
 /doevents EnjiKickReturn
+/doevents SuneBuffs
+/doevents SuneTargetBuff
+/doevents SuneBuffRequest
 
 /if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
 
