@@ -186,8 +186,10 @@ SUB event_buffRequestRelay(line, ChatSender, eventParams)
   }
 
   /if (${Bool[${Spawn[${buffTarget}]}]}) {
-    /varset chatSenderLevel ${Spawn[${buffTarget}].Level}
-    /echo buffreq level ${chatSenderLevel}
+	|----Not Needed on THF----|
+    |/varset chatSenderLevel ${Spawn[${buffTarget}].Level}
+    |/echo buffreq level ${chatSenderLevel}
+	/varset chatSenderLevel 70
 
     /if (${chatSenderLevel}<47) {
         /tell ${ChatSender} Casting Level < 47 buffs on ${Spawn[id ${buffTarget}].CleanName}...
