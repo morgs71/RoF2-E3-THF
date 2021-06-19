@@ -26,6 +26,11 @@ Buffs:
 /tell <bot> buffme - Anyone can tell one of your bots to buff them with group buffs
 /BuffGroups - Will buff the leader of all net bot groups
 
+Sune Buffing (Donor Item):
+/sunit - Sune buffs target
+/sunebuff - Self Sune buffs
+/tell <donor toon> sunebuff <target> - Donor toon will Summon and the target Toon will Request buffs.
+
 Assists
 /AssistOn - All bots will Assist on your current target
 /BackOff  - All bots will Back Off a target they're currently Assisting on
@@ -33,7 +38,7 @@ Assists
 /FullBurn - All bots will use all Disciplines and AAs set up for Full Burn in their Bot Inis, and then immediately use all of their Quick Burns as well
 /SwarmPets - All bots with Swarm Pet AAs set up in their Bot Inis will Assist and use them
 /DoTsOn and /DoTsOff  - Turns on/off any DoTs on Command you have set up in your Bot Inis
-/DebuffsOn /DebuffsOff  - Turns on/off any Debuffs on Command you have set up in your Bot Inis
+/DebuffsOn and /DebuffsOff  - Turns on/off any Debuffs on Command you have set up in your Bot Inis
 
 Groups:
 /SaveGroup GROUPNAME - Will save your current group, with whatever GROUPNAME you want, to be recalled any time
