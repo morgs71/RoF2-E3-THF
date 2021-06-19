@@ -207,7 +207,7 @@ SUB Event_YourKill(line)
     /if ((${Me.Level}==70 && ${Me.PctExp}<=75) && ${Window[AAWindow].Child[AAW_PercentCount].Text.Left[-1]}==100) {
       /squelch /alternateadv on 90
       /bc [+y+] Auto setting AA Exp to 90%, at ${Me.PctExp}% of Level ${Me.Level}
-    } else /if (${Me.Level}==70 && ${Me.PctExp}>=90 && ${Window[AAWindow].Child[AAW_PercentCount].Text.Left[-1]}<100) {
+    } else /if (${Me.Level}==70 && ${Me.PctExp}>=100 && ${Window[AAWindow].Child[AAW_PercentCount].Text.Left[-1]}<100) {
       /squelch /alternateadv on 100
       /bc [+y+] Auto setting AA Exp to 100%, at ${Me.PctExp}% of Level ${Me.Level}
     }
