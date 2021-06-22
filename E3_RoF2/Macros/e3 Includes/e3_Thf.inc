@@ -2267,7 +2267,7 @@ SUB Event_VampStake(string line)
 Sub Apply_Antithesis
 
 
-/if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Ukun]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Murkglider]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Noc]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Discordling]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Bazu]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Feran]} || ${Spawn[${AntithesisTarget}].Race.Name.Equal[Dragorn]} && ${Spawn[${AntithesisTarget}].Distance} < 200)  {
+/if (${Spawn[${AntithesisTarget}].Race.Name.Equal[Ukun]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Murkglider]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Noc]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Discordling]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Bazu]} ||  ${Spawn[${AntithesisTarget}].Race.Name.Equal[Feran]} || ${Spawn[${AntithesisTarget}].Race.Name.Equal[Dragorn]} || ${Spawn[${AntithesisTarget}].Race.Name.Equal[Shade]} && ${Spawn[${AntithesisTarget}].Distance} < 200)  {
 		/call Check_AntithesisItem
 		/call check_Ready "AntithesisArray2D" 1
 		/if (${c_Ready})  {
@@ -2545,7 +2545,7 @@ Sub Thf_Background_Events
 /doevents SuneTargetBuff
 /doevents SuneBuffRequest
 
-/if (${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
+/if (!${Me.Moving} && ${SelfShrink} && ${NoShrinkItem} && ${Me.Height} > 2.05)  /call Auto_Shrink
 
 /if (${AutoConversion} && ${NoConversion} == 0 && !${Me.Moving} && !${Assisting} && ${Me.PctMana} <= ${StartConversion} && ${Me.PctHPs} > ${ConversionMinHP})  {
 	/call check_Conversion
