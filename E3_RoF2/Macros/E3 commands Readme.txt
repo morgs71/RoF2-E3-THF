@@ -27,7 +27,7 @@ Buffs:
 /BuffGroups - Will buff the leader of all net bot groups
 
 Sune Buffing (Donor Item):
-/sunit - Sune buffs target
+/suneit - Sune buffs target
 /sunebuff - Self Sune buffs
 /tell <donor toon> sunebuff <target> - Donor toon will Summon and the target Toon will Request buffs.
 
