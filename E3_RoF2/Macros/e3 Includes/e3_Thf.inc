@@ -2073,9 +2073,9 @@ Sub KillMaestro
 Sub Event_MoarburgerzHungry
 
 /popup Stop Attacking !!!
+/call AssistOff
 /call IsTank
 /if (${IsTank})  {
-	/backoff
 	/call Feedhim
 }
 /return
@@ -2085,7 +2085,7 @@ Sub Feedhim
 /declare i int local 1
 /for i 1 to 5
 /if (${FindItem[=Special Hamburger].ID})  {
-	/casting "Special Hamburger" "-targetid|${SpawnCount[npc "Moarburgerz"]}.ID}"
+	/casting "Special Hamburger" "-targetid|${Spawn[npc =Moarburgerz].ID}"
 	/delay 5
 }
 /next i
